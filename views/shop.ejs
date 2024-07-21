@@ -1,0 +1,311 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
+
+<main class="w-screen lg:bg-white max-w-[1920px] m-auto">
+
+    <div class="shp-intro min-h-[350px] bg-[#d5e8ec] flex flex-col justify-center items-center gap-[30px] px-[20px] md:px-[50px] lg:px-[100px] xl:px-[150px]">
+        <h1 class="text-[#191717] text-[48px] text-center">
+            Our line of health care products
+        </h1>
+        <p class="text-[#616161] max-w-[796px] text-center">
+            Explore our range of products and experience the exceptional customer service that sets Geldix Pharmaceuticals apart. If you have any questions or need assistance, our team is here to help. Thank you for choosing Geldix Pharmaceuticals - your trusted partner in health and wellness.
+        </p>
+
+    </div>
+
+    <div class="filters-and-products flex justify-center gap-[10px] pt-[100px] px-[20px] md:px-[50px] lg:px-[100px] xl:px-[150px]">
+
+        <div class="filters min-h-[25vh] h-max w-[258px]">
+
+            <div class="filter flex flex-col justify-between py-4 border-b border-gray-200">
+                
+                <div class="filter-header transition-all cursor-pointer duration-500 w-full flex items-center justify-between">
+                    <p class="filter-title uppercase">Category</p>
+                    <i class="ri-add-line text-2xl text-gray-200 toggle-icon-add"></i>
+                    <i class="ri-subtract-line text-2xl text-gray-200 toggle-icon-sub hidden"></i>
+                </div>
+        
+                <div class="filter-options hidden w-full p-2 flex-col gap-2">
+                    <% if(categories.length > 0) { %>
+                        <% categories.forEach(category => { %>
+                            <label for="<%= category.name %>" class="filter-option flex items-center gap-1.5">
+
+                                <input class="appearance-none duration-500 w-[16px] h-[16px] rounded-[4px] hover:bg-[#191717] checked:bg-[#191717] bg-no-repeat bg-center checked:bg-[url('/images/banners/check.svg')] checked:bg-no-repeat checked:bg-center bg-[#EEEEEE]" type="checkbox" name="<%= category.name %>" id="<%= category.name %>" value="<%= category.name %>">
+
+                                <span class="filter-option-text text-[#616161] w-full flex justify-between items-center">
+                                    <p><%= category.name %></p>
+                                    <p>(<%= category.subcategories.length %>)</p>
+                                </span>
+                                
+                            </label>
+                        <% }) %>
+                    <% } %>
+                </div>
+        
+            </div>
+
+            <div class="filter flex flex-col justify-between py-4 border-b border-gray-200">
+                
+                <div class="filter-header transition-all cursor-pointer duration-500 w-full flex items-center justify-between">
+                    <p class="filter-title uppercase">Brand</p>
+                    <i class="ri-add-line text-2xl text-gray-200 toggle-icon-add"></i>
+                    <i class="ri-subtract-line text-2xl text-gray-200 toggle-icon-sub hidden"></i>
+                </div>
+        
+                <div class="filter-options hidden w-full p-2 flex-col gap-2">
+                    <% if(categories.length > 0) { %>
+                        <% categories.forEach(category => { %>
+                            <label for="<%= category.name %>" class="filter-option flex items-center gap-1.5">
+
+                                <input class="appearance-none duration-500 w-[16px] h-[16px] rounded-[4px] hover:bg-[#191717] checked:bg-[#191717] bg-no-repeat bg-center checked:bg-[url('/images/banners/check.svg')] checked:bg-no-repeat checked:bg-center bg-[#EEEEEE]" type="checkbox" name="<%= category.name %>" id="<%= category.name %>" value="<%= category.name %>">
+
+                                <span class="filter-option-text text-[#616161] w-full flex justify-between items-center">
+                                    <p><%= category.name %></p>
+                                    <p>(<%= category.subcategories.length %>)</p>
+                                </span>
+                                
+                            </label>
+                        <% }) %>
+                    <% } %>
+                </div>
+        
+            </div>
+
+            <div class="filter flex flex-col justify-between py-4 border-b border-gray-200">
+                
+                <div class="filter-header transition-all cursor-pointer duration-500 w-full flex items-center justify-between">
+                    <p class="filter-title uppercase">Price</p>
+                    <i class="ri-add-line text-2xl text-gray-200 toggle-icon-add"></i>
+                    <i class="ri-subtract-line text-2xl text-gray-200 toggle-icon-sub hidden"></i>
+                </div>
+        
+                <div class="filter-options hidden w-full p-2 flex-col gap-2">
+                    <% if(categories.length > 0) { %>
+                        <% categories.forEach(category => { %>
+                            <label for="<%= category.name %>" class="filter-option flex items-center gap-1.5">
+
+                                <input class="appearance-none duration-500 w-[16px] h-[16px] rounded-[4px] hover:bg-[#191717] checked:bg-[#191717] bg-no-repeat bg-center checked:bg-[url('/images/banners/check.svg')] checked:bg-no-repeat checked:bg-center bg-[#EEEEEE]" type="checkbox" name="<%= category.name %>" id="<%= category.name %>" value="<%= category.name %>">
+
+                                <span class="filter-option-text text-[#616161] w-full flex justify-between items-center">
+                                    <p><%= category.name %></p>
+                                    <p>(<%= category.subcategories.length %>)</p>
+                                </span>
+
+                            </label>
+                        <% }) %>
+                    <% } %>
+                </div>
+        
+            </div>
+
+        </div>
+        
+        
+        <div class="products min-h-[70vh] w-full border-l-[1px] border-[#E2E2E2] px-[10px] pb-[100px] flex justify-center gap-[10px] flex-wrap">
+
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
+
+                    <img src="/images/products/product.svg" alt="">
+
+                    <img class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+
+                </div>
+
+                <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+
+                    <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        Asterwood Matrixyl 3000
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
+                        <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<%- include('./partials/footer') %>

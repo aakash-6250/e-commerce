@@ -118,7 +118,7 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'admin') {
         return next();
     }
-    res.redirect('/user/login');
+    res.json({ status: false, message: "You need to login as admin first" });
 }
 
 

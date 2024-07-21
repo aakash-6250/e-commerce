@@ -1,0 +1,304 @@
+<header class="mobile-nav bg-white w-screen shadow-md shadow-zinc-400 lg:hidden md:px-[50px] px-[25px] z-50 sticky top-0">
+
+    <nav class="h-[80px] flex justify-between items-center ">
+        <i class="mobile-menu-icon ri-menu-2-line text-3xl cursor-pointer text-[#0D5E59]"></i>
+        <a href="/">
+            <div class="logo flex flex-col justify-center items-center">
+                <h1 class="text-5xl font-bold text-[#0D5E59]">Geldix</h1>
+                <p class="text-sm">Geldix Pharmaceuticals Pvt. Ltd.</p>
+            </div>
+        </a>
+        <i class="mobile-search-icon ri-search-line text-3xl cursor-pointer text-[#0D5E59]"></i>
+    </nav>
+</header>
+
+<section class="mobile-bottom-section w-screen shadow-zinc-400 lg:hidden md:px-[50px] px-[25px] fixed bottom-0 left-0 flex justify-between items-center h-[70px] z-50 bg-white"
+    style="box-shadow: 0px -4px  6px -1px #a1a1aa;">
+
+    <i
+        class="login-register-btn ri-user-3-fill text-2xl border-[1px] border-[#0D5E59] rounded-full flex justify-center items-center px-2 py-1 text-[#0D5E59] cursor-pointer"></i>
+
+    <i
+        class="ri-heart-3-fill text-2xl border-[1px] border-[#0D5E59] rounded-full flex justify-center items-center px-2 py-1 text-[#0D5E59] cursor-pointer relative">
+        <p
+            class="absolute right-[-0.3rem] top-[-0.6rem] bg-yellow-300 text-white px-2 rounded-full text-sm animate-ping">
+            0</p>
+        <p class="absolute right-[-0.3rem] top-[-0.6rem] bg-yellow-300 text-white px-2 rounded-full text-sm">0</p>
+    </i>
+
+    <i
+        class="ri-shopping-cart-line text-2xl border-[1px] border-[#0D5E59] rounded-full flex justify-center items-center px-2 py-1 text-[#0D5E59] cursor-pointer relative">
+        <p
+            class="absolute right-[-0.3rem] top-[-0.6rem] bg-yellow-300 text-white px-2 rounded-full text-sm animate-ping">
+            0</p>
+        <p class="absolute right-[-0.3rem] top-[-0.6rem] bg-yellow-300 text-white px-2 rounded-full text-sm">0</p>
+    </i>
+
+</section>
+
+<div class="mobile-menu-container hidden lg:hidden w-screen h-screen fixed z-50 top-0 left-0 bg-[#0000007c]">
+    <div class="mobile-menu-list bg-white w-[85%] h-screen relative pt-10">
+        <i
+            class="mobile-menu-list-close ri-close-large-line text-2xl absolute top-4 right-4 cursor-pointer text-[#0D5E59]"></i>
+        <% if(categories.length> 0){ %>
+            <% categories.forEach(category=> { %>
+                <div class="mobile-menu-item cursor-pointer text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">
+                    <%= category.name %>
+                        <% if( category.subcategories.length> 0){ %>
+                            <div class="mobile-menu-item-subcategory hidden flex-col gap-1 ml-4 mt-2">
+                                <% category.subcategories.forEach(subcategory=> { %>
+                                    <a class="mobile-menu-item-subcategory-item flex justify-between text-base gap-[5vw] p-3 bg-[#EBF6F5] rounded"
+                                        href="/<%= category._id %>/<%= subcategory._id %> ">
+                                        <p>
+                                            <%= subcategory.name %>
+                                        </p>
+                                        <p>
+                                            <%= subcategory.products.length %>
+                                        </p>
+                                    </a>
+                                    <% }) %>
+                            </div>
+                            <% } %>
+                </div>
+                <% }) %>
+                    <% } %>
+    </div>
+</div>
+
+<div class="mobile-search-bar-container hidden w-screen h-screen fixed top-0 left-0 bg-[#0000007c] z-50">
+    <form action="/" method="get" class="mobile-search-bar w-screen h-[50px] bg-white flex">
+        <input type="text" name="searchText" id="" placeholder="Search for medicine, wellness and beauty products"
+            class=" w-full outline-none px-3 text-lg font-medium">
+        <button
+            class="ri-search-line text-3xl border-none outline-none text-white bg-[#0D5E59] px-3 flex justify-center items-center"></button>
+    </form>
+</div>
+
+<header class="desktop-nav w-screen hidden lg:flex flex-col md:px-[30px] lg:px-[50px] px-[20px] max-w-[1920px] m-auto">
+    <nav class="h-[100px] bg-white flex justify-between items-center">
+
+        <a class="logo" href="/">
+            <h1 class="text-5xl font-bold text-[#191717]">Geldix</h1>
+            <p class="text-sm">Geldix Pharmaceuticals Pvt. Ltd.</p>
+        </a>
+
+        <form action="/" method="get"
+            class="desktop-search-bar  h-[40px] w-[550px] border-[1px] border-[#191717] flex rounded-full overflow-hidden ">
+            <input type="text" name="searchText" id="" placeholder="Search for medicine, wellness and beauty products" class=" w-full outline-none px-3 text-lg font-medium">
+            <button class="ri-search-line text-lg border-none outline-none text-white bg-[#191717] px-[12px] flex justify-center items-center"></button>
+        </form>
+
+        <div class="nav-options flex gap-[2vw]">
+            <% if(user){ %>
+                <a href="<%= user.role === "customer" ? '/account' : '/admin/dashboard' %>"><i class="ri-user-line text-lg flex justify-center items-center text-[#191717] cursor-pointer"></i></a>
+            <% }else{ %>
+                <i class="login-register-btn account-btn ri-user-line text-lg flex justify-center items-center text-[#191717] cursor-pointer"></i>
+            <% } %>
+
+            <i class="ri-heart-line text-lg  flex justify-center items-center text-[#191717] cursor-pointer relative">
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping">0</p>
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
+
+            </i>
+
+            <i class="ri-shopping-cart-line cart-btn text-lg  flex justify-center items-center text-[#191717] cursor-pointer relative">
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping ">0</p>
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
+
+            </i>
+                
+        </div>
+
+    </nav>
+</header>
+
+<div class="desktop-menu-container shadow-md shadow-zinc-300 hidden lg:block border-y-[2px] border-[#EEEEEE] w-full max-w-[1920px] m-auto">
+
+    <div class="desktop-menu text-[#191717] text-[16px] h-[35px] border-b-[2px] border-[#EEEEEE] flex items-center gap-[40px] md:px-[50px] lg:px-[100px] px-[25px]">
+        <a href="/" class="uppercase hover:text-[#967BB6]">Home</a>
+        <a href="/shop" class="uppercase hover:text-[#967BB6]">Shop</a>
+        <a href="/" class="uppercase hover:text-[#967BB6]">beauty</a>
+        <a href="/" class="uppercase hover:text-[#967BB6]">Hair</a>
+        <a href="/" class="uppercase hover:text-[#967BB6]">Miscellaneous</a>
+        <a href="/" class="uppercase hover:text-[#967BB6]">!Sale</a>
+    </div>
+
+    <div class="desktop-category-list-items flex items-center gap-[2.5vw] relative z-50 md:px-[50px] lg:px-[100px] px-[25px]">
+        <% if(categories.length> 0){ %>
+            <% categories.forEach(category=> { %>
+                <div class="desktop-menu-item cursor-pointer">
+                    <div class="flex items-center h-[35px] hover:text-[#967BB6]">
+                        <%= category.name %>
+                        <i class="ri-arrow-right-s-line text-lg "></i>
+                    </div>
+                    <% if( category.subcategories.length> 0){ %>
+                        <div
+                            class="desktop-menu-subcategory w-[100%] hidden absolute top-[40px] left-0 max-h-[30vh] flex-wrap px-4 py-6 rounded-xl shadow-sm shadow-zinc-400 bg-white">
+                            <% category.subcategories.forEach(subcategory=> { %>
+                                <a class="desktop-menu-list-subcategory-item hover:text-blue-500 hover:bg-[#EBF6F5] px-3 py-1 flex justify-between w-1/2"
+                                    href="/<%= category._id %>/<%= subcategory._id %> ">
+                                    <p>
+                                        <%= subcategory.name %>
+                                    </p>
+                                    <p>
+                                        <%= subcategory.products.length %>
+                                    </p>
+                                </a>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+
+</div>
+
+<div class="login-register hidden max-w-[450px] w-[450px] z-50 bg-white min-h-[100vh] fixed top-0 right-[-450px] px-[20px]" style="box-shadow: -14px 0px 79px 0px #00000081;">
+
+    <div class="header text-2xl py-[25px] bg-white flex justify-between items-center border-b-[1px] border-[#E2E2E2]">
+        <h1 class="font-[merriweather] text-[#191717]">My Account</h1>
+        <i class="ri-close-large-line cursor-pointer text-[#616161]"></i>
+    </div>
+
+    <div class="flex flex-col justify-center items-center gap-[20px] py-[50px]">
+        <h1 class="font-[merriweather] text-[28px] text-center text-[#191717] px-[40px]">Returning Customer / New Customer</h1>
+        <div class="buttons flex justify-between items-center gap-[20px] w-full px-[30px]">
+            <a href="/login" class="login    py-[12px] text-center w-full bg-[#967BB6] text-white rounded-[58px]">Login</a>
+            <a href="/register" class="register py-[12px] text-center w-full bg-[#967BB6] text-white rounded-[58px]">Register</a>
+        </div>
+        <p class="text-[#616161] text-[14px] text-center">
+            By creating an account on our website you will be able to shop faster, be up to date on an orders status, and keep track of the orders you have previously made. 
+        </p>
+    </div>
+
+</div>
+
+<div class="cart hidden max-w-[450px] w-[450px] z-50 bg-white min-h-[100vh] fixed top-0 right-[-450px] px-[20px]" style="box-shadow: -14px 0px 79px 0px #00000081;" >
+
+    <div class="header text-2xl py-[25px] bg-white flex justify-between items-center border-b-[1px] border-[#E2E2E2]">
+        <h1 class="font-[merriweather] text-[#191717]">Cart</h1>
+        <i class="ri-close-large-line cursor-pointer text-[#616161]"></i>
+    </div>
+
+    <div class="products bg-white py-[30px] flex flex-col gap-[30px] border-b-[1px] border-[#E2E2E2]">
+
+        <div class="product flex w-full">
+
+            <i class="delete ri-close-line cursor-pointer"></i>
+
+            <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
+
+                <img src="/images/products/cart-product.png" alt="" class="image w-[75px] h-[75px] ">
+
+                <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
+                    <p class="text-[#191717] pr-[100px]">Asterwood Matrixyl 3000</p>
+                    <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
+                        <i class="ri-subtract-line text-[#0000002B]"></i>
+                        <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">1</p>
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="price font-[merriweather] bg-white w-[100px]">$29.0</div>
+
+        </div>
+
+        <div class="product flex w-full">
+
+            <i class="delete ri-close-line cursor-pointer"></i>
+
+            <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
+
+                <img src="/images/products/cart-product.png" alt="" class="image w-[75px] h-[75px] ">
+
+                <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
+                    <p class="text-[#191717] pr-[100px]">Asterwood Matrixyl 3000</p>
+                    <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
+                        <i class="ri-subtract-line"></i>
+                        <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">9</p>
+                        <i class="ri-add-line text-[#0000002B]"></i>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="price font-[merriweather] bg-white w-[100px]">$29.0</div>
+
+        </div>
+
+        <div class="product flex w-full">
+
+            <i class="delete ri-close-line"></i>
+
+            <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
+
+                <img src="/images/products/cart-product.png" alt="" class="image w-[75px] h-[75px] ">
+
+                <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
+                    <p class="text-[#191717] pr-[100px]">Asterwood Matrixyl 3000</p>
+                    <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
+                        <i class="ri-subtract-line ""></i>
+                        <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">5</p>
+                        <i class="ri-add-line"></i>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="price font-[merriweather] bg-white w-[100px]">$29.0</div>
+
+        </div>
+
+    </div>
+
+    <div class="calculations bg-white py-[30px] gap-[30px]">
+
+        <div class="all-charges flex flex-col gap-[10px] border-b-[1px] border-[#E2E2E2] pb-[30px]">
+
+            <div class="flex justify-between">
+                <p class="text-[#616161]">Subtotal</p>
+                <p class="text-[#191717] font-[merriweather]">$129.00</p>
+            </div>
+
+            <div class="flex justify-between">
+                <p class="text-[#616161]">Shipping</p>
+                <p class="text-[#616161]">Calculated Later</p>
+            </div>
+
+            <div class="flex justify-between">
+                <p class="text-[#616161]">Tax</p>
+                <p class="text-[#191717] font-[merriweather]">$5.00</p>
+            </div>
+
+        </div>
+
+        <div class="total pt-[30px]">
+            <div class="flex justify-between">
+                <p class="text-[#191717]">Total</p>
+                <p class="text-[#191717] font-[merriweather]">$144.00</p>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="checkout bg-[#967BB6] text-white w-full py-[12px] rounded-[58px]">Proceed To Checkout</button>
+
+</div>
+
+
+
+<% if (errorMessage) { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showToast('<%= errorMessage %>', '<%= messageType %>');
+        });
+    </script>
+<% } %>
+

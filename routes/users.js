@@ -4,45 +4,58 @@ const Address = require('../models/address.model');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 var router = express.Router();
+const errorHandler = require('../middleware/errorHandler');
+
+router.use(errorHandler);
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 
 router.post('/register', isLogedOut, async (req, res, next) => {
   try {
     const { password, firstName, lastName, email, phone } = req.body;
-    if (!password || !firstName || !lastName || !phone || !email) throw new Error('All fields are required.');
-    const user = await User.register(new User({ firstName, lastName, email, phone }), password);
-    res.json({ status: true, message: 'User registered successfully.' })
+
+    if (!password || !firstName || !lastName || !phone || !email) {
+      return res.status(400).json({ message: 'All fields are required.', type: 'error' });
+    }
+
+    const user = new User({ firstName, lastName, email, phone });
+    await User.register(user, password);
+
+    res.status(200).json({ message: 'User registered successfully.', type: 'success', redirect: '/login' });
   } catch (err) {
-    console.error(err);
-    res.json({ status: false, message: err.message })
+    if (err.name === 'MongoServerError' && err.code === 11000) {
+      res.status(400).json({ message: 'Email is already registered.', type: 'error' });
+    } else {
+      console.error(err);
+      res.status(500).json({ message: 'Server error occurred during registration.', type: 'error' });
+    }
   }
 });
 
 router.post('/login', isLogedOut, async (req, res, next) => {
   try {
     passport.authenticate('local', (err, user, info) => {
-      if (err) throw err;
-      if (!user) return res.json({ status: false, message: 'Invalid credentials' });
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Server error', type: 'error' });
+      }
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid email or password.', type: 'error' });
+      }
       req.logIn(user, (err) => {
-        if (err) throw err;
-        res.json({ status: true, message: 'Login successful', user: user });
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ message: 'Server error', type: 'error' });
+        }
+        if (user.role !== 'admin') {
+          return res.status(200).json({ message: 'Login successful', type: 'success', redirect: '/' });
+        }
+        res.status(200).json({ message: 'Login successful', type: 'success', redirect: '/admin/dashboard' });
       });
     })(req, res, next);
   } catch (err) {
     console.error(err);
-    res.json({ status: false, message: err.message });
-  }
-});
-
-router.get('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) throw new Error('User not found.');
-    res.json({ status: true, user });
-  } catch (err) {
-    console.error(err);
-    res.json({ status: false, message: err.message });
+    res.status(500).json({ message: 'Server error occurred during login.', type: 'error' });
   }
 });
 
@@ -132,14 +145,14 @@ function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/user/login');
+  res.status(401).json({ message: 'You need to login first.', type: 'warning', redirect: '/login' });
 }
 
 function isLogedOut(req, res, next) {
   if (!req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/user/profile');
+  res.status(401).json({ message: 'You are already logged in.', type: 'warning', redirect: '/' })
 }
 
 

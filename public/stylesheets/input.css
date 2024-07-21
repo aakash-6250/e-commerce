@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: --webkit-fill-available;
+    font-family: 'Open Sans', sans-serif;
+}
+
+@layer base {
+    @font-face {
+        font-family: 'lato';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(/fonts/Lato.woff2) format('woff2');
+    }
+}
+
+@layer base {
+    @font-face {
+        font-family: 'merriweather';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(/fonts/Merriweather.woff2) format('woff2');
+    }
+}
+
+@layer base {
+    @font-face {
+        font-family: 'jost';
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url(/fonts/Jost.woff2) format('woff2');
+    }
+}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    <link rel="preload" href="/stylesheets/style.css" as="style">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body class="font-[lato] overflow-x-hidden">
+
+    <% if (errorMessage) { %>
+      <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              showToast('<%= errorMessage %>', '<%= messageType %>');
+          });
+      </script>
+  <% } %>
