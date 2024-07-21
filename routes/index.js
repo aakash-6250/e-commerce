@@ -5,10 +5,14 @@ const errorHandler = require('../middleware/errorHandler');
 
 router.use(errorHandler);
 
+let views = 0;
+
 
 router.get('/', async function (req, res, next) {
   try {
     const categories = await Category.find();
+
+    console.log(views++);
 
     res.render('index', { user: req.user, categories });
   } catch (error) {
