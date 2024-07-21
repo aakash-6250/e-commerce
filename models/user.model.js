@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     }, { timestamps: true }
 );
 
-userSchema.plugin(plm, { usernameField: 'email' })
+userSchema.plugin(plm, { usernameField: 'email' });
 
-module.exports = mongoose.model('User', userSchema)
+
+module.exports = mongoose.model('User', userSchema);

@@ -1,0 +1,101 @@
+Name,Category,Subcategory,Price,Stock,Description
+Paracetamol Tablets,Medicine,Pain Relief,50,100,Pain relief and fever reducer.
+Ibuprofen Tablets,Medicine,Pain Relief,60,150,Relieves pain and inflammation.
+Cough Syrup,Medicine,Cough & Cold,70,200,Soothes cough and throat irritation.
+Antibiotic Cream,Medicine,First Aid,80,120,Treats minor skin infections.
+Aspirin Tablets,Medicine,Pain Relief,40,180,Reduces pain and fever.
+Vitamin C Tablets,Wellness,Supplements,100,250,Boosts immune system.
+Multivitamin Capsules,Wellness,Supplements,150,200,Provides essential vitamins and minerals.
+Probiotic Supplements,Wellness,Supplements,200,150,Supports digestive health.
+Green Tea,Wellness,Herbal,50,300,Rich in antioxidants.
+Omega-3 Fish Oil,Wellness,Supplements,400,150,Supports heart health.
+Face Wash,Beauty,Skincare,80,300,Cleanses and refreshes skin.
+Moisturizer,Beauty,Skincare,100,250,Hydrates and nourishes skin.
+Sunscreen,Beauty,Skincare,120,200,Protects against UV rays.
+Lip Balm,Beauty,Skincare,50,400,Moisturizes and protects lips.
+Hair Shampoo,Beauty,Haircare,150,180,Cleanses and strengthens hair.
+Baby Lotion,Baby Care,Skincare,60,300,Gentle moisturizer for baby skin.
+Diaper Rash Cream,Baby Care,Skincare,70,200,Soothes and protects baby's skin.
+Baby Shampoo,Baby Care,Haircare,90,180,Mild and gentle on baby hair.
+Baby Powder,Baby Care,Hygiene,50,250,Keeps baby skin dry and fresh.
+Infant Formula,Baby Care,Nutrition,400,100,Nutritional supplement for babies.
+Cold and Flu Capsules,Health Condition,Cough & Cold,120,150,Relieves cold and flu symptoms.
+Allergy Relief Tablets,Health Condition,Allergy,80,200,Reduces allergy symptoms.
+Antacid Tablets,Health Condition,Digestion,60,180,Relieves heartburn and indigestion.
+Blood Pressure Monitor,Health Condition,Monitoring,1200,30,Monitors blood pressure levels.
+Glucose Monitor,Health Condition,Monitoring,2500,20,Tracks blood sugar levels.
+Protein Powder,Fitness,Nutrition,800,150,Supports muscle growth.
+Dumbbells,Fitness,Equipment,1200,50,Strength training weights.
+Yoga Mat,Fitness,Accessories,500,100,Provides comfort during yoga.
+Resistance Bands,Fitness,Accessories,300,200,For strength training exercises.
+Treadmill,Fitness,Equipment,15000,10,Indoor running and walking machine.
+Hand Sanitizer,Personal Hygiene,Hygiene,45,500,Kills 99.9% of germs and bacteria.
+Toothpaste,Personal Hygiene,Dental Care,60,400,Promotes oral hygiene.
+Toothbrush,Personal Hygiene,Dental Care,20,600,Cleans teeth and gums.
+Shaving Cream,Personal Hygiene,Shaving,80,300,For a smooth shave.
+Razor Blades,Personal Hygiene,Shaving,100,400,Provides a close shave.
+Vitamin D3 Capsules,Wellness,Supplements,200,200,Boosts immune system and bone health.
+Zinc Supplements,Wellness,Supplements,150,180,Supports immune function.
+Calcium Tablets,Wellness,Supplements,120,250,Strengthens bones and teeth.
+Herbal Tea,Wellness,Herbal,60,300,Natural remedy for relaxation.
+Aloe Vera Gel,Wellness,Herbal,100,200,Soothes skin and promotes healing.
+Anti-Dandruff Shampoo,Beauty,Haircare,180,150,Treats dandruff and itchy scalp.
+Hair Conditioner,Beauty,Haircare,120,200,Nourishes and detangles hair.
+Facial Scrub,Beauty,Skincare,90,180,Exfoliates and smoothens skin.
+Eye Cream,Beauty,Skincare,200,150,Reduces dark circles and puffiness.
+Nail Polish,Beauty,Makeup,50,250,Colorful and glossy nail finish.
+Baby Wipes,Baby Care,Hygiene,70,300,Soft and gentle cleaning wipes.
+Baby Bottle,Baby Care,Feeding,120,150,Safe and easy feeding bottle.
+Baby Pacifier,Baby Care,Feeding,40,250,Soothes and comforts babies.
+Teething Gel,Baby Care,Skincare,60,200,Relieves teething pain.
+Baby Blanket,Baby Care,Accessories,200,100,Soft and cozy baby blanket.
+Cold Sore Treatment,Health Condition,Cold & Flu,100,150,Reduces cold sore duration.
+Antifungal Cream,Health Condition,Skin,80,200,Treats fungal infections.
+Heartburn Relief,Health Condition,Digestion,70,180,Relieves heartburn symptoms.
+Inhaler,Health Condition,Respiratory,400,50,Relieves asthma symptoms.
+Cholesterol Test Kit,Health Condition,Monitoring,1500,30,Tracks cholesterol levels.
+BCAA Powder,Fitness,Nutrition,600,100,Supports muscle recovery.
+Jump Rope,Fitness,Accessories,200,200,For cardio exercises.
+Pull-Up Bar,Fitness,Equipment,800,50,Strength training bar.
+Kettlebells,Fitness,Equipment,1000,60,Strength training weights.
+Exercise Bike,Fitness,Equipment,10000,15,Indoor cycling machine.
+Feminine Wash,Personal Hygiene,Hygiene,80,200,Gentle and effective intimate care.
+Deodorant,Personal Hygiene,Hygiene,60,300,Provides long-lasting freshness.
+Shower Gel,Personal Hygiene,Hygiene,90,250,Cleanses and refreshes skin.
+Mouthwash,Personal Hygiene,Dental Care,70,200,Promotes oral hygiene.
+Electric Toothbrush,Personal Hygiene,Dental Care,300,100,Effective teeth cleaning.
+Iron Supplements,Wellness,Supplements,180,150,Prevents and treats iron deficiency.
+Magnesium Tablets,Wellness,Supplements,160,180,Supports muscle and nerve function.
+Echinacea Capsules,Wellness,Herbal,120,200,Boosts immune system.
+Chamomile Tea,Wellness,Herbal,50,250,Promotes relaxation and sleep.
+Turmeric Capsules,Wellness,Herbal,140,180,Anti-inflammatory benefits.
+Anti-Aging Cream,Beauty,Skincare,300,120,Reduces signs of aging.
+Makeup Remover,Beauty,Skincare,90,200,Gently removes makeup.
+Liquid Foundation,Beauty,Makeup,200,150,Provides smooth and even skin tone.
+Mascara,Beauty,Makeup,120,180,Enhances eyelashes.
+Blush,Beauty,Makeup,100,200,Adds color to cheeks.
+Baby Oil,Baby Care,Skincare,50,300,Moisturizes and soothes baby skin.
+Baby Hair Brush,Baby Care,Accessories,30,200,Gentle on baby's scalp.
+Baby Swaddle,Baby Care,Accessories,150,100,Comfortable and secure swaddling.
+Diapers,Baby Care,Hygiene,300,150,High absorbency and leak protection.
+Baby Food,Baby Care,Nutrition,250,120,Nutritional baby food.
+Cough Lozenges,Health Condition,Cough & Cold,60,200,Soothes sore throat.
+Eczema Cream,Health Condition,Skin,150,100,Treats eczema symptoms.
+Constipation Relief,Health Condition,Digestion,80,150,Relieves constipation.
+Nasal Spray,Health Condition,Respiratory,90,180,Clears nasal congestion.
+Digital Thermometer,Health Condition,Monitoring,150,50,Measures body temperature accurately.
+Creatine Powder,Fitness,Nutrition,500,150,Enhances muscle strength.
+Exercise Ball,Fitness,Accessories,400,100,For stability and core exercises.
+Weightlifting Belt,Fitness,Accessories,600,80,Supports lower back during lifts.
+Rowing Machine,Fitness,Equipment,12000,10,Full-body workout machine.
+Elliptical Trainer,Fitness,Equipment,20000,8,Low-impact cardio machine.
+Hand Wash,Personal Hygiene,Hygiene,40,500,Kills germs and bacteria.
+Body Lotion,Personal Hygiene,Hygiene,70,300,Moisturizes and nourishes skin.
+Hand Cream,Personal Hygiene,Hygiene,60,250,Hydrates and softens hands.
+Foot Cream,Personal Hygiene,Hygiene,80,200,Softens and heals cracked feet.
+Hair Oil,Personal Hygiene,Haircare,120,180,Nourishes and strengthens hair.
+Folic Acid Tablets,Wellness,Supplements,100,150,Supports prenatal health.
+Ginkgo Biloba Capsules,Wellness,Herbal,200,100,Enhances cognitive function.
+Lavender Oil,Wellness,Herbal,150,120,Promotes relaxation and stress relief.
+Rosehip Oil,Wellness,Herbal,180,110,Nourishes and rejuvenates skin.
+Ginseng Capsules,Wellness,Herbal,250,80,Boosts energy and vitality.

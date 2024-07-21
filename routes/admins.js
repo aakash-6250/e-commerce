@@ -6,6 +6,17 @@ var router = express.Router();
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 
+router.get('/dashboard', isLoggedIn, async (req, res, next) => {
+    try {
+        res.render('admin/dashboard', { user: req.user });
+    } catch (error) {
+        console.error(error);
+        req.session.errorMessage = error.message;
+        req.session.messageType = "error";
+        res.redirect(req.headers.referer || '/');
+    }
+});
+
 router.post('/add-admin', isLoggedIn, async (req, res, next) => {
     try {
         const { password, firstName, lastName, email, phone } = req.body;
@@ -28,23 +39,6 @@ router.post('/add-admin/secret-token-method', isLogedOut, async (req, res, next)
     } catch (err) {
         console.error(err);
         res.json({ status: false, message: err.message })
-    }
-});
-
-router.post('/login', isLogedOut, async (req, res, next) => {
-    try {
-        passport.authenticate('local', (err, user, info) => {
-            if (err) throw err;
-            if (!user) return res.json({ status: false, message: 'Invalid credentials' });
-            if (user.role !== 'admin') return res.json({ status: false, message: 'Invalid credentials' });
-            req.logIn(user, (err) => {
-                if (err) throw err;
-                res.json({ status: true, message: 'Login successful', user: user });
-            });
-        })(req, res, next);
-    } catch (err) {
-        console.error(err);
-        res.json({ status: false, message: err.message });
     }
 });
 
@@ -98,33 +92,41 @@ router.post('/:id/update', isLoggedIn, async (req, res, next) => {
     }
 });
 
-0
-router.post('/logout', isLoggedIn, async (req, res, next) => {
-    try {
-        req.logout();
-        res.json({ status: true, message: 'Logout successful' });
-    } catch (err) {
-        console.error(err);
-        res.json({ status: false, message: err.message });
-    }
-});
-
 
 
 
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'admin') {
+      return next();
+    }
+    req.session.errorMessage = "You need to login first";
+    req.session.messageType = "error";
+    res.redirect(req.headers.referer || '/');
+  }
+  
+  function isLogedOut(req, res, next) {
+    if (!req.isAuthenticated()) {
+      return next();
+    }
+    req.session.errorMessage = "You are already logged in.";
+    req.session.messageType = "error";
+    res.redirect(req.headers.referer || '/');
+  }
+
+function isLoggedInForAPI(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
         return next();
     }
-    res.redirect('/admin/login');
+    res.status(401).json({ message: 'You need to login first.', type: 'warning', redirect: '/login' });
 }
 
-function isLogedOut(req, res, next) {
+function isLogedOutForAPI(req, res, next) {
     if (!req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/admin/dashboard');
+    res.status(401).json({ message: 'You are already logged in.', type: 'warning', redirect: '/' })
 }
+
 
 module.exports = router;
