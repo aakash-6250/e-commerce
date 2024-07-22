@@ -305,6 +305,49 @@ function desktopCartAnimation() {
 
 }
 
+function mobileCartAnimation() {
+    const main = document.querySelector('main')
+    const cartBtn = document.querySelector('.mobile-bottom-section .cart-btn');
+    const cart = document.querySelector('.cart');
+    const cartCloseBtn = document.querySelector('.cart .header .ri-close-large-line');
+
+    cartBtn.addEventListener('click', () => {
+        cart.classList.remove("hidden");
+        gsap.to(cart, {
+            x: '-450px',
+            duration: 0.5,
+            ease: 'power2.out'
+        });
+    });
+
+    cartCloseBtn.addEventListener('click', (e) => {
+        if (e.target === cartCloseBtn) {
+            gsap.to(cart, {
+                x: '100%',
+                duration: 0.5,
+                ease: 'power2.in',
+                onComplete: () => {
+                    cart.classList.add("hidden");
+                }
+            });
+        }
+    });
+
+    main.addEventListener('click', (e) => {
+        if (!cart.contains(e.target) && e.target !== cartBtn) {
+            gsap.to(cart, {
+                x: '100%',
+                duration: 0.5,
+                ease: 'power2.in',
+                onComplete: () => {
+                    cart.classList.add("hidden");
+                }
+            });
+        }
+    });
+
+}
+
 function shopPageCheckboxAnimation() {
     const filterHeaders = document.querySelectorAll('.filter-header');
     const checkboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
@@ -346,7 +389,7 @@ function shopPageCheckboxAnimation() {
 
 function loginRegisterAnimation() {
     const main = document.querySelector('main')
-    const accountBtn = document.querySelector('.desktop-nav .account-btn');
+    const accountBtn = document.querySelector(' .account-btn');
     const loginRegister = document.querySelector('.login-register');
     const loginRegisterCloseBtn = document.querySelector('.login-register .header .ri-close-large-line');
 
@@ -450,6 +493,7 @@ $(document).ready(function () {
     factsScroller();
     customerReviewSlider();
     desktopCartAnimation();
+    mobileCartAnimation();
     shopPageCheckboxAnimation();
     loginRegisterAnimation();
 
