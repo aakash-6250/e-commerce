@@ -12,7 +12,7 @@ router.get('/', async function (req, res, next) {
   try {
     const categories = await Category.find();
 
-    console.log(views++);
+    console.log('views :', views++)
 
     res.render('index', { user: req.user, categories });
   } catch (error) {
