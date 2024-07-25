@@ -1,0 +1,40 @@
+<%- include('../partials/header') %>
+
+<%- include('../partials/sidebar') %>
+
+<main class="relative bg-[#F2F7FB] dark:bg-[#0F172A] w-full pb-[50px]">
+    <%- include('../partials/navbar') %>
+    
+    <div class="container w-full px-6 py-8 flex flex-col gap-[30px] m-auto">
+        <h1 class="font-[merriweather] text-2xl font-bold">Add Single Product</h1>
+        
+        <form id="add-product-form" class="bg-white dark:bg-[#1E293B] rounded-2xl w-full min-w-[300px] p-5 flex flex-col gap-[20px] justify-center items-center">
+
+            <div class="w-full flex flex-col gap-4">
+
+                <input type="text" name="name" id="name" placeholder="Product Name" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" required>
+
+                <textarea name="description" id="description" placeholder="Description" rows="3" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" required></textarea>
+
+                <input type="text" name="price" id="price" placeholder="Price" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600 " required>
+
+                <input type="text" name="category" id="category" placeholder="Category" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" required>
+
+                <input type="text" name="subcategory" id="subcategory" placeholder="Subcategory" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" required>
+
+                <input type="text" name="stock" id="stock" placeholder="Stock" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600 " required>
+
+                <input type="text" name="brand" id="brand" placeholder="Brand" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" required>
+
+            </div>
+
+            <button type="submit" class="submit-btn px-[24px] py-[12px] rounded-[58px] cursor-pointer bg-blue-600 text-white">Add Product</button>
+        </form>
+    </div>
+
+    <footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center">
+        <p class="text-center text-zinc-600">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-blue-600" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
+    </footer>
+</main>
+
+<%- include('../partials/footer') %>

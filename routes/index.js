@@ -1,5 +1,6 @@
 var express = require('express');
 const Category = require('../models/category.model');
+const Product = require('../models/product.model');
 var router = express.Router();
 const errorHandler = require('../middleware/errorHandler');
 
@@ -11,10 +12,14 @@ let views = 0;
 router.get('/', async function (req, res, next) {
   try {
     const categories = await Category.find();
-
+    const featured = await Product.find()
+    .sort({ updatedAt: -1 })
+    .limit(8)
+    .populate('category')
+    .exec();
     console.log('views :', views++)
 
-    res.render('index', { user: req.user, categories });
+    res.render('index', { user: req.user, categories, featured });
   } catch (error) {
     console.error(error);
     req.session.errorMessage = error.message;
@@ -74,6 +79,77 @@ router.get('/account', isLoggedIn, async function (req, res, next) {
   }
 });
 
+
+
+// admin routes
+
+router.get('/admin/dashboard', isLoggedInAdmin, async (req, res, next) => {
+  try {
+      res.render('admin/dashboard', { user: req.user });
+  } catch (error) {
+      console.error(error);
+      req.session.errorMessage = error.message;
+      req.session.messageType = "error";
+      res.redirect(req.headers.referer || '/');
+  }
+});
+
+router.get('/admin/products/', isLoggedInAdmin, async (req, res, next) => {
+  try {
+      res.render('admin/product/products', { user: req.user });
+  } catch (error) {
+      console.error(error);
+      req.session.errorMessage = error.message;
+      req.session.messageType = "error";
+      res.redirect(req.headers.referer || '/');
+  }
+});
+
+router.get('/admin/product/add', isLoggedInAdmin, async (req, res, next) => {
+  try {
+      res.render('admin/product/addProduct', { user: req.user });
+  } catch (error) {
+      console.error(error);
+      req.session.errorMessage = error.message;
+      req.session.messageType = "error";
+      res.redirect(req.headers.referer || '/');
+  }
+});
+
+router.get('/admin/product/bulk-add', isLoggedInAdmin, async (req, res, next) => {
+  try {
+      res.render('admin/product/addProductExcel', { user: req.user });
+  } catch (error) {
+      console.error(error);
+      req.session.errorMessage = error.message;
+      req.session.messageType = "error";
+      res.redirect(req.headers.referer || '/');
+  }
+});
+
+router.get('/admin/category/add', isLoggedInAdmin, async (req, res, next) => {
+  try {
+      const categories = await Category.find();
+      res.render('admin/category/addCategory', { user: req.user, categories });
+  } catch (error) {
+      console.error(error);
+      req.session.errorMessage = error.message;
+      req.session.messageType = "error";
+      res.redirect(req.headers.referer || '/');
+  }
+});
+
+router.get('/admin/categories', isLoggedInAdmin, async (req, res, next) => {
+  try {
+      res.render('admin/category/categories', { user: req.user });
+  } catch (error) {
+      console.error(error);
+      req.session.errorMessage = error.message;
+      req.session.messageType = "error";
+      res.redirect(req.headers.referer || '/');
+  }
+});
+
 router.get('/logout', isLoggedIn, async function (req, res, next) {
   req.logout(()=> {
     req.session.errorMessage = "Logout successful.";
@@ -83,6 +159,8 @@ router.get('/logout', isLoggedIn, async function (req, res, next) {
 });
 
 
+
+
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -90,6 +168,15 @@ function isLoggedIn(req, res, next) {
   req.session.errorMessage = "You need to login first";
   req.session.messageType = "error";
   res.redirect(req.headers.referer || '/');
+}
+
+function isLoggedInAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user.role === 'admin') {
+      return next();
+  }
+  req.session.errorMessage = "Unauthorized access. Admin only.";
+  req.session.messageType = "error";
+  res.redirect('/login');
 }
 
 function isLogedOut(req, res, next) {

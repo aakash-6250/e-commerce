@@ -46,11 +46,11 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use('/', indexRouter);
-app.use('/user', usersRouter);
-app.use('/admin', adminsRouter)
-app.use('/product', productsRouter)
-app.use('/cart', cartsRouter)
-app.use('/categories', categoriesRouter)
+app.use('/api/user', usersRouter);
+app.use('/api/admin', adminsRouter)
+app.use('/api/product', productsRouter)
+app.use('/api/cart', cartsRouter)
+app.use('/api/categories', categoriesRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

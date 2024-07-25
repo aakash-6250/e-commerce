@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const subcategorySchema = new mongoose.Schema(
     {
-        name: { type: String, required: [true, "Subcategory name is required"], unique: [true, "Subcategory already exists"] },
+        name: { type: String, required: [true, "Subcategory name is required"] },
         products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: [true, "Product is required"]}]
     },
     { timestamps: true }

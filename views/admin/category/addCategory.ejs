@@ -1,0 +1,66 @@
+<%- include('../partials/header') %>
+<%- include('../partials/sidebar') %>
+
+<main class="relative bg-[#F2F7FB] dark:bg-[#0F172A] w-full pb-[50px]">
+    <%- include('../partials/navbar') %>
+
+
+    <div class="container w-full px-6 py-8 flex flex-col gap-[30px] m-auto">
+        <h1 class="font-[merriweather] text-2xl font-bold">Add Category</h1>
+
+        <form id="add-category-form" class="bg-white dark:bg-[#1E293B] rounded-2xl w-full min-w-[300px] p-5 flex flex-col gap-[20px] justify-center items-center">
+            <div class="w-full flex flex-col gap-4">
+
+                <select name="categoryOption" id="categoryOption" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                    <option value="new" selected>New Category</option>
+                    <option value="existing">Existing Category</option>
+                </select>
+
+                <div id="existingCategoryContainer" class="hidden flex flex-col gap-[20px]">
+
+                    <label for="existingCategory" class="">Select Existing Category</label>
+
+                    <select name="existingCategory" id="existingCategory" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                        <% categories.forEach(function(category) { %>
+                            <option value="<%= category.name %>"><%= category.name %></option>
+                        <% }); %>
+                    </select>
+
+                    <select name="subCategoryOption" id="subCategoryOption" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                        <option value="new" selected>New Sub Category</option>
+                        <option value="existing">Existing Sub Category</option>
+                    </select>
+
+                    <div id="existingSubCategoryContainer" class="hidden flex flex-col gap-[20px]">
+
+                        <label for="existingSubCategory" class="">Select Existing Sub Category</label>
+    
+                        <select name="existingSubCategory" id="existingSubCategory" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                            <% categories.forEach(function(category) { %>
+                                <% category.subcategories.forEach(function(subCategory) { %>
+                                    <option value="<%= subCategory %>"><%= subCategory %></option>
+                                <% }); %>
+                            <% }); %>
+                        </select>
+    
+                        
+    
+                    </div>
+
+                </div>
+
+                <input type="text" name="category" id="newCategory" placeholder="New Category Name" class="newCategory mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+
+                <input type="text" name="subCategory" id="newSubCategory" placeholder="New Sub-Category Name" class="newSubcategory mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+            </div>
+
+            <button type="submit" class="submit-btn px-[24px] py-[12px] rounded-[58px] cursor-pointer bg-blue-600 text-white">Add Category</button>
+        </form>
+    </div>
+
+    <footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center">
+        <p class="text-center text-zinc-600">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-blue-600" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
+    </footer>
+</main>
+
+<%- include('../partials/footer') %>

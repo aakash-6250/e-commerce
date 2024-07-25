@@ -10,27 +10,31 @@ router.get('/', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     try {
-
         const { categoryOption, category, subCategory } = req.body;
 
-        if(!categoryOption || !category || !subCategory) throw new Error("All fields are required");
+        if (!categoryOption || !category || !subCategory) {
+            return res.status(400).json({ message: 'All fields are required', type: 'error' });
+        }
 
-        if(categoryOption === 'new') {
+        if (categoryOption === 'new') {
             const newCategory = new Category({ name: category });
             newCategory.subcategories.push({ name: subCategory });
             await newCategory.save();
-        }
-        if(categoryOption === 'existing') {
+        } else if (categoryOption === 'existing') {
             const existingCategory = await Category.findOne({ name: category });
-            if(!existingCategory) throw new Error("Category not found");
+            if (!existingCategory) {
+                return res.status(400).json({ message: 'Category not found', type: 'error' });
+            }
             existingCategory.subcategories.push({ name: subCategory });
             await existingCategory.save();
+        } else {
+            return res.status(400).json({ message: 'Invalid category option', type: 'error' });
         }
-        
-        res.redirect('/categories');
+
+        res.json({ message: 'Category added successfully', type: 'success' });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ status: false, message: err.message });
+        console.error('Error adding category:', err);
+        res.status(500).json({ message: 'Error adding category', type: 'error', error: err.message });
     }
 });
 

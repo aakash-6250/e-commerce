@@ -8,12 +8,12 @@
                     
                     <div class="header flex justify-between items-center h-[60px] border-b-[3px] border-orange-400 bg-white">
 
-                        <h1 class=" flex justify-center items-center font-[merriweather] text-[#0D5E59] text-xl">TRENDING PRODUCTS</h1>
+                        <h1 class=" flex justify-center items-center font-[merriweather] text-[#191717] text-xl">TRENDING PRODUCTS</h1>
 
                         <div class="btns relative flex flex-row gap-[15px]">
-                            <button class="prev-btn rounded-full bg-[#0D5E59] px-1 text-white"><i
+                            <button class="prev-btn rounded-full bg-[#967BB6] px-1 text-white"><i
                                     class="ri-arrow-up-s-line text-2xl  font-bold"></i></button>
-                            <button class="next-btn rounded-full bg-[#0D5E59] px-1 text-white"><i
+                            <button class="next-btn rounded-full bg-[#967BB6] px-1 text-white"><i
                                     class="ri-arrow-down-s-line text-2xl font-bold"></i></button>
                         </div>
 
@@ -199,302 +199,57 @@
                 
             </section>
 
-            <section class="featured my-[80px] px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px]">
+            <% if(featured.length > 0){ %>
+                <section class="featured my-[80px] px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px]">
 
-                <div class="max-w-[1142px] m-auto flex flex-col justify-center items-center gap-[40px]">
-
-                    <h1 class="text-[28px] text-[#191717] w-max m-auto font-[merriweather] ">Featured Products</h1>
-
-                    <div class="products max-w-[1142px] w-full m-auto flex justify-center flex-wrap gap-[20px]">
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
+                    <div class="max-w-[1142px] m-auto flex flex-col justify-center items-center gap-[40px]">
+    
+                        <h1 class="text-[28px] text-[#191717] w-max m-auto font-[merriweather] ">Featured Products</h1>
+    
+                        <div class="products max-w-[1142px] w-full m-auto flex justify-center flex-wrap gap-[20px]">    
+                            
+                            <% featured.forEach(product =>{ %>
+    
+                                <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
+    
+                                    <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/product/product-bg.svg')] flex justify-center items-center">
+        
+                                        <img loading="lazy" src="<%= product.images[0] %>" alt="">
+                                        
+                                        <% if(product.sale > 0){ %>
+                                            <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+                                        <% } %>
+        
+                                        <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+        
+                                    </div>
+        
+                                    <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
+        
+                                        <a href="/product/<%= (product.slug) ? product.slug : product._id %> " class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                                            <%= product.name %>
+                                        </a>
+        
+                                        <div class="product-price flex justify-center items-center gap-[10px]">
+                                            <% if(product.sale > 0){ %>
+                                                <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$ <%= product.price %></strike>
+                                                <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$ <%= product.price*((100-product.sale)/100) %></p>
+                                            <% }else{ %>
+                                            <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$ <%= product.price %></p>
+                                            <% } %>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+    
+                            <% }) %>
+    
                         </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
-
-                            <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/products/product-bg.svg')] flex justify-center items-center">
-
-                                <img loading="lazy" src="/images/products/product.svg" alt="">
-
-                                <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
-
-                                <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
-
-                            </div>
-
-                            <div class="product-details h-[82px] flex  flex-col justify-evenly items-center w-full text-center">
-
-                                <a href="/hello" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                                    Asterwood Matrixyl 3000
-                                </a>
-
-                                <div class="product-price flex justify-center items-center gap-[10px]">
-                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$30.00</strike>
-                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$24.50</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        
-
+    
+                        <a href="/shop" class="px-[24px] py-[12px] rounded-[58px] bg-[#967BB6] m-auto text-white">View More Products</a>
                     </div>
-
-                    <button class="px-[24px] py-[12px] rounded-[58px] bg-[#967BB6] m-auto text-white">View More Products</button>
-                </div>
-            
-            </section>
-
-            <section class="sale bg-[#FBF5F0] px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px]">
-
-                <div class="max-w-[1142px] m-auto py-[80px] flex flex-col xl:flex-row justify-between items-center gap-[20px]">
-
-                    <div class="left-section min-w-[360px] h-[670px] bg-[url('/images/banners/sale-bg.svg')] bg-cover bg-no-repeat bg-center hidden xl:block">
-
-                        <h1 class="text-center text-[#191717] text-[28px] mt-[30px] font-[merriweather] ">Summer Sale!</h1>
-    
-                        <p class="text-[#616161] px-[15px] text-center mt-[30px]">Lorem ipsum dolor sit amet, consectetur adipiscing elis erat morbi nam convallis.</p>
-    
-                        <button class="py-[12px] px-[24px] block m-auto  mt-[30px] bg-[#967BB6] text-white rounded-[58px]">Explore More</button>
-    
-                    </div>
-                    
-                    <h1 class="font-[merriweather] text-[28px] text-center xl:hidden">Summer Sale!</h1>
-    
-                    <div class="right-section max-w-[1142px] xl:max-w-[750px] min-h-[670px] flex justify-between items-center flex-wrap gap-[28px]  ">
-    
-    
-                        <div class="sale-product m-auto flex flex-col max-w-[360px] h-[320px]  ">
-    
-                            <img loading="lazy" src="/images/products/sale-product-1.svg" alt="sale-product">
-    
-                            <div class="sale-product-details h-full flex flex-col justify-end gap-[5px] items-center">
-    
-                                <p class="text-lg text-[#191717] ">Hair Produts</p>
-    
-                                <p class="text-lg text-[#967BB6] font-[merriweather] ">upto 20% off</p>
-    
-                            </div>
-    
-                        </div>
-    
-                        <div class="sale-product flex flex-col m-auto max-w-[360px] h-[320px]  ">
-    
-                            <img loading="lazy" src="/images/products/sale-product-2.svg" alt="sale-product">
-    
-                            <div class="sale-product-details h-full flex flex-col justify-end gap-[5px] items-center">
-    
-                                <p class="text-lg text-[#191717] ">Skin Care</p>
-    
-                                <p class="text-lg text-[#967BB6] font-[merriweather] ">upto 50% off</p>
-    
-                            </div>
-    
-                        </div>
-    
-                        <div class="sale-product flex flex-col m-auto max-w-[360px] h-[320px]  ">
-    
-                            <img loading="lazy" src="/images/products/sale-product-3.svg" alt="sale-product">
-    
-                            <div class="sale-product-details h-full flex flex-col justify-end gap-[5px] items-center">
-    
-                                <p class="text-lg text-[#191717] ">Threads</p>
-    
-                                <p class="text-lg text-[#967BB6] font-[merriweather] ">upto 10% off</p>
-    
-                            </div>
-    
-                        </div>
-    
-                        <div class="sale-product flex flex-col m-auto max-w-[360px] h-[320px]  ">
-    
-                            <img loading="lazy" src="/images/products/sale-product-4.svg" alt="sale-product">
-    
-                            <div class="sale-product-details h-full flex flex-col justify-end gap-[5px] items-center">
-    
-                                <p class="text-lg text-[#191717] ">Fillers</p>
-    
-                                <p class="text-lg text-[#967BB6] font-[merriweather] ">upto 15% off</p>
-    
-                            </div>
-    
-                        </div>
-    
-                    </div>
-                </div>
-
-            </section>
+                
+                </section>
+            <% } %>
 
             <section class="about-us bg-zinc-50 px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto py-[80px]">
 

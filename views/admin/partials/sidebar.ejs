@@ -1,0 +1,77 @@
+<div class="sidebar shadow-md w-0 dark:bg-[#1E293B] flex flex-col">
+
+    <div class="header flex justify-between items-center h-[70px] border-b-[1px] border-zinc-100 px-4 bg-white dark:bg-[#1E293B] dark:shadow-zinc-700">
+        <a href="/" class="text-4xl font-bold font-[merriweather]">Geldix</a>
+        <i class="side-bar-close-btn ri-menu-fold-3-line text-2xl cursor-pointer"></i>
+    </div>  
+    
+    <div class="sidebar-menu-item-list flex flex-col py-2">
+        <div class="sidebar-menu-item py-2">
+            <div class="header border-l-[5px] px-4 border-transparent hover:border-[#2275FC]">
+                <div class="flex items-center justify-between h-[40px] bg-[#F2F7FB] dark:bg-[#1E314F] rounded-[10px] px-2 cursor-pointer">
+                    <div class="flex gap-[5px]">
+                        <i class="ri-layout-grid-fill text-xl"></i>
+                        <p>Dashboard</p>
+                    </div>
+                    <i class="arrow ri-arrow-down-s-line text-xl"></i>
+                </div>
+            </div>
+            <div class="options h-0 overflow-hidden flex-col gap-[5px] px-7">
+                <div class="option flex gap-[5px] items-center hover:text-[#2275FC]">
+                    <i class="ri-shining-line text-zinc-400 text-[8px]"></i>
+                    <a class="w-full" href="/admin/dashboard" onclick="storeSidebarState(event, 'dashboard')">Home</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-menu-item py-2">
+            <div class="header border-l-[5px] px-4 border-transparent hover:border-[#2275FC]">
+                <div class="flex items-center justify-between h-[40px] bg-[#F2F7FB] dark:bg-[#1E314F] rounded-[10px] px-2 cursor-pointer">
+                    <div class="flex gap-[5px]">
+                        <i class="ri-shopping-cart-fill text-xl"></i>
+                        <p>Ecommerce</p>
+                    </div>
+                    <i class="arrow ri-arrow-down-s-line text-xl"></i>
+                </div>
+            </div>
+            <div class="options h-0 overflow-hidden flex-col gap-[5px] px-7">
+                <div class="option flex gap-[5px] items-center hover:text-[#2275FC]">
+                    <i class="ri-shining-line text-zinc-400 text-[8px]"></i>
+                    <a class="w-full" href="/admin/products" onclick="storeSidebarState(event, 'ecommerce')">Product list</a>
+                </div>
+                <div class="option flex gap-[5px] items-center hover:text-[#2275FC]">
+                    <i class="ri-shining-line text-zinc-400 text-[8px]"></i>
+                    <a class="w-full" href="/admin/product/add" onclick="storeSidebarState(event, 'ecommerce')">Add product</a>
+                </div>
+                <div class="option flex gap-[5px] items-center hover:text-[#2275FC]">
+                    <i class="ri-shining-line text-zinc-400 text-[8px]"></i>
+                    <a class="w-full" href="/admin/product/bulk-add" onclick="storeSidebarState(event, 'ecommerce')">Add product (Excel)</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-menu-item py-2">
+            <div class="header border-l-[5px] px-4 border-transparent hover:border-[#2275FC]">
+              <div class="flex items-center justify-between h-[40px] bg-[#F2F7FB] dark:bg-[#1E314F] rounded-[10px] px-2 cursor-pointer">
+                <div class="flex gap-[5px]">
+                  <i class="ri-stack-line text-xl"></i>
+                  <p>Category</p>
+                </div>
+                <i class="arrow ri-arrow-down-s-line text-xl"></i>
+              </div>
+            </div>
+  
+            <div class="options h-0 overflow-hidden flex-col gap-[5px] px-7">
+              <div class="option flex gap-[5px] items-center hover:text-[#2275FC]">
+                <i class="ri-shining-line text-zinc-400 text-[8px]"></i>
+                <a class="w-full" href="/admin/categories" onclick="storeSidebarState(event, 'category')">Category list</a>
+              </div>
+              <div class="option flex gap-[5px] items-center hover:text-[#2275FC]">
+                <i class="ri-shining-line text-zinc-400 text-[8px]"></i>
+                <a class="w-full" href="/admin/category/add" onclick="storeSidebarState(event, 'category')">Add category</a>
+              </div>
+            </div>
+          </div>
+        <!-- Add more sidebar-menu-item elements as needed -->
+      </div>
+</div>

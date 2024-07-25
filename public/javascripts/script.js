@@ -262,18 +262,33 @@ window.addEventListener('resize', debounce(() => {
     customerReviewSlider();
 }, 200));
 
-function desktopCartAnimation() {
+function cartAnimation() {
     const main = document.querySelector('main')
-    const cartBtn = document.querySelector('.desktop-nav .cart-btn');
+    const cartBtns = document.querySelectorAll('.cart-btn');
     const cart = document.querySelector('.cart');
     const cartCloseBtn = document.querySelector('.cart .header .ri-close-large-line');
 
-    cartBtn.addEventListener('click', () => {
-        cart.classList.remove("hidden");
-        gsap.to(cart, {
-            x: '-450px',
-            duration: 0.5,
-            ease: 'power2.out'
+    cartBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            cart.classList.remove("hidden");
+            gsap.to(cart, {
+                x: '-450px',
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+        });
+
+        main.addEventListener('click', (e) => {
+            if (!cart.contains(e.target) && e.target !== btn) {
+                gsap.to(cart, {
+                    x: '100%',
+                    duration: 0.5,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        cart.classList.add("hidden");
+                    }
+                });
+            }
         });
     });
 
@@ -290,61 +305,6 @@ function desktopCartAnimation() {
         }
     });
 
-    main.addEventListener('click', (e) => {
-        if (!cart.contains(e.target) && e.target !== cartBtn) {
-            gsap.to(cart, {
-                x: '100%',
-                duration: 0.5,
-                ease: 'power2.in',
-                onComplete: () => {
-                    cart.classList.add("hidden");
-                }
-            });
-        }
-    });
-
-}
-
-function mobileCartAnimation() {
-    const main = document.querySelector('main')
-    const cartBtn = document.querySelector('.mobile-bottom-section .cart-btn');
-    const cart = document.querySelector('.cart');
-    const cartCloseBtn = document.querySelector('.cart .header .ri-close-large-line');
-
-    cartBtn.addEventListener('click', () => {
-        cart.classList.remove("hidden");
-        gsap.to(cart, {
-            x: '-450px',
-            duration: 0.5,
-            ease: 'power2.out'
-        });
-    });
-
-    cartCloseBtn.addEventListener('click', (e) => {
-        if (e.target === cartCloseBtn) {
-            gsap.to(cart, {
-                x: '100%',
-                duration: 0.5,
-                ease: 'power2.in',
-                onComplete: () => {
-                    cart.classList.add("hidden");
-                }
-            });
-        }
-    });
-
-    main.addEventListener('click', (e) => {
-        if (!cart.contains(e.target) && e.target !== cartBtn) {
-            gsap.to(cart, {
-                x: '100%',
-                duration: 0.5,
-                ease: 'power2.in',
-                onComplete: () => {
-                    cart.classList.add("hidden");
-                }
-            });
-        }
-    });
 
 }
 
@@ -389,34 +349,36 @@ function shopPageCheckboxAnimation() {
 
 function loginRegisterAnimation() {
     const main = document.querySelector('main')
-    const accountBtn = document.querySelector(' .account-btn');
+    const accountBtns = document.querySelectorAll('.account-btn');
     const loginRegister = document.querySelector('.login-register');
     const loginRegisterCloseBtn = document.querySelector('.login-register .header .ri-close-large-line');
 
-    accountBtn.addEventListener('click', () => {
-        loginRegister.classList.remove("hidden");
-        gsap.to(loginRegister, {
-            x: '-450px',
-            duration: 0.5,
-            ease: 'power2.out'
+    accountBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            loginRegister.classList.remove("hidden");
+            gsap.to(loginRegister, {
+                x: '-450px',
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+        });
+
+        main.addEventListener('click', (e) => {
+            if (!loginRegister.contains(e.target) && e.target !== btn) {
+                gsap.to(loginRegister, {
+                    x: '100%',
+                    duration: 0.5,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        loginRegister.classList.add("hidden");
+                    }
+                });
+            }
         });
     });
 
     loginRegisterCloseBtn.addEventListener('click', (e) => {
         if (e.target === loginRegisterCloseBtn) {
-            gsap.to(loginRegister, {
-                x: '100%',
-                duration: 0.5,
-                ease: 'power2.in',
-                onComplete: () => {
-                    loginRegister.classList.add("hidden");
-                }
-            });
-        }
-    });
-
-    main.addEventListener('click', (e) => {
-        if (!loginRegister.contains(e.target) && e.target !== accountBtn) {
             gsap.to(loginRegister, {
                 x: '100%',
                 duration: 0.5,
@@ -479,7 +441,7 @@ function showToast(message = "Something went wrong...", type = 'info') {
         position: 'right',
         style: {
             background: bgColor
-          },
+        },
         stopOnFocus: true,
     }).showToast();
 }
@@ -492,8 +454,7 @@ $(document).ready(function () {
     trendingProductsSlider();
     factsScroller();
     customerReviewSlider();
-    desktopCartAnimation();
-    mobileCartAnimation();
+    cartAnimation();
     shopPageCheckboxAnimation();
     loginRegisterAnimation();
 
@@ -501,26 +462,39 @@ $(document).ready(function () {
 
         e.preventDefault();
         const email = e.target.querySelector('#email').value;
+        const emailInput = e.target.querySelector('#email');
+        const emailRegex = /^(?![0-9])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
         const password = e.target.querySelector('#password').value;
 
-        axios.post('/user/login', { email, password })
-            .then(response => {
-                const data = response.data;
-                // Display toast message
-                showToast(data.message, data.type);
+        if (!emailRegex.test(email)) {
+            emailInput.classList.add('border-red-500'); // Add a red border on error
+            emailError.classList.remove('hidden'); // Show the error message
+        } else {
+            emailInput.classList.remove('border-red-500'); // Remove the red border if valid
+            emailError.classList.add('hidden'); // Hide the error message
 
-                // Redirect if login is successful
-                if (data.redirect) {
-                    setTimeout(() => {
-                        window.location.href = data.redirect;
-                    }, 2000);
-                }
-            })
-            .catch(error => {
-                const data = error.response.data;
-                // Display toast message
-                showToast(data.message, data.type);
-            });
+            axios.post('/api/user/login', { email, password })
+                .then(response => {
+                    const data = response.data;
+                    // Display toast message
+                    showToast(data.message, data.type);
+
+                    // Redirect if login is successful
+                    if (data.redirect) {
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    const data = error.response.data;
+                    // Display toast message
+                    showToast(data.message, data.type);
+                });
+
+        }
+
 
     });
 
@@ -542,14 +516,16 @@ $(document).ready(function () {
         if (!phoneRegex.test(phone)) {
             phoneInput.classList.add('border-red-500'); // Add a red border on error
             phoneError.classList.remove('hidden'); // Show the error message
-        }else if(!emailRegex.test(email)){
+        } else if (!emailRegex.test(email)) {
             emailInput.classList.add('border-red-500'); // Add a red border on error
             emailError.classList.remove('hidden'); // Show the error message
         } else {
             phoneInput.classList.remove('border-red-500'); // Remove the red border if valid
             phoneError.classList.add('hidden'); // Hide the error message
+            emailInput.classList.remove('border-red-500'); // Remove the red border if valid
+            emailError.classList.add('hidden'); // Hide the error message
 
-            axios.post('/user/register', { email, password, firstName, lastName, phone })
+            axios.post('/api/user/register', { email, password, firstName, lastName, phone })
                 .then(response => {
                     const data = response.data;
                     // Display toast message
@@ -571,5 +547,7 @@ $(document).ready(function () {
 
 
     });
+
+
 
 });

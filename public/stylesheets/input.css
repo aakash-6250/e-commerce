@@ -46,3 +46,7 @@ body {
         src: url(/fonts/Jost.woff2) format('woff2');
     }
 }
+
+main>.container {
+    min-height: calc(100vh - 120px);
+}
