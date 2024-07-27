@@ -172,7 +172,7 @@ function isLoggedIn(req, res, next) {
 }
 
 function isLoggedInAdmin(req, res, next) {
-  if (!req.isAuthenticated() || req.user.role === 'admin') {
+  if (req.isAuthenticated() && req.user.role === 'admin') {
       return next();
   }
   req.session.errorMessage = "Unauthorized access. Admin only.";
