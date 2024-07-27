@@ -22,14 +22,18 @@ router.get('/', async (req, res) => {
 
         const totalProducts = await Product.countDocuments();
 
+        if(totalProducts === 0) return res.json({ message: 'No products found.', type: 'warning' });
+
         const totalPages = Math.ceil(totalProducts / limit);
 
         if (page > totalPages) page = totalPages;
         if (limit > 30 ) limit = 30;
 
-        const products = await Product.find()
+        const products = await Product.find().populate('category')
             .skip((page - 1) * limit)
             .limit(limit);
+
+        // console.log('products:', products);
 
         res.json({
             products,

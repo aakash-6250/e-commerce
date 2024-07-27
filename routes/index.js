@@ -12,11 +12,12 @@ let views = 0;
 router.get('/', async function (req, res, next) {
   try {
     const categories = await Category.find();
-    const featured = await Product.find()
+    const featured = await Product.find({ featured: true})
     .sort({ updatedAt: -1 })
     .limit(8)
     .populate('category')
     .exec();
+
     console.log('views :', views++)
 
     res.render('index', { user: req.user, categories, featured });
@@ -32,7 +33,7 @@ router.get('/shop', async function (req, res, next) {
   try {
     const categories = await Category.find();
     
-    res.render('shop', { user: "", categories });
+    res.render('shop', { user: "", categories:"" });
   } catch (error) {
     console.error(error);
     req.session.errorMessage = error.message;
@@ -171,7 +172,7 @@ function isLoggedIn(req, res, next) {
 }
 
 function isLoggedInAdmin(req, res, next) {
-  if (req.isAuthenticated() && req.user.role === 'admin') {
+  if (!req.isAuthenticated() || req.user.role === 'admin') {
       return next();
   }
   req.session.errorMessage = "Unauthorized access. Admin only.";

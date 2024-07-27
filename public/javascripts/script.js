@@ -446,6 +446,116 @@ function showToast(message = "Something went wrong...", type = 'info') {
     }).showToast();
 }
 
+function fetchProducts(page = 1, limit = 10) {
+    axios.get(`/api/product?page=${page}&limit=${limit}`)
+        .then(response => {
+            const data = response.data;
+
+            displayProducts(data.products);
+            updatePagination(data.pagination);
+
+        })
+        .catch(error => {
+            const data = error.response.data;
+            showToast(data.message, data.type);
+        });
+}
+
+function displayProducts(products) {
+    try {
+        const productContainer = document.querySelector('.shop-products .products');
+        productContainer.innerHTML = '';
+
+        products.forEach(product => {
+            const productStock = product.stock > 0 ? 'Available' : 'Out of stock';
+            const productElement = document.createElement('div');
+
+            productElement.className = 'product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group';
+
+            productElement.innerHTML = `
+                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/product/product-bg.svg')] flex justify-center items-center">
+                    <img loading="lazy" src="${product.images[0]}" alt="">
+
+                    ${product.sale > 0 ? 
+                    `<img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="Sale Tag">` : 
+                    ``}
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+                </div>
+
+                <div class="product-details h-[82px] flex flex-col justify-evenly items-center w-full text-center">
+                    <a href="/product/${product.slug ? product.slug : product._id}" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
+                        ${product.name}
+                    </a>
+
+                    <div class="product-price flex justify-center items-center gap-[10px]">
+                        ${product.sale > 0 ? 
+                        `<strike class="product-old-price text-[#ACACAC] font-[merriweather]">$${product.price}</strike>
+                         <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">$${(product.price * ((100 - product.sale) / 100)).toFixed(2)}</p>` : 
+                        `<p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">$${product.price}</p>`}
+                    </div>
+                </div>
+            `;
+
+            productContainer.appendChild(productElement);
+        });
+    } catch (error) {
+        console.error('Error displaying products:', error);
+    }
+}
+
+function updatePagination(pagination) {
+    try {
+        const paginationContainer = document.querySelector('.pagination-container');
+        const showingResults = paginationContainer.querySelector('.entries-count');
+        const prevButton = paginationContainer.querySelector('.controls .prev-btn');
+        const nextButton = paginationContainer.querySelector('.controls .next-btn');
+        const pageBtns = paginationContainer.querySelector('.page-btns-container');
+        pageBtns.innerHTML = '';
+
+        showingResults.innerText = `Showing page ${pagination.currentPage} of ${pagination.totalPages} pages, ${pagination.totalProducts} entries`;
+
+        prevButton.onclick = pagination.currentPage > 1 ? () => fetchProducts(pagination.currentPage - 1, pagination.pageSize) : null;
+        nextButton.onclick = pagination.currentPage < pagination.totalPages ? () => fetchProducts(pagination.currentPage + 1, pagination.pageSize) : null;
+
+        if (pagination.totalPages > 1) {
+            let start, end;
+            if (pagination.totalPages <= 5) {
+                start = 1;
+                end = pagination.totalPages;
+            } else {
+                if (pagination.currentPage <= 3) {
+                    start = 1;
+                    end = 5;
+                } else if (pagination.currentPage > pagination.totalPages - 3) {
+                    start = pagination.totalPages - 4;
+                    end = pagination.totalPages;
+                } else {
+                    start = pagination.currentPage - 2;
+                    end = pagination.currentPage + 2;
+                }
+            }
+
+            for (let i = start; i <= end; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = i === pagination.currentPage ?
+                    'current-page-btn px-3 py-1 rounded-full bg-blue-600 text-white' :
+                    'page-btn px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white';
+                pageBtn.innerText = i;
+                pageBtn.onclick = () => fetchProducts(i, pagination.pageSize);
+                pageBtns.appendChild(pageBtn);
+            }
+        } else {
+            const pageBtn = document.createElement('button');
+            pageBtn.className = 'current-page-btn px-3 py-1 rounded-full bg-blue-600 text-white';
+            pageBtn.innerText = 1;
+            pageBtns.appendChild(pageBtn);
+        }
+    } catch (error) {
+        console.error('Error updating pagination:', error);
+    }
+}
+
+
 $(document).ready(function () {
     mobileSearchBarAnimation();
     mobileMenuAnimation();
