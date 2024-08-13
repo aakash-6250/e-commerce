@@ -1,71 +1,80 @@
 var createError = require('http-errors');
 var express = require('express');
+var app = express();
+require('dotenv').config()
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session');
+const User = require('./models/user.model');
+const passport = require('passport');
+let indexRouter = require('./routes/index');
+let adminsRouter = require('./routes/admin');
+let apiRouter = require('./routes/api');
+const userMiddleware = require('./middlewares/userMiddleware');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var adminsRouter = require('./routes/admins');
-var productsRouter = require('./routes/products');
-var cartsRouter = require('./routes/carts');
-var categoriesRouter = require('./routes/category');
-const session = require('express-session')
-require('dotenv').config()
-const User = require('./models/user.model')
-const passport = require('passport')
-const mongoose = require('mongoose')
-mongoose.connect("mongodb://localhost:27017/e-commerce")
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error(err))
 
-var app = express();
+const { apiErrorHandler } = require('./middlewares/apiErrorHandler');
+const ejsErrorHandler = require('./middlewares/ejsErrorHandler');
+const generalErrorHandler = require('./middlewares/generalErrorHandler');
 
-// view engine setup
+// Database connection
+require('./models/database').connectDatabase();
+
+// Logger
+app.use(logger('tiny'));
+
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(
-  session({
-    saveUninitialized: true,
-    resave: true,
-    secret: "secret"
-  })
-);
+// Session setup
+app.use(session({
+  saveUninitialized: true,
+  resave: true,
+  secret: process.env.SESSION_SECRET || 'default_secret', // Use an environment variable for the session secret
+  cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
+}));
 
-
+// Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use('/', indexRouter);
-app.use('/api/user', usersRouter);
-app.use('/api/admin', adminsRouter)
-app.use('/api/product', productsRouter)
-app.use('/api/cart', cartsRouter)
-app.use('/api/categories', categoriesRouter)
+// Apply the user middleware
+app.use(userMiddleware);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+// Routes
+app.use('/', indexRouter);
+app.use('/admin', adminsRouter);
+app.use('/api', apiRouter);
+// Uncomment and use these routes if needed
+// app.use('/api/user', usersRouter);
+// app.use('/api/product', productsRouter);
+// app.use('/api/cart', cartsRouter);
+// app.use('/api/categories', categoriesRouter);
+
+// Catch 404 and forward to error handler
+app.use((req, res, next) => {
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Use EJS error handler for non-API routes
+app.use(ejsErrorHandler);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+// Use API error handler for API routes
+app.use(apiErrorHandler);
+
+// Use general error handler as a fallback
+app.use(generalErrorHandler);
+
 
 module.exports = app;

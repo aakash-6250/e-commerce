@@ -209,14 +209,23 @@ function showToast(message = "Something went wrong...", type = 'info') {
     }).showToast();
 }
 
-function fetchProducts(page = 1, limit = 10) {
-    axios.get(`/api/product?page=${page}&limit=${limit}`)
+function fetchProducts(page = 1, limit = 12) {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+
+    params.set('page', page);
+    params.set('limit', limit);
+
+
+    const apiUrl = `/api/product?${params.toString()}`;
+
+    axios.get(apiUrl)
         .then(response => {
             const data = response.data;
 
-            displayProducts(data.products);
-            updatePagination(data.pagination);
-
+            displayProducts(data.data.products);
+            updatePagination(data.data.pagination);
         })
         .catch(error => {
             const data = error.response.data;
@@ -259,7 +268,7 @@ function displayProducts(products) {
                     <p>$ ${product.order * product.price}</p>
                 </div>
                 <div class="actions w-[130px] flex items-center gap-[10px]">
-                    <i class="edit cursor-pointer ri-edit-2-line text-xl"></i>
+                    <a href="/admin/product/${product._id}/edit" ><i class="edit cursor-pointer ri-edit-2-line text-xl"></i><a>
                     <i class="delete cursor-pointer ri-delete-bin-6-line text-xl"></i>
                 </div>
             `;
@@ -396,12 +405,12 @@ $(document).ready(function () {
                 newCategoryInput.required = false;
                 newCategoryInput.classList.add('hidden');
 
-                if(subCategoryOption && subCategoryOption.value === 'existing') {
-                    
+                if (subCategoryOption && subCategoryOption.value === 'existing') {
+
                     existingSubCategoryContainer.classList.remove('hidden');
                     newSubcategoryInput.required = false;
                     newSubcategoryInput.classList.add('hidden');
-                    
+
                 }
 
             } else {
@@ -470,6 +479,28 @@ $(document).ready(function () {
         e.target.reset();
 
     });
+
+    $('#edit-product-form #category').on('change', function (e) {
+        const category = e.target.value;
+        axios.get(`/api/category/${category}`)
+            .then(response => {
+                const data = response.data.data;
+                const subcategorySelect = document.querySelector('#subcategory');
+                subcategorySelect.innerHTML = '';
+                console.log(data)
+                data.category.subcategories.forEach(subcategory => {
+                    const option = document.createElement('option');
+                    option.value = subcategory._id;
+                    option.textContent = subcategory.name;
+                    subcategorySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                const data = error.response.data;
+                showToast(data.message, data.type);
+            });
+
+    })
 
 
 });

@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+
+<%- include('../partials/sidebar') %>
+
+<main class="relative bg-[#F2F7FB] dark:bg-[#0F172A] w-full pb-[50px]">
+    <%- include('../partials/navbar') %>
+    
+    <div class="container w-full px-6 py-8 flex flex-col gap-[30px] m-auto">
+        <h1 class="font-[merriweather] text-2xl font-bold">Add Single Product</h1>
+        
+        <form id="edit-product-form" class="bg-white dark:bg-[#1E293B] rounded-2xl w-full min-w-[300px] p-5 flex flex-col gap-[20px] justify-center items-center">
+
+            <div class="w-full flex gap-4 flex-wrap">
+        
+                <div class="label-input w-full">
+                    <label for="name" class="text-lg font-bold dark:text-[#94A3B8]">Product Name : </label>
+
+                    <input type="text" name="name" id="name" placeholder="Product Name" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" value="<%= product.name %>">
+                </div>
+        
+                <div class="label-input w-full">
+                    <label for="description" class="text-lg font-bold dark:text-[#94A3B8]">Product Description : </label>
+        
+                    <textarea name="description" id="description" placeholder="Product Description" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600"><%= product.description %></textarea>
+                </div>
+        
+                <div class="label-input w-full">
+                    <label for="price" class="text-lg font-bold dark:text-[#94A3B8]">Product Price : </label>
+        
+                    <input type="text" name="price" id="price" placeholder="Product Price" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" value="<%= product.price %>">
+                </div>
+        
+                <div class="label-input w-full">
+                    <label for="category" class="text-lg font-bold dark:text-[#94A3B8]">Product Category : </label>
+        
+                    <select name="category" id="category" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                        <option value="" disabled selected><%= product.category.name %></option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category._id %>"><%= category.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="label-input w-full">
+                    <label for="subcategory" class="text-lg font-bold dark:text-[#94A3B8]">Product Subcategory : </label>
+        
+                    <select name="subcategory" id="subcategory" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                        <option value="" disabled selected>Firstly select category</option>
+                    </select>
+                </div>
+        
+                <div class="label-input w-full">
+                    <label for="quantity" class="text-lg font-bold dark:text-[#94A3B8]">Product Quantity : </label>
+        
+                    <input type="text" name="quantity" id="quantity" placeholder="Product Quantity" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" value="<%= product.stock %>">
+                </div>
+        
+                <div class="label-input w-full">
+                    <label for="image" class="text-lg font-bold dark:text-[#94A3B8]">Product Image : </label>
+        
+                    <input type="file" name="image" id="image" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
+                </div>
+
+
+                <div class="label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4">
+                    
+                    <input type="checkbox" name="status" id="status" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" <% if(product.status == true) { %> checked <% } %> placeholder="checked">
+
+                    <label for="status" class="text-lg font-bold dark:text-[#94A3B8]">Active</label>
+
+                </div>
+
+                <div class="label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4 ">
+                    
+                    <input type="checkbox" name="status" id="featured" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" <% if(product.featured == true) { %> checked <% } %> placeholder="checked">
+
+                    <label for="featured" class="text-lg font-bold dark:text-[#94A3B8]">Featured</label>
+
+                </div>
+
+        
+            </div>
+        
+            <button type="submit" class="submit-btn px-[24px] py-[12px] rounded-[58px] cursor-pointer bg-blue-600 text-white">Add Product</button>
+        </form>
+        
+    </div>
+
+    <footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center">
+        <p class="text-center text-zinc-600">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-blue-600" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
+    </footer>
+</main>
+
+<%- include('../partials/footer') %>

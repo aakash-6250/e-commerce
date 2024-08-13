@@ -22,8 +22,8 @@ function generateFilePath(dirName) {
 }
 
 const multerMiddleware = {};
-multerMiddleware.product = multer({ storage: generateFilePath("product") }).single('productImage');
+multerMiddleware.product = multer({ storage: generateFilePath("product") }).array('productImages', 5);
 multerMiddleware.category = multer({ storage: generateFilePath("category") }).single('categoryImage');
-multerMiddleware.excel = multer({ storage: generateFilePath("excel") }).single('productFile');
+multerMiddleware.excel = multer({ storage: generateFilePath("excel") }).single('excelFile');
 
 module.exports = { multerMiddleware };

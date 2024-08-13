@@ -392,31 +392,31 @@ function loginRegisterAnimation() {
 
 }
 
-function showToast(message, type = 'info') {
-    let bgColor = '#3182CE'; // Default to blue for info
+// function showToast(message, type = 'info') {
+//     let bgColor = '#3182CE'; // Default to blue for info
 
-    switch (type) {
-        case 'success':
-            bgColor = '#48BB78'; // Green
-            break;
-        case 'error':
-            bgColor = '#F56565'; // Red
-            break;
-        case 'warning':
-            bgColor = '#ED8936'; // Orange
-            break;
-    }
+//     switch (type) {
+//         case 'success':
+//             bgColor = '#48BB78'; // Green
+//             break;
+//         case 'error':
+//             bgColor = '#F56565'; // Red
+//             break;
+//         case 'warning':
+//             bgColor = '#ED8936'; // Orange
+//             break;
+//     }
 
-    Toastify({
-        text: message,
-        duration: 3000,
-        close: true,
-        gravity: 'top',
-        position: 'right',
-        backgroundColor: bgColor,
-        stopOnFocus: true,
-    }).showToast();
-}
+//     Toastify({
+//         text: message,
+//         duration: 3000,
+//         close: true,
+//         gravity: 'top',
+//         position: 'right',
+//         backgroundColor: bgColor,
+//         stopOnFocus: true,
+//     }).showToast();
+// }
 
 function showToast(message = "Something went wrong...", type = 'info') {
     let bgColor = '#3182CE'; // Default to blue for info
@@ -446,14 +446,23 @@ function showToast(message = "Something went wrong...", type = 'info') {
     }).showToast();
 }
 
-function fetchProducts(page = 1, limit = 10) {
-    axios.get(`/api/product?page=${page}&limit=${limit}`)
+function fetchProducts(page = 1, limit = 12) {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    
+    params.set('page', page);
+    params.set('limit', limit);
+
+    
+    const apiUrl = `/api/product?${params.toString()}`;
+
+    axios.get(apiUrl)
         .then(response => {
             const data = response.data;
 
-            displayProducts(data.products);
-            updatePagination(data.pagination);
-
+            displayProducts(data.data.products);
+            updatePagination(data.data.pagination);
         })
         .catch(error => {
             const data = error.response.data;
@@ -473,26 +482,27 @@ function displayProducts(products) {
             productElement.className = 'product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group';
 
             productElement.innerHTML = `
-                <div class="product-image relative h-[330px] w-full bg-[#ECEEF1] bg-[url('/images/product/product-bg.svg')] flex justify-center items-center">
-                    <img loading="lazy" src="${product.images[0]}" alt="">
+                <div class="product-image relative h-[330px] w-full flex justify-center items-center">
+                    <img loading="lazy" src="/images/product/${product.images[0]}" alt="" class="w-full h-full">
 
-                    ${product.sale > 0 ? 
-                    `<img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="Sale Tag">` : 
+                    ${product.sale > 0 ?
+                    `<img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="Sale Tag">` :
                     ``}
-                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
                 </div>
 
                 <div class="product-details h-[82px] flex flex-col justify-evenly items-center w-full text-center">
-                    <a href="/product/${product.slug ? product.slug : product._id}" class="product-name w-max text-[#191717] hover:border-b-[1px] border-[#191717]">
-                        ${product.name}
-                    </a>
+                    <a href="/product/${product._id}" class="product-name text-[#191717] flex  flex-col justify-evenly items-center w-full h-full">
 
+                    <p class="hover:border-b-[1px] w-max border-[#191717]">${product.name}</p>
                     <div class="product-price flex justify-center items-center gap-[10px]">
-                        ${product.sale > 0 ? 
-                        `<strike class="product-old-price text-[#ACACAC] font-[merriweather]">$${product.price}</strike>
-                         <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">$${(product.price * ((100 - product.sale) / 100)).toFixed(2)}</p>` : 
-                        `<p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">$${product.price}</p>`}
+                        ${product.sale > 0 ?
+                    `<strike class="product-old-price text-[#ACACAC] font-[merriweather]">&#8377 ${product.price}</strike>
+                         <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">&#8377 ${(product.price * ((100 - product.sale) / 100)).toFixed(2)}</p>` :
+                    `<p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">&#8377 ${product.price}</p>`}
                     </div>
+
+                    </a>
                 </div>
             `;
 
@@ -572,38 +582,26 @@ $(document).ready(function () {
 
         e.preventDefault();
         const email = e.target.querySelector('#email').value;
-        const emailInput = e.target.querySelector('#email');
-        const emailRegex = /^(?![0-9])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
         const password = e.target.querySelector('#password').value;
 
-        if (!emailRegex.test(email)) {
-            emailInput.classList.add('border-red-500'); // Add a red border on error
-            emailError.classList.remove('hidden'); // Show the error message
-        } else {
-            emailInput.classList.remove('border-red-500'); // Remove the red border if valid
-            emailError.classList.add('hidden'); // Hide the error message
+        axios.post('/api/login', { email, password })
+            .then(response => {
+                const data = response.data;
+                
+                showToast(data.message, data.type);
 
-            axios.post('/api/user/login', { email, password })
-                .then(response => {
-                    const data = response.data;
-                    // Display toast message
-                    showToast(data.message, data.type);
-
-                    // Redirect if login is successful
-                    if (data.redirect) {
-                        setTimeout(() => {
-                            window.location.href = data.redirect;
-                        }, 2000);
-                    }
-                })
-                .catch(error => {
-                    const data = error.response.data;
-                    // Display toast message
-                    showToast(data.message, data.type);
-                });
-
-        }
+                // Redirect if login is successful
+                if (data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                const data = error.response.data;
+                // Display toast message
+                showToast(data.message, data.type);
+            });
 
 
     });
@@ -635,16 +633,16 @@ $(document).ready(function () {
             emailInput.classList.remove('border-red-500'); // Remove the red border if valid
             emailError.classList.add('hidden'); // Hide the error message
 
-            axios.post('/api/user/register', { email, password, firstName, lastName, phone })
+            axios.post('/api/register', { email, password, firstName, lastName, phone })
                 .then(response => {
                     const data = response.data;
                     // Display toast message
                     showToast(data.message, data.type);
 
                     // Redirect if login is successful
-                    if (data.redirect) {
+                    if (data.data.redirect) {
                         setTimeout(() => {
-                            window.location.href = data.redirect;
+                            window.location.href = data.data.redirect;
                         }, 2000);
                     }
                 })

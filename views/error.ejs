@@ -1,3 +1,39 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geldix Pharmaceuticals Private Limited</title>
+    <meta name="description"
+        content="Our objective is to provide high quality, affordable and innovative healthcare products to people across the globe. We are committed to our customers and partners and have a passion for technology and innovation.">
+    <meta name="keywords"
+        content="geldix, geldix pharmaceutical, geldix pharmaceuticals, geldix pharmaceuticals private limited, geldix pharama, bhim singh, seema patel, aakash patel, aakash6250">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+    <link rel="preload" href="/stylesheets/style.css" as="style">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body class="font-[lato] overflow-x-hidden">
+
+    
+    <div class="error-container flex justify-center items-center w-full h-screen bg-[#DFEDF0] gap-[20px] flex-col">
+        <h1 class="text-9xl font-extrabold">
+            <%= status %>
+        </h1>
+        <p class="text-2xl font-bold">
+            <%= message %>
+        </p>
+        <a class="px-4 py-2 rounded-xl bg-purple-500 text-white hover:bg-purple-600 text-xl" href="<%= redirect %>">Go Back</a>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="/javascripts/script.js"></script>
+</body>
+
+</html>
