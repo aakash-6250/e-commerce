@@ -8,6 +8,8 @@ router.get('/', indexController.index);
 
 router.get('/shop', indexController.shop);
 
+router.get('/product/:id', indexController.product);
+
 router.get('/login', indexController.login);
 
 router.get('/register', indexController.register);

@@ -8,6 +8,7 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const path = require('path');
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 
@@ -141,14 +142,14 @@ apiController.login = catchAsyncApiErrors(async (req, res, next) => {
         if (!user) {
             return next(new ApiError(401, 'Invalid email or password.', 'error'));
         }
-        
+
         req.logIn(user, (err) => {
             if (err) {
                 console.error(err);
                 return next(new ApiError(500, 'Server error', 'error'));
             }
 
-            
+
 
             const redirectPath = user.role === 'admin' ? '/admin' : '/';
             return sendSuccessResponse(res, 'Login successful.', { redirect: redirectPath });
@@ -196,6 +197,18 @@ apiController.updateAddress = catchAsyncApiErrors(async (req, res, next) => {
 
 });
 
+// isLogedIn Controller
+
+
+// GET
+apiController.isLoggedIn = catchAsyncApiErrors(async (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return sendSuccessResponse(res, 'User is logged in.', { loggedIn: true, user: req.user });
+    }
+
+    sendSuccessResponse(res, 'User is not logged in.', { loggedIn: false });
+});
+
 
 
 
@@ -220,8 +233,6 @@ apiController.register = catchAsyncApiErrors(async (req, res, next) => {
 
     sendSuccessResponse(res, 'Registration successful.', { redirect: '/login' });
 });
-
-
 
 // GET
 apiController.getUsers = catchAsyncApiErrors(async (req, res, next) => {
@@ -255,7 +266,7 @@ apiController.updateUserPassword = catchAsyncApiErrors(async (req, res, next) =>
     const { oldPassword, newPassword } = req.body;
     if (!(oldPassword && newPassword)) throw new ApiError(400, 'Both old and new passwords are required.', 'error');
 
-    if(oldPassword === newPassword) throw new ApiError(400, 'New password cannot be the same as old password.', 'error');
+    if (oldPassword === newPassword) throw new ApiError(400, 'New password cannot be the same as old password.', 'error');
 
     const isMatch = await user.comparePassword(oldPassword);
     if (!isMatch) throw new ApiError(400, 'Old password is incorrect.', 'error');
@@ -296,7 +307,7 @@ apiController.deleteUser = catchAsyncApiErrors(async (req, res, next) => {
 
 // POST
 apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
-    const { name, description, price, category, subcategory, stock, brand, sale, featured } = req.body;
+    const { name, description, price, category, subcategory, stock, brand, sale, featured, published } = req.body;
 
     const requiredFields = ['name', 'description', 'price', 'category', 'subcategory', 'stock', 'brand'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
@@ -306,36 +317,23 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
     }
 
     const existingProduct = await Product.findOne({ name });
-    if (existingProduct) {
-        throw new ApiError(400, 'A product with this name already exists.', 'error');
-    }
+    if (existingProduct) throw new ApiError(400, 'A product with this name already exists.', 'error');
 
     const product = new Product({ name, description, price, stock, brand, sale, featured });
 
-    let categoryExist = await Category.findOne({ name: category });
+    const categoryExist = await Category.findById(category);
+    if (!categoryExist) throw new ApiError(400, 'Category not found.', 'error');
 
-    if (!categoryExist) {
-        categoryExist = new Category({ name: category });
-        await categoryExist.save();
-    }
-
-    let subcategoryExist = await Subcategory.findOne({ name: subcategory, category: categoryExist._id });
-
-    if (!subcategoryExist) {
-        subcategoryExist = new Subcategory({ name: subcategory, category: categoryExist._id, products: [product._id] });
-        await subcategoryExist.save();
-
-        if (!categoryExist.subcategories.includes(subcategoryExist._id)) {
-            categoryExist.subcategories.push(subcategoryExist._id);
-            await categoryExist.save();
-        }
-    } else {
-        subcategoryExist.products.push(product._id);
-        await subcategoryExist.save();
-    }
+    const subcategoryExist = await Subcategory.findById(subcategory);
+    if (!subcategoryExist) throw new ApiError(400, 'Subcategory not found.', 'error');
 
     product.category = categoryExist._id;
     product.subcategory = subcategoryExist._id;
+
+    subcategoryExist.products.push(product._id);
+
+    await subcategoryExist.save();
+
 
     if (req.files && req.files.length > 0) {
 
@@ -357,9 +355,13 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
         product.images = newImages;
     }
 
+    product.published = published == 'true' ? true : false;
+
+    product.featured = featured == 'true' ? true : false;
+
     await product.save();
 
-    sendSuccessResponse(res, 'Product created successfully.', { product });
+    sendSuccessResponse(res, 'Product created successfully.', { product, redirect: '/admin/products'});
 });
 
 // POST
@@ -373,6 +375,8 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const data = xlsx.utils.sheet_to_json(sheet);
+
+    // Remove the uploaded file after processing
     await fs.promises.unlink(filePath);
 
     if (data.length === 0) {
@@ -384,22 +388,27 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
     }
 
     const requiredFields = ['name', 'description', 'price', 'category', 'subcategory', 'stock', 'brand'];
-    const invalidRows = data.filter(product => !requiredFields.every(field => product[field] !== undefined));
+    const invalidRows = data.filter(product => !requiredFields.every(field => product[field]));
 
     if (invalidRows.length > 0) {
-        throw new ApiError(400, 'The following rows are missing required fields: ' + invalidRows.map(row => row._id).join(', '), 'error');
+        throw new ApiError(400, 'Some rows are missing required fields.', 'error');
     }
 
     let somethingAdded = false;
-    for (let i = 0; i < data.length; i++) {
-        const { name, description, price, category, subcategory, stock, brand, featured, sale } = data[i];
 
+    for (let productData of data) {
+        const { name, description, price, category, subcategory, stock, brand, featured, sale } = productData;
+
+        // Check if the product already exists
         const existingProduct = await Product.findOne({ name });
         if (existingProduct) continue;
+
         somethingAdded = true;
 
+        // Create new product instance
         const product = new Product({ name, description, price, stock, brand });
 
+        // Check and create category
         let categoryExist = await Category.findOne({ name: category });
 
         if (!categoryExist) {
@@ -407,47 +416,50 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
             await categoryExist.save();
         }
 
+        // Check and create subcategory
         let subcategoryExist = await Subcategory.findOne({ name: subcategory, category: categoryExist._id });
 
         if (!subcategoryExist) {
-            subcategoryExist = new Subcategory({ name: subcategory, category: categoryExist._id, products: [product._id] });
+            subcategoryExist = new Subcategory({ name: subcategory, category: categoryExist._id });
+            subcategoryExist.products.push(product._id);
             await subcategoryExist.save();
-
-            
-            if (!categoryExist.subcategories.includes(subcategoryExist._id)) {
-                categoryExist.subcategories.push(subcategoryExist._id);
-                await categoryExist.save();
-            }
+            categoryExist.subcategories.push(subcategoryExist._id);
+            await categoryExist.save();
         } else {
-            
             subcategoryExist.products.push(product._id);
             await subcategoryExist.save();
         }
 
-        
+        // Assign category and subcategory to product
         product.category = categoryExist._id;
         product.subcategory = subcategoryExist._id;
 
-        
-        if (featured) product.featured = featured === true;
+        // Set additional properties
+        if (featured) product.featured = featured == 'true' ? true : false;
         if (sale) product.sale = sale;
+
+        product.published = true;
 
         await product.save();
     }
 
+    const redirect = somethingAdded ? '/admin/products' : '/admin/products/upload';
+
     if (somethingAdded) {
-        sendSuccessResponse(res, 'Products uploaded successfully.');
+        sendSuccessResponse(res, 'Products uploaded successfully.', { redirect });
     } else {
-        throw new ApiError(400, 'All products already exist.', 'error');
+        throw new ApiError(400, 'All products already exist.', 'error', { redirect });
     }
+
 });
+
 
 // PATCH
 apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, 'Product not found.', 'error');
 
-    const { name, description, price, category, subcategory, stock, brand, sale, featured, imagesToDelete } = req.body;
+    const { name, description, price, category, subcategory, stock, brand, sale, featured, published, imagesToDelete } = req.body;
 
     if (name) product.name = name;
     if (description) product.description = description;
@@ -455,63 +467,47 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     if (stock) product.stock = stock;
     if (brand) product.brand = brand;
     if (sale) product.sale = sale;
-    if (featured) product.featured = featured;
+    if (featured) product.featured = featured==='true'?true:false;
+    if (published) product.published = published==='true'?true:false;
 
-    if (category || subcategory) {
-        if (!(category && subcategory)) throw new ApiError(400, 'Both category and subcategory are required.', 'error');
+    if(category && subcategory && category !== product.category) {
 
-        const productCategory = await Category.findById(product.category);
-        const productSubcategory = await Subcategory.findById(product.subcategory);
+        const categoryExist = await Category.findById(category);
+        if (!categoryExist) throw new ApiError(400, 'Category not found.', 'error');
 
-        if (productSubcategory.products.length === 1) {
-            await Subcategory.findByIdAndDelete(productSubcategory._id);
-            productCategory.subcategories.pull(productSubcategory._id);
-            await productCategory.save();
-        } else {
-            productSubcategory.products.pull(product._id);
-            await productSubcategory.save();
-        }
+        const subcategoryExist = await Subcategory.findById(subcategory);
+        if (!subcategoryExist) throw new ApiError(400, 'Subcategory not found.', 'error');
 
-        if (productCategory.subcategories.length === 0) {
-            await Category.findByIdAndDelete(productCategory._id);
-        } else {
-            productCategory.subcategories.pull(productSubcategory._id);
-            await productCategory.save();
-        }
+        await Subcategory.findByIdAndUpdate(product.subcategory, { $pull: { products: product._id } });
 
-        let categoryExist = await Category.findOne({ name: category });
-
-        if (!categoryExist) {
-            categoryExist = new Category({ name: category });
-            await categoryExist.save();
-        }
-
-        let subcategoryExist = await Subcategory.findOne({ name: subcategory, category: categoryExist._id });
-
-        if (!subcategoryExist) {
-            subcategoryExist = new Subcategory({ name: subcategory, category: categoryExist._id, products: [product._id] });
-            await subcategoryExist.save();
-
-            
-            if (!categoryExist.subcategories.includes(subcategoryExist._id)) {
-                categoryExist.subcategories.push(subcategoryExist._id);
-                await categoryExist.save();
-            }
-        } else {
-            
-            subcategoryExist.products.push(product._id);
-            await subcategoryExist.save();
-        }
-
-        
         product.category = categoryExist._id;
         product.subcategory = subcategoryExist._id;
+
+        subcategoryExist.products.push(product._id);
+
+        await subcategoryExist.save();
+
     }
+
+    if(category && subcategory && category === product.category && subcategory !== product.subcategory) {
+            
+            const subcategoryExist = await Subcategory.findById(subcategory);
+            if (!subcategoryExist) throw new ApiError(400, 'Subcategory not found.', 'error');
+    
+            await Subcategory.findByIdAndUpdate(product.subcategory, { $pull: { products: product._id } });
+    
+            product.subcategory = subcategoryExist._id;
+    
+            subcategoryExist.products.push(product._id);
+    
+            await subcategoryExist.save();
+    }
+
 
     if (imagesToDelete && imagesToDelete.length > 0) {
         product.images = product.images.filter(image => {
             if (imagesToDelete.includes(image)) {
-                const imagePath = path.join(__dirname, '..', 'public', 'product', image);
+                const imagePath = path.join(__dirname, '..', 'public', 'images', 'product', image);
                 try {
                     fs.unlinkSync(imagePath);
                 } catch (err) {
@@ -524,6 +520,7 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     }
 
     if (req.files && req.files.length > 0) {
+
         const currentImageCount = product.images.length;
         const newImages = req.files.map(file => file.filename).slice(0, 5 - currentImageCount);
 
@@ -535,7 +532,7 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
 
 
         unusedImages.forEach(image => {
-            const imagePath = path.join(__dirname, '..', 'public', 'product', image);
+            const imagePath = path.join(__dirname, '..', 'public', 'images', 'product', image);
             try {
                 fs.unlinkSync(imagePath);
             } catch (err) {
@@ -549,7 +546,7 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
 
     await product.save();
 
-    sendSuccessResponse(res, 'Product updated successfully.', { product });
+    sendSuccessResponse(res, 'Product updated successfully.', { product, redirect: '/admin/products' });
 });
 
 // DELETE
@@ -560,7 +557,7 @@ apiController.deleteProduct = catchAsyncApiErrors(async (req, res, next) => {
     if (product.images.length > 0) {
         if (product.images[0] !== "product.jpg") {
             product.images.forEach(image => {
-                const imagePath = path.join(__dirname, '..', 'public', 'product', image);
+                const imagePath = path.join(__dirname, '..', 'public', 'images', 'product', image);
                 try {
                     fs.unlinkSync(imagePath);
                 } catch (err) {
@@ -570,32 +567,19 @@ apiController.deleteProduct = catchAsyncApiErrors(async (req, res, next) => {
         }
     }
 
-    const category = await Category.findById(product.category);
-    const subcategory = await Subcategory.findById(product.subcategory);
+    await Subcategory.findByIdAndUpdate(product.subcategory, { $pull: { products: product._id } });
 
-    if (subcategory) {
-        if (subcategory.products.length === 1) {
-            await Subcategory.findByIdAndDelete(subcategory._id);
-            if (category) {
-                category.subcategories.pull(subcategory._id);
-            }
-        } else {
-            subcategory.products.pull(product._id);
-            await subcategory.save();
-        }
-    }
-
-    if (category) {
-        if (category.subcategories.length === 0) {
-            await Category.findByIdAndDelete(category._id);
-        } else {
-            await category.save();
-        }
-    }
-
-    sendSuccessResponse(res, 'Product deleted successfully.', { product });
+    sendSuccessResponse(res, 'Product deleted successfully.', { product, redirect: '/admin/products'});
 });
 
+// GET 
+apiController.deleteAllDocuments = catchAsyncApiErrors(async (req, res, next) => {
+    await Product.deleteMany();
+    await Category.deleteMany();
+    await Subcategory.deleteMany();
+
+    sendSuccessResponse(res, 'All documents deleted successfully.');
+});
 
 
 
@@ -603,7 +587,7 @@ apiController.deleteProduct = catchAsyncApiErrors(async (req, res, next) => {
 //                         Categories Controller
 
 // GET
-apiController.getCategories = catchAsyncApiErrors(async (req, res, next) =>{
+apiController.getCategories = catchAsyncApiErrors(async (req, res, next) => {
     const categories = await Category.find().populate('subcategories');
     if (categories.length === 0) throw new ApiError(404, 'No categories found.', 'error');
 
@@ -611,7 +595,7 @@ apiController.getCategories = catchAsyncApiErrors(async (req, res, next) =>{
 });
 
 // GET
-apiController.getCategoryById = catchAsyncApiErrors(async (req, res, next) =>{
+apiController.getCategoryById = catchAsyncApiErrors(async (req, res, next) => {
     const category = await Category.findById(req.params.id).populate('subcategories');
     if (!category) throw new ApiError(404, 'Category not found.', 'error');
 
@@ -620,34 +604,97 @@ apiController.getCategoryById = catchAsyncApiErrors(async (req, res, next) =>{
 
 // POST
 apiController.createCategory = catchAsyncApiErrors(async (req, res, next) => {
-    const { name } = req.body;
-    if (!name) throw new ApiError(400, 'Category name is required.', 'error');
 
-    const category = new Category({ name });
-    await category.save();
+    const { category, subcategories } = req.body;
+    if (!category) throw new ApiError(400, 'Category name is required.', 'error');
 
-    sendSuccessResponse(res, 'Category created successfully.', { category });
+    const existingCategory = await Category.findOne({ name: category });
+
+    if (existingCategory) throw new ApiError(400, 'Category already exists.', 'error');
+
+    const newCategory = new Category({ name: category });
+
+    if (subcategories.length > 0) {
+
+        const newSubcategories = [];
+
+        for (let i = 0; i < subcategories.length; i++) {
+            const subcategory = new Subcategory({ name: subcategories[i], category: newCategory._id });
+            newSubcategories.push(subcategory);
+        }
+
+        await Subcategory.insertMany(newSubcategories);
+
+        newCategory.subcategories = newSubcategories.map(subcategory => subcategory._id);
+
+    }
+
+    await newCategory.save();
+
+    sendSuccessResponse(res, 'Category created successfully.', { category: newCategory, redirect: '/admin/categories' });
+
 });
 
 // PATCH
 apiController.updateCategory = catchAsyncApiErrors(async (req, res, next) => {
-    const category = await Category.findById(req.params.id);
-    if (!category) throw new ApiError(404, 'Category not found.', 'error');
+    // Fetch the existing category with subcategories
+    const categoryExist = await Category.findById(req.params.id).populate('subcategories');
+    if (!categoryExist) throw new ApiError(404, 'Category not found.', 'error');
 
-    const { name } = req.body;
-    if (name) category.name = name;
+    // Extract data from request body
+    const { categoryName, newSubcategories, subcategories } = req.body;
+    console.log(req.body);
 
-    await category.save();
+    // Update category name if it has changed
+    if (categoryName && categoryName !== categoryExist.name) categoryExist.name = categoryName;
 
-    sendSuccessResponse(res, 'Category updated successfully.', { category });
+    // Add new subcategories if any
+    if (newSubcategories && newSubcategories.length > 0) {
+        const newSubcategory = newSubcategories.map(name => new Subcategory({ name, category: categoryExist._id }));
+        await Subcategory.insertMany(newSubcategory);
+        categoryExist.subcategories.push(...newSubcategory.map(subcategory => subcategory._id));
+    }
+
+    // Process existing subcategories
+    await Promise.all(subcategories.map(async subcategory => {
+        if (subcategory.delete) {
+            const subcategoryHasProduct = await Product.findOne({ subcategory: subcategory.id });
+            if (subcategoryHasProduct) throw new ApiError(400, 'Subcategory has products.', 'error');
+
+            await Subcategory.findByIdAndDelete(subcategory.id);
+            categoryExist.subcategories.pull(subcategory.id);
+        } else {
+            const subcategoryExist = await Subcategory.findById(subcategory.id);
+            if (!subcategoryExist) throw new ApiError(404, 'Subcategory not found.', 'error');
+
+            // Update subcategory name if it has changed
+            if (subcategoryExist.name !== subcategory.name) {
+                subcategoryExist.name = subcategory.name;
+                await subcategoryExist.save();
+            }
+        }
+    }));
+
+    // Save the updated category
+    await categoryExist.save();
+
+    // Send success response
+    sendSuccessResponse(res, 'Category updated successfully.', { redirect: `/admin/category/${req.params.id}/edit` });
 });
+
 
 // DELETE
 apiController.deleteCategory = catchAsyncApiErrors(async (req, res, next) => {
-    const category = await Category.findByIdAndDelete(req.params.id);
-    if (!category) throw new ApiError(404, 'Category not found.', 'error');
 
-    sendSuccessResponse(res, 'Category deleted successfully.', { category });
+    // check category doest not have any product in subcategory
+    const categoryExist = await Category.findById(req.params.id);
+    if (!categoryExist) throw new ApiError(404, 'Category not found.', 'error');
+
+    if(categoryExist.subcategories.length > 0) throw new ApiError(400, 'Category has subcategories.', 'error');
+
+    const category = await Category.findByIdAndDelete(req.params.id);
+
+    sendSuccessResponse(res, 'Category deleted successfully.', { category, redirect: '/admin/categories' });
 });
 
 
@@ -722,7 +769,7 @@ apiController.deleteAddress = catchAsyncApiErrors(async (req, res, next) => {
 
 // GET
 apiController.getOrders = catchAsyncApiErrors(async (req, res, next) => {
-    const orders = await Order.find().populate( 'user address items.product').exec();
+    const orders = await Order.find().populate('user address items.product').exec();
     if (orders.length === 0) throw new ApiError(404, 'No orders found.', 'error');
 
     sendSuccessResponse(res, 'Orders fetched successfully.', { orders });
@@ -763,52 +810,6 @@ apiController.deleteOrder = catchAsyncApiErrors(async (req, res, next) => {
     sendSuccessResponse(res, 'Order deleted successfully.', { order });
 });
 
-
-
-
-
-//                         Cart Controller
-
-// const cartSchema = new mongoose.Schema(
-//     {
-//         user: { 
-//             type: mongoose.Schema.Types.ObjectId, 
-//             ref: 'User', 
-//             required: [true, "User is required"] ,
-//             unique: [true, "Cart already exists"]
-//         },
-//         items: [{
-//             product: { 
-//                 type: mongoose.Schema.Types.ObjectId, 
-//                 ref: 'Product', 
-//                 required: [true, "Product is required"] 
-//             },
-//             quantity: { 
-//                 type: Number, 
-//                 required: [true, "Quantity is required"] 
-//             }
-//         }],
-//         totalAmount: { 
-//             type: Number, 
-//             default: 0 
-//         },
-//         isOrderPlaced: { 
-//             type: Boolean, 
-//             default: false 
-//         }
-//     }, 
-//     { timestamps: true }
-// );
-
-// GET
-apiController.getCartByUser = catchAsyncApiErrors(async (req, res, next) => {
-    const cart = await Cart.findOne({ user: req.params.id }).populate('items.product').exec();
-    if (!cart) throw new ApiError(404, 'Cart not found.', 'error');
-
-    sendSuccessResponse(res, 'Cart fetched successfully.', { cart });
-});
-
-// POST
 
 
 

@@ -246,7 +246,12 @@ function displayProducts(products) {
 
             productElement.innerHTML = `
                 <div class="product-img-name w-[400px] flex items-center gap-[30px]">
-                    <img src="${product.images[0]}" alt="Product Image" class="product-image h-[50px]">
+                    <div class="product-img w-[70px] h-[70px] overflow-hidden rounded-[5px] flex items-center justify-center bg-gray-300 dark:bg-gray-600">
+                        ${product.images.length > 0 ?
+                    `<img src="/images/product/${product.images[0]}" alt="${product.name}" class="h-full w-full">` :
+                    `<i class="ri-image-line text-4xl text-gray-500 dark:text-gray-400"></i>`
+                }
+                    </div>
                     <p class="product-name">${product.name}</p>
                 </div>
                 <div class="price w-[130px]">
@@ -267,9 +272,13 @@ function displayProducts(products) {
                 <div class="revenue w-[130px]">
                     <p>$ ${product.order * product.price}</p>
                 </div>
-                <div class="actions w-[130px] flex items-center gap-[10px]">
-                    <a href="/admin/product/${product._id}/edit" ><i class="edit cursor-pointer ri-edit-2-line text-xl"></i><a>
-                    <i class="delete cursor-pointer ri-delete-bin-6-line text-xl"></i>
+                <div class="actions min-w-[130px] flex justify-around items-center">
+                    <a class="edit-product-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 " href="/admin/product/${product._id}/edit">
+                        <i class="ri-pencil-line text-2xl"></i>
+                    </a>
+                    <button class="delete-product-btn px-2 py-1 rounded-full hover:bg-red-600 hover:text-white border-[1px] border-zinc-200 " data-id="${product._id}">
+                        <i class="ri-delete-bin-line text-2xl"></i>
+                    </button>
                 </div>
             `;
 
@@ -332,6 +341,168 @@ function updatePagination(pagination) {
     }
 }
 
+function showImagesForForm(input) {
+    const files = this.files;
+    const imagesPreviewContainer = $('#images-preview-container');
+
+    imagesPreviewContainer.empty();
+
+    if (files.length > 5) {
+        alert('You can only upload a maximum of 5 images.');
+        this.value = '';
+        return;
+    }
+
+    Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            const img = $('<img>', {
+                src: e.target.result,
+                class: 'max-w-full h-auto rounded-[10px] border-gray-300 border-[1px] dark:border-gray-600',
+                alt: `Image Preview ${index + 1}`,
+                width: '263px',
+                height: '412px'
+            });
+
+            imagesPreviewContainer.append(img);
+        }
+
+        reader.readAsDataURL(file);
+    });
+}
+
+function initializeCategoryForm() {
+    // Function to add a subcategory tag
+    function addSubcategoryTag() {
+        const subcategoryName = $('#subcategory-input').val().trim();
+
+        // Check if the input is not empty
+        if (subcategoryName) {
+            // Create a new tag element
+            const tagElement = $('<span>')
+                .addClass('subcategory-tag px-3 py-1 bg-[#E8F5E9] text-[#455A64] rounded-[5px] flex items-center gap-[5px]')
+                .text(subcategoryName);
+            
+            // Add a remove button to each tag
+            const removeButton = $('<button>')
+                .addClass('text-white bg-[#C8E6C9] hover:bg-[#ef9a9a] rounded-full w-[20px] h-[20px] flex  items-center justify-center ri-close-line text-xl')
+                .text('')
+                .on('click', function () {
+                    $(this).parent().remove();  // Remove the tag when the 'x' button is clicked
+                });
+
+            // Append the remove button to the tag
+            tagElement.append(removeButton);
+
+            // Append the tag to the subcategory tags container
+            $('#add-subcategory-tags').append(tagElement);
+
+            // Clear the input field
+            $('#subcategory-input').val('');
+        }
+    }
+
+    // Event listener for the "Add" button click
+    $('#add-subcategory-btn').on('click', function () {
+        addSubcategoryTag();
+    });
+
+    // Event listener for the "Enter" keypress on the subcategory input
+    $('#subcategory-input').on('keypress', function (e) {
+        if (e.which === 13) { // 13 is the keycode for Enter key
+            e.preventDefault(); // Prevent form submission
+            addSubcategoryTag(); // Call function to add tag
+        }
+    });
+}
+
+function showCustomConfirm(message, callback) {
+    // Get the container where the confirm box will be appended
+    const container = document.querySelector('body');
+
+    // Create the overlay
+    const overlay = document.createElement('div');
+    overlay.classList.add(
+        'fixed',
+        'inset-0',
+        'bg-black',
+        'bg-opacity-50',
+        'flex',
+        'justify-center',
+        'items-center',
+        'z-50',
+        'w-full',
+        'h-full'
+    );
+
+    // Create the confirm box
+    const confirmBox = document.createElement('div');
+    confirmBox.classList.add(
+        'bg-white',
+        'dark:bg-gray-800',
+        'p-6',
+        'rounded-lg',
+        'shadow-lg',
+        'max-w-sm',
+        'w-full',
+        'text-center'
+    );
+
+    // Create the message paragraph
+    const messagePara = document.createElement('p');
+    messagePara.textContent = message;
+    messagePara.classList.add('text-lg', 'mb-4');
+
+    // Create the buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('flex', 'justify-center', 'space-x-4', 'mt-4');
+
+    // Create the Yes button
+    const yesButton = document.createElement('button');
+    yesButton.textContent = 'Yes';
+    yesButton.classList.add(
+        'bg-green-500',
+        'text-white',
+        'px-4',
+        'py-2',
+        'rounded',
+        'hover:bg-green-600'
+    );
+    yesButton.addEventListener('click', () => {
+        container.removeChild(overlay);
+        callback(true);
+    });
+
+    // Create the No button
+    const noButton = document.createElement('button');
+    noButton.textContent = 'No';
+    noButton.classList.add(
+        'bg-red-500',
+        'text-white',
+        'px-4',
+        'py-2',
+        'rounded',
+        'hover:bg-red-600'
+    );
+    noButton.addEventListener('click', () => {
+        container.removeChild(overlay);
+        callback(false);
+    });
+
+    // Append everything to the confirm box
+    buttonsContainer.appendChild(yesButton);
+    buttonsContainer.appendChild(noButton);
+    confirmBox.appendChild(messagePara);
+    confirmBox.appendChild(buttonsContainer);
+
+    // Append the confirm box to the overlay
+    overlay.appendChild(confirmBox);
+
+    // Append the overlay to the container
+    container.appendChild(overlay);
+}
 
 
 
@@ -339,87 +510,11 @@ $(document).ready(function () {
     navbarAnimation();
     sidebarAnimation();
     handleBulkAddProductForm();
-
-    $('#add-product-excel-form').on('submit', function (e) {
-        e.preventDefault();
-
-        const fileInput = document.getElementById('productFile');
-        const submitBtn = document.querySelector('.submit-btn');
-        const label = document.querySelector('label[for="productFile"] .file-label');
-
-
-        const formData = new FormData();
-        formData.append('productFile', fileInput.files[0]);
-
-        axios.post('/api/product/bulk-add', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(response => {
-                const data = response.data;
-                showToast(data.message, data.type);
-
-                if (data.redirect) {
-                    setTimeout(() => {
-                        window.location.href = data.redirect;
-                    }, 2000);
-                }
-            })
-            .catch(error => {
-                const data = error.response.data;
-                // Display toast message
-                showToast(data.message, data.type);
-            })
-            .finally(() => {
-                // Hide the file input again after submission
-                fileInput.classList.add('hidden');
-
-                // Reset form and button state
-                e.target.reset();
-                submitBtn.disabled = true;
-                submitBtn.classList.remove('cursor-pointer');
-                submitBtn.classList.add('cursor-not-allowed');
-                label.innerHTML = 'Drag and drop your excel file here or <span class="text-blue-600">browse</span>';
-                label.style.color = '';
-            });
-    });
+    initializeCategoryForm();
 
     $('#show-product').on('change', function () {
         if (this.value) {
             fetchProducts(1, this.value);
-        }
-    });
-
-    $('#categoryOption').on('change', function () {
-        if (this.value) {
-            const categoryOption = this.value;
-            const subCategoryOption = this.querySelector('#subCategoryOption');
-            const existingCategoryContainer = document.querySelector('#existingCategoryContainer');
-            const existingSubCategoryContainer = document.querySelector('#existingSubCategoryContainer');
-            const newCategoryInput = document.querySelector('.newCategory');
-            const newSubcategoryInput = document.querySelector('.newSubcategory');
-
-            if (categoryOption === 'existing') {
-                existingCategoryContainer.classList.remove('hidden');
-                newCategoryInput.required = false;
-                newCategoryInput.classList.add('hidden');
-
-                if (subCategoryOption && subCategoryOption.value === 'existing') {
-
-                    existingSubCategoryContainer.classList.remove('hidden');
-                    newSubcategoryInput.required = false;
-                    newSubcategoryInput.classList.add('hidden');
-
-                }
-
-            } else {
-                existingCategoryContainer.classList.add('hidden');
-                newCategoryInput.required = true;
-                newSubcategoryInput.required = true;
-                newCategoryInput.classList.remove('hidden');
-                newSubcategoryInput.classList.remove('hidden');
-            }
         }
     });
 
@@ -428,47 +523,45 @@ $(document).ready(function () {
 
         const name = e.target.querySelector('#name').value;
         const description = e.target.querySelector('#description').value;
-        const priceInput = e.target.querySelector('#price');
+        const price = e.target.querySelector('#price').value;
         const category = e.target.querySelector('#category').value;
         const subcategory = e.target.querySelector('#subcategory').value;
-        const stockInput = e.target.querySelector('#stock');
+        const subcategoryInput = e.target.querySelector('#subcategory');
+        const stock = e.target.querySelector('#stock').value;
         const brand = e.target.querySelector('#brand').value;
+        const sale = e.target.querySelector('#sale').value;
+        const featured = e.target.querySelector('#featured').checked;
+        const images = e.target.querySelector('#images').files;
+        const published = e.target.querySelector('#published').checked;
 
-        const price = priceInput.value.trim();
-        const stock = stockInput.value.trim();
+        // Create a FormData object
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('price', parseFloat(price));
+        formData.append('category', category);
+        formData.append('subcategory', subcategory);
+        formData.append('stock', parseInt(stock));
+        formData.append('brand', brand);
+        formData.append('sale', parseInt(sale));
+        formData.append('featured', featured);
+        formData.append('published', published);
 
-        if (!price || isNaN(price) || parseFloat(price) <= 0) {
-            priceInput.classList.add('border-red-500');
-            showToast('Invalid price. Please enter a positive number.', 'error');
-            return;
-        } else {
-            priceInput.classList.remove('border-red-500');
+        // Append each image file to the FormData
+        for (let i = 0; i < images.length; i++) {
+            formData.append('images', images[i]);
         }
 
-        if (!stock || isNaN(stock) || parseInt(stock) < 0) {
-            stockInput.classList.add('border-red-500');
-            showToast('Invalid stock. Please enter a non-negative number.', 'error');
-            return;
-        } else {
-            stockInput.classList.remove('border-red-500');
-        }
-
-        const productData = {
-            name,
-            description,
-            price: parseFloat(price),
-            category,
-            subcategory,
-            stock: parseInt(stock),
-            brand
-        };
-
-        axios.post('/api/product/add', productData)
+        // Use Axios to submit the data
+        axios.post('/api/product', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then(response => {
                 const data = response.data;
 
                 showToast(data.message, data.type);
-
 
             })
             .catch(error => {
@@ -476,8 +569,52 @@ $(document).ready(function () {
                 showToast(data.message, data.type);
             });
 
-        e.target.reset();
+        // e.target.reset();
+        // $('#images-preview-container').empty();
+        // subcategoryInput.innerHTML = '';
+        // const option = document.createElement('option');
+        // option.value = '';
+        // option.textContent = 'Select a category first';
+        // option.selected = true;
+        // option.disabled = true;
+        // subcategoryInput.appendChild(option);
+    });
 
+    $('#add-product-form #images').on('change', function (e) {
+        showImagesForForm.call(this);
+    });
+
+    $('#add-product-form #category').on('change', function (e) {
+        const category = e.target.value;
+        axios.get(`/api/category/${category}`)
+            .then(response => {
+                const data = response.data.data;
+                const subcategorySelect = document.querySelector('#subcategory');
+                subcategorySelect.innerHTML = '';
+
+                if (data.category.subcategories.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No subcategories found first add subcategories to this category';
+                    subcategorySelect.appendChild(option);
+                } else {
+                    data.category.subcategories.forEach(subcategory => {
+                        const option = document.createElement('option');
+                        option.value = subcategory._id;
+                        option.textContent = subcategory.name;
+                        subcategorySelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                const data = error.response.data;
+                showToast(data.message, data.type);
+            });
+
+    });
+
+    $('#edit-product-form #images').on('change', function (e) {
+        showImagesForForm.call(this);
     });
 
     $('#edit-product-form #category').on('change', function (e) {
@@ -501,6 +638,312 @@ $(document).ready(function () {
             });
 
     })
+
+    $('#edit-product-form').on('submit', function (e) {
+        e.preventDefault();
+
+        const name = e.target.querySelector('#name').value;
+        const description = e.target.querySelector('#description').value;
+        const price = e.target.querySelector('#price').value;
+        const category = e.target.querySelector('#category').value;
+        const subcategory = e.target.querySelector('#subcategory').value;
+        const stock = e.target.querySelector('#stock').value;
+        const brand = e.target.querySelector('#brand').value;
+        const sale = e.target.querySelector('#sale').value;
+        const featured = e.target.querySelector('#featured').checked;
+        const images = e.target.querySelector('#images').files;
+        const published = e.target.querySelector('#published').checked;
+        const productId = e.target.querySelector('#productId').value;
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('price', parseFloat(price));
+        formData.append('category', category);
+        formData.append('subcategory', subcategory);
+        formData.append('stock', parseInt(stock));
+        formData.append('brand', brand);
+        formData.append('sale', parseInt(sale));
+        formData.append('featured', featured);
+        formData.append('published', published);
+        formData.append('productId', productId);
+        formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
+
+        for (let i = 0; i < images.length; i++) {
+            formData.append('images', images[i]);
+        }
+
+
+        axios.patch(`/api/product/${productId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                showToast(data.message, data.type);
+
+                if (data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                const data = error.response.data;
+                showToast(data.message, data.type);
+            });
+
+    });
+
+    $('#add-product-excel-form').on('submit', function (e) {
+        e.preventDefault();
+
+        const fileInput = document.getElementById('productFile');
+        const submitBtn = document.querySelector('.submit-btn');
+        const label = document.querySelector('label[for="productFile"] .file-label');
+
+
+        const formData = new FormData();
+        formData.append('excelFile', fileInput.files[0]);
+
+        axios.post('/api/product/bulk', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                showToast(data.message, data.type);
+
+                if (data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                const data = error.response.data;
+                // Display toast message
+                showToast(data.message, data.type);
+            })
+            .finally(() => {
+                // Hide the file input again after submission
+                fileInput.classList.add('hidden');
+
+                // Reset form and button state
+                e.target.reset();
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('cursor-pointer');
+                submitBtn.classList.add('cursor-not-allowed');
+                label.innerHTML = 'Drag and drop your excel file here or <span class="text-blue-600">browse</span>';
+                label.style.color = '';
+            });
+    });
+
+    $('#add-category-form').on('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        // Collect category name and subcategories
+        const categoryName = $('#category').val().trim();
+        const subcategories = [];
+
+        // Get all subcategory tags
+        $('#add-subcategory-tags .subcategory-tag').each(function () {
+            subcategories.push($(this).text().replace(/x$/, '').trim());
+        });
+
+        // Prepare data to be sent to the server
+        const data = {
+            category: categoryName,
+            subcategories: subcategories
+        };
+
+        axios.post('/api/category', data)
+            .then(response => {
+                const data = response.data;
+
+                showToast(data.message, data.type);
+
+                e.target.reset();
+                $('#subcategory-tags').empty();
+
+                if (data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
+
+            })
+            .catch(error => {
+                console.log(error)
+                const data = error.response.data;
+                showToast(data.message, data.type);
+            });
+    });
+
+    let imagesToDelete = [];
+    $('#edit-product-form').on('click', '.delete-image-btn', function (e) {
+        const image = $(this).data('image');
+        imagesToDelete.push(image);
+        $(this).parent().remove();
+    });
+
+    $('#edit-category-form').on('click', '.remove-subcategory-btn', function () {
+        // Get the parent subcategory item
+        const subcategoryItem = $(this).closest('.subcategory-item');
+        const deleteInput = subcategoryItem.find('input[id="delete"]');
+    
+        // Toggle the deletion state
+        const isMarkedForDeletion = deleteInput.val() === 'true';
+        deleteInput.val(isMarkedForDeletion ? 'false' : 'true');
+    
+        // Toggle the appearance of the subcategory item
+        subcategoryItem.toggleClass('marked-for-deletion', !isMarkedForDeletion);
+    
+        // Update the button colors using Tailwind CSS classes
+        if (isMarkedForDeletion) {
+            $(this).removeClass('bg-red-400 text-white hover:text-white hover:bg-red-500').addClass('bg-white hover:bg-red-400 hover:text-white');
+        } else {
+            $(this).removeClass('bg-white hover:bg-red-400 hover:text-white').addClass('bg-red-400 text-white hover:bg-red-500');
+        }
+    });
+
+    $('#edit-category-form').on('submit', function (e) {
+        e.preventDefault();
+
+        // Get category ID and name
+        const categoryId = $('#categoryId').val();
+        const categoryName = $('#category').val().trim();
+        const subcategories = [];
+
+        // Collect subcategories from the form
+        $('#current-subcategory-tags .subcategory-item').each(function () {
+            const subcategoryName = $(this).find('input[type="text"]').val().trim();
+            const subcategoryId = $(this).find('input[type="hidden"]').eq(0).val().trim();
+            const isMarkedForDeletion = $(this).find('input[type="hidden"]').eq(1).val().trim() === 'true';
+
+            if (subcategoryName) {
+                subcategories.push({
+                    id: subcategoryId,
+                    name: subcategoryName,
+                    delete: isMarkedForDeletion
+                });
+            }
+        });
+
+        const newSubcategories = [];
+
+        // Collect new subcategories from the form
+        $('#add-subcategory-tags .subcategory-tag').each(function () {
+            newSubcategories.push($(this).text().replace(/x$/, '').trim());
+        });
+
+        // Prepare data to send to the server
+        const data = {
+            newSubcategories: newSubcategories,
+            categoryName: categoryName,
+            subcategories: subcategories
+        };
+
+
+        // Make an Axios PATCH request to update the category
+        axios.patch(`/api/category/${categoryId}`, data)
+            .then(response => {
+                const data = response.data;
+
+                // Display a success message
+                showToast(data.message, data.type);
+
+                // Redirect if a redirect URL is provided
+                if (data.data && data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
+
+            })
+            .catch(error => {
+                // Handle errors and display an error message
+                if (error.response && error.response.data) {
+                    const data = error.response.data;
+                    showToast(data.message, data.type);
+                } else {
+                    showToast('An unexpected error occurred', 'error');
+                }
+            });
+    });
+
+    $(document).on('click', '.delete-category-btn', function (e) {
+        e.preventDefault(); // Prevents the default action if it's inside a form
+    
+        const categoryId = $(this).data('id');
+    
+        // Show custom confirm dialog
+        showCustomConfirm('Are you sure you want to delete this category?', (confirmed) => {
+            if (confirmed) {
+                axios.delete(`/api/category/${categoryId}`)
+                    .then(response => {
+                        const data = response.data;
+                        showToast(data.message, data.type);
+    
+                        if (data.data && data.data.redirect) {
+                            setTimeout(() => {
+                                window.location.href = data.data.redirect;
+                            }, 2000);
+                        }
+                    })
+                    .catch(error => {
+                        // Check if error response exists
+                        if (error.response && error.response.data) {
+                            const data = error.response.data;
+                            showToast(data.message, data.type);
+                        } else {
+                            showToast("An error occurred", "error");
+                        }
+                    });
+            }
+        });
+    });
+    
+
+    $(document).on('click', '.delete-product-btn', function (e) {
+        e.preventDefault(); // Prevent the default action of the button or link
+
+        const productId = $(this).data('id');
+
+        showCustomConfirm('Are you sure you want to delete this product?', (confirmed) => {
+            if (confirmed) {
+                axios.delete(`/api/product/${productId}`)
+                    .then(response => {
+                        const data = response.data;
+
+                        // Display success toast notification
+                        showToast(data.message, data.type);
+
+                        // Redirect if a redirect URL is provided
+                        if (data.data && data.data.redirect) {
+                            setTimeout(() => {
+                                window.location.href = data.data.redirect;
+                            }, 2000);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            const data = error.response.data;
+
+                            // Display error toast notification
+                            showToast(data.message, data.type);
+                        } else {
+                            // Fallback error message for unexpected issues
+                            showToast('An error occurred while trying to delete the product.', 'error');
+                        }
+                    });
+            }
+        });
+    });
+
+
 
 
 });

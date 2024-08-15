@@ -2,7 +2,63 @@
     <%- include('./partials/navbar') %>
         <main class="w-screen lg:bg-white max-w-[1920px] m-auto">
 
-            
+            <section class="product-container py-[70px] flex justify-center items-center w-full min-h-[740px] bg-[#FFF9F4]">
+
+                <div class="product  flex justify-between items-start gap-[100px] max-w-[1142px] w-full min-h-[560px]">
+
+                    <div class="product-image max-h-[560px] h-[560px] w-full  ">
+                        <% if(product.images.length > 0){ %>
+                            <img src="/image/product/<%= product.image[0] %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                        <% }else{ %>
+                            <img src="/images/product/default.jpg" alt="<%= product.name %>" class="w-full h-full object-cover">
+                        <% } %>
+                    </div>
+
+                    <div class="product-details w-full ">
+
+                        <div class="product-name h-[104px] border-b-[2px] border-[#E2E2E2] flex items-center font-normal">
+                            <h2 class="text-[#191717] font-[merriweather] text-[36px] font-bold"><%= product.name %></h2>
+                        </div>
+
+                        <div class="product-price h-[104px] text-[24px] flex items-center gap-[20px] font-light">
+                            <% if(product.sale > 0){ %>
+                                <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">&#8377 <%= product.price %></strike>
+                                <p class="product-new-price bg-transparent text-[#191717] font-[merriweather] ">&#8377 <%= (product.price*((100-product.sale)/100)).toFixed(2) %></p>
+                            <% }else{ %>
+                            <p class="product-new-price bg-transparent text-[#191717] font-[merriweather] ">&#8377 <%= product.price %></p>
+                            <% } %>
+                        </div>
+
+                        <div class="product-desc text-[16px] text-[#616161]">
+                            <p class="font-[lato] "><%= product.description %></p>
+                        </div>
+
+                        <div class="product-cart-control flex justify-between items-center">
+
+                            <div class="product-quantity flex gap-1 items-center bg-white rounded-full px-4 ">
+                                <i class="sub ri-subtract-line text-[16px] cursor-pointer" id="decrease-quantity"></i>
+                                <input type="text" name="quantity" id="quantity" class="text-[#616161] w-[50px] outline-none h-[50px] text-center" value="1">
+                                <i class="add ri-add-line text-[16px] cursor-pointer" id="increase-quantity"></i>
+                            </div>
+                        
+                            <div class="product-add-to-cart-btn py-[30px]">
+                                <button id="add-to-cart" class="bg-[#967BB6] text-white font-[lato] text-[16px] w-[359px] h-[48px] rounded-[58px] flex items-center gap-[20px] justify-center" data-id="<%= product._id %>">
+                                    <p>Add to Cart</p>
+                                    <% if(product.sale > 0){ %>
+                                        <p class="product-new-price bg-transparent text-white ">&#8377 <%= (product.price*((100-product.sale)/100)).toFixed(2) %></p>
+                                    <% }else{ %>
+                                        <p class="product-new-price bg-transparent text-white ">&#8377 <%= product.price %></p>
+                                    <% } %>
+                                </button>
+                            </div>
+                        
+                        </div>                        
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </main>
 

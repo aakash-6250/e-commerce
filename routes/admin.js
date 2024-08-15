@@ -1,6 +1,20 @@
 var express = require('express');
 var router = express.Router();
+const { catchAsyncEjsErrors } = require('../middlewares/catchAsyncErrors');
 const adminController = require('../controllers/adminController');
+
+router.use((req, res, next) => {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        return next();
+    }
+    
+    res.status(403).render('error', { 
+        message: 'Unauthorized access. Admin only.', 
+        status: "403",
+        redirect: '/login'
+    });
+
+});
 
 
 router.get('/', adminController.index);
@@ -12,6 +26,12 @@ router.get('/product/add', adminController.addProduct);
 router.get('/product/bulk-add', adminController.bulkAddProduct);
 
 router.get('/product/:id/edit', adminController.editProduct);
+
+router.get('/categories', adminController.categories);
+
+router.get('/category/add', adminController.addCategory);
+
+router.get('/category/:id/edit', adminController.editCategory);
 
 
 
@@ -26,72 +46,7 @@ router.get('/logout', async function (req, res, next) {
 
 
 
-// router.get('/admin/dashboard', isLoggedInAdmin, async (req, res, next) => {
-//     try {
-//         res.render('admin/dashboard', { user: req.user });
-//     } catch (error) {
-//         console.error(error);
-//         req.session.errorMessage = error.message;
-//         req.session.messageType = "error";
-//         res.redirect(req.headers.referer || '/');
-//     }
-// });
 
-// router.get('/admin/products/', isLoggedInAdmin, async (req, res, next) => {
-//     try {
-//         res.render('admin/product/products', { user: req.user });
-//     } catch (error) {
-//         console.error(error);
-//         req.session.errorMessage = error.message;
-//         req.session.messageType = "error";
-//         res.redirect(req.headers.referer || '/');
-//     }
-// });
-
-// router.get('/admin/product/add', isLoggedInAdmin, async (req, res, next) => {
-//     try {
-//         res.render('admin/product/addProduct', { user: req.user });
-//     } catch (error) {
-//         console.error(error);
-//         req.session.errorMessage = error.message;
-//         req.session.messageType = "error";
-//         res.redirect(req.headers.referer || '/');
-//     }
-// });
-
-// router.get('/admin/product/bulk-add', isLoggedInAdmin, async (req, res, next) => {
-//     try {
-//         res.render('admin/product/addProductExcel', { user: req.user });
-//     } catch (error) {
-//         console.error(error);
-//         req.session.errorMessage = error.message;
-//         req.session.messageType = "error";
-//         res.redirect(req.headers.referer || '/');
-//     }
-// });
-
-// router.get('/admin/category/add', isLoggedInAdmin, async (req, res, next) => {
-//     try {
-//         const categories = await Category.find();
-//         res.render('admin/category/addCategory', { user: req.user, categories });
-//     } catch (error) {
-//         console.error(error);
-//         req.session.errorMessage = error.message;
-//         req.session.messageType = "error";
-//         res.redirect(req.headers.referer || '/');
-//     }
-// });
-
-// router.get('/admin/categories', isLoggedInAdmin, async (req, res, next) => {
-//     try {
-//         res.render('admin/category/categories', { user: req.user });
-//     } catch (error) {
-//         console.error(error);
-//         req.session.errorMessage = error.message;
-//         req.session.messageType = "error";
-//         res.redirect(req.headers.referer || '/');
-//     }
-// });
 
 
 

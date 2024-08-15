@@ -450,11 +450,11 @@ function fetchProducts(page = 1, limit = 12) {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
 
-    
+
     params.set('page', page);
     params.set('limit', limit);
 
-    
+
     const apiUrl = `/api/product?${params.toString()}`;
 
     axios.get(apiUrl)
@@ -483,10 +483,13 @@ function displayProducts(products) {
 
             productElement.innerHTML = `
                 <div class="product-image relative h-[330px] w-full flex justify-center items-center">
-                    <img loading="lazy" src="/images/product/${product.images[0]}" alt="" class="w-full h-full">
+                    ${product.images.length > 0 ?
+                    `<img loading="lazy" src="/images/product/${product.images[0]}" alt="${product.name}" class="h-[330px] w-full object-cover">` :
+                    `<img loading="lazy" src="/images/product/default.jpg" alt="Default Image" class="h-[330px] w-full object-cover">`
+                }
 
                     ${product.sale > 0 ?
-                    `<img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="Sale Tag">` :
+                    `<img loading="lazy" class="absolute top-0 left-0" src="/images/product/sale-tag.svg" alt="Sale Tag">` :
                     ``}
                     <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
                 </div>
@@ -565,6 +568,73 @@ function updatePagination(pagination) {
     }
 }
 
+async function syncCartWithDatabase() {
+    try {
+
+        const response = await axios.get('/api/check-login');
+        
+        if (response.data.data.loggedIn) {
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length > 0) {
+                await axios.post('/api/cart', { cart });
+                localStorage.removeItem('cart');
+            }
+        }
+    } catch (error) {
+        console.error('Failed to sync cart with database:', error);
+    }
+}
+
+function updateCartTotals(cartData) {
+    // Calculate subtotal
+    let subtotal = cartData.items.reduce((total, item) => total + item.price * item.quantity, 0);
+    
+    // Assume tax is a fixed value or a percentage of the subtotal
+    let tax = 5.00; // Example fixed tax
+    // let tax = subtotal * 0.08; // Example 8% tax rate
+    
+    // Calculate total
+    let total = subtotal + tax;
+    
+    // Update the UI
+    $('.all-charges .flex').eq(0).find('p').eq(1).text(`$${subtotal.toFixed(2)}`);
+    $('.all-charges .flex').eq(2).find('p').eq(1).text(`$${tax.toFixed(2)}`);
+    $('.total .flex').find('p').eq(1).text(`$${total.toFixed(2)}`);
+}
+
+function loadCartFromLocalStorage() {
+    const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+    $('.cart .products').empty();
+    let subtotal = 0;
+    console.log(cartData)
+    cartData.forEach(product => {
+        const productHtml = `
+            <div class="product flex w-full">
+                <i class="delete ri-close-line cursor-pointer"></i>
+                <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
+                    <img src="${product.product.image}" alt="${product.product.name}" class="image w-[75px] h-[75px] ">
+                    <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
+                        <p class="text-[#191717] pr-[100px]">${product.product.name}</p>
+                        <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
+                            <i class="ri-subtract-line"></i>
+                            <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">${product.quantity}</p>
+                            <i class="ri-add-line"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="price font-[merriweather] bg-white w-[100px]">$${product.product.price}</div>
+            </div>
+        `;
+
+        $('.products').append(productHtml);
+        subtotal += product.price * product.quantity;
+
+    });
+
+    $('.calculations .subtotal .amount').text(`$${subtotal.toFixed(2)}`);
+}
+
 
 $(document).ready(function () {
     mobileSearchBarAnimation();
@@ -577,6 +647,7 @@ $(document).ready(function () {
     cartAnimation();
     shopPageCheckboxAnimation();
     loginRegisterAnimation();
+    loadCartFromLocalStorage();
 
     $('#loginForm').on('submit', function (e) {
 
@@ -585,12 +656,14 @@ $(document).ready(function () {
         const password = e.target.querySelector('#password').value;
 
         axios.post('/api/login', { email, password })
-            .then(response => {
+            .then(async response => {
                 const data = response.data;
-                
+
                 showToast(data.message, data.type);
 
-                // Redirect if login is successful
+                await syncCartWithDatabase();
+
+                
                 if (data.data.redirect) {
                     setTimeout(() => {
                         window.location.href = data.data.redirect;
@@ -599,7 +672,7 @@ $(document).ready(function () {
             })
             .catch(error => {
                 const data = error.response.data;
-                // Display toast message
+                
                 showToast(data.message, data.type);
             });
 
@@ -655,6 +728,69 @@ $(document).ready(function () {
 
 
     });
+
+    $('.add').on('click', function () {
+        let quantityInput = $(this).closest('.product-cart-control').find('#quantity');
+        let quantity = parseInt(quantityInput.val()) || 1;
+        if (quantity < 10) {
+            quantity++;
+            quantityInput.val(quantity);
+        } else {
+            showToast('You can only add 10 items at a time', 'warning');
+        }
+    });
+    
+    // Decrease quantity
+    $('.sub').on('click', function () {
+        let quantityInput = $(this).closest('.product-cart-control').find('#quantity');
+        let quantity = parseInt(quantityInput.val()) || 1;
+        if (quantity > 1) {
+            quantity--;
+            quantityInput.val(quantity);
+        } else {
+            showToast('You need to add at least one item', 'warning');
+        }
+    });
+
+    $('#add-to-cart').on('click', function () {
+        const productId = $(this).data('id');
+        const productName = $('h2').text();
+        const productPrice = parseFloat($('.product-new-price').text().replace('₹', ''));
+        const productImage = $('.product-image img').attr('src');
+        let quantityInput = $(this).closest('.product-cart-control').find('#quantity');
+        let quantity = parseInt(quantityInput.val()) || 1;
+
+
+        console.log(productId, productName, productPrice, productImage);
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const existingProductIndex = cart.findIndex(item => item.product._id === productId);
+
+        if (existingProductIndex > -1) {
+
+            cart[existingProductIndex].quantity += quantity;
+
+        } else {
+
+            cart.push({
+                product: {
+                    _id: productId,
+                    name: productName,
+                    price: productPrice,
+                    image: productImage
+                },
+                quantity: quantity
+            });
+
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        showToast('Item added to cart', 'success');
+
+    });
+
 
 
 

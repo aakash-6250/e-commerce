@@ -213,20 +213,24 @@
                                 <div class="product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group ">
     
                                     <div class="product-image relative h-[330px] w-full flex justify-center items-center">
-        
-                                        <img loading="lazy" src="/images/product/<%= product.images[0] %>" alt="" class="w-full h-full">
+
+                                        <% if(product.images.length > 0){ %>
+                                            <img loading="lazy" src="/images/product/<%= product.images[0] %>" alt="" class="w-full h-full">
+                                        <% }else{ %>
+                                            <img loading="lazy" src="/images/product/default.jpg" alt="" class="w-full h-full">
+                                        <% } %>
                                         
                                         <% if(product.sale > 0){ %>
                                             <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
                                         <% } %>
         
-                                        <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+                                        <button id="add-to-cart" class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
         
                                     </div>
         
                                     <div class="product-details h-[82px] flex flex-col justify-evenly items-center w-full text-center">
         
-                                        <a href="/products/<%= product._id %> " class="product-name text-[#191717] flex  flex-col justify-evenly items-center w-full h-full">
+                                        <a href="/product/<%= product._id %> " class="product-name text-[#191717] flex  flex-col justify-evenly items-center w-full h-full">
 
                                             <p class="hover:border-b-[1px] w-max border-[#191717]"><%= product.name %></p>
 

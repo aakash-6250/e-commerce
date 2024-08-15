@@ -22,7 +22,7 @@ function generateFilePath(dirName) {
 }
 
 const multerMiddleware = {};
-multerMiddleware.product = multer({ storage: generateFilePath("product") }).array('productImages', 5);
+multerMiddleware.product = multer({ storage: generateFilePath("product") }).array('images', 5);
 multerMiddleware.category = multer({ storage: generateFilePath("category") }).single('categoryImage');
 multerMiddleware.excel = multer({ storage: generateFilePath("excel") }).single('excelFile');
 

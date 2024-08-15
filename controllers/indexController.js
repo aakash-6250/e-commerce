@@ -27,6 +27,19 @@ indexController.shop = catchAsyncEjsErrors(async (req, res, next) => {
     res.render('shop', { categories });
 });
 
+// GET /product/:id
+indexController.product = catchAsyncEjsErrors(async (req, res, next) => {
+    const categories = await Category.find().populate('subcategories').exec();
+    const product = await Product.findById(req.params.id).populate('category subcategory');
+
+    if (product) {
+        product.views = product.views + 1;
+        product.save();
+    }
+
+    res.render('product', { categories, product });
+});
+
 // GET /login
 indexController.login = catchAsyncEjsErrors(async (req, res, next) =>{
     const categories = await Category.find().populate('subcategories').exec();
