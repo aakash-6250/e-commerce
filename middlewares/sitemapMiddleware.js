@@ -44,9 +44,6 @@ const sitemapMiddleware = async (req, res, next) => {
         ];
 
         const socialMediaUrls = [
-            { url: 'https://www.facebook.com/geldixpharma', priority: 0.1, lastmod: new Date().toISOString(), changefreq: 'never' },
-            { url: 'https://twitter.com/geldixpharma', priority: 0.1, lastmod: new Date().toISOString(), changefreq: 'never' },
-            { url: 'https://www.linkedin.com/in/geldix-private-limited-8098192a7/', priority: 0.1, lastmod: new Date().toISOString(), changefreq: 'never' },
             { url: 'https://www.instagram.com/geldixpharma/', priority: 0.1, lastmod: new Date().toISOString(), changefreq: 'never' },
         ];
 

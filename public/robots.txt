@@ -6,8 +6,6 @@ Disallow: /cart/
 Disallow: /checkout/
 Disallow: /api/
 Disallow: /account/
-Disallow: /javascripts/
-Disallow: /stylesheets/
 Allow: /
 Allow: /shop/
 Allow: /product/
