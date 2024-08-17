@@ -441,7 +441,6 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         product.subcategory = subcategoryExist._id;
 
         // Set additional properties
-        if (featured) product.featured = featured == 'true' ? true : false;
         if (sale) product.sale = sale;
 
         product.published = true;
