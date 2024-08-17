@@ -221,10 +221,10 @@
                                         <% } %>
                                         
                                         <% if(product.sale > 0){ %>
-                                            <img loading="lazy" class="absolute top-0 left-0" src="/images/products/product-sale-tag.svg" alt="">
+                                            <img loading="lazy" class="absolute top-0 left-0" src="/images/product/sale-tag.svg" alt="">
                                         <% } %>
         
-                                        <button id="add-to-cart" class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+                                        <button id="add-to-cart-btn" class="add-to-cart-btn absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2" data-id="<%= product._id %>">Add to Cart</button>
         
                                     </div>
         
@@ -259,7 +259,7 @@
                 </section>
             <% } %>
 
-            <section class="about-us bg-zinc-50 px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto py-[80px]">
+            <section id="about-us" class="about-us bg-zinc-50 px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto py-[80px]">
 
                 <div class="max-w-[1142px] flex flex-col lg:flex-row items-center justify-between gap-[50px] min-h-[572px] m-auto">
 
@@ -444,7 +444,7 @@
                         <h1 class="text-[28px] text-[#191717] font-[merriweather]">Let's keep it real.</h1>
     
                         <p class="text-[#191717]">
-                            Sign up for our newsletter for 10% off, self care tips, acne 101 and fun community surprises. We love bluming with you!
+                            Sign up for our newsletter to receive the latest updates on our products, promotions, and more. Stay informed and stay connected with Geldix Pharmaceuticals.
                         </p>
                         
                         <form action="" class="flex flex-wrap gap-[10px]">

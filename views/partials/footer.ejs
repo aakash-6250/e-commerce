@@ -3,58 +3,76 @@
     <div class="footer min-h-[436px] px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] pt-[100px]">
 
         <div class="max-w-[1142px] m-auto w-full text-white flex flex-col lg:flex-row justify-between gap-[50px]">
-            <div class="left min-w-[300px] flex flex-col gap-[30px]">
+            <div class="left min-w-[300px] flex flex-col gap-[25px]">
 
                 <h1 class=" font-[merriweather] text-[32px]">
                     Geldix Pharmaceuticals <br>Private Limited
                 </h1>
+
+                <a href="https://maps.app.goo.gl/7iSA9uBCFWpqXsrh8" target="_blank" class="hover:text-blue-600">
+                    Shop 2, Katara Hills, Rapadia Village, 462043, Bhopal, Madhya Pradesh, India
+                </a>
                 
-                <div class="flex flex-col gap-[10px]">
-                    <p class="">Email: info@geldix.in</p>
-                    <p class="">Phone: +91 9718164407</p>
-                </div>
+                <a href="mailto:info@geldix.in?subject=Enquiry from website&body=Hello Geldix Pharmaceuticals" target="_blank"  >Email : <span class="hover:text-blue-600">info@geldix.in</span></a>
     
-                <div class="flex gap-[20px]">
-                    <i class="ri-twitter-x-line cursor-pointer border-white border-[1px] rounded-full px-2 py-1"></i>
-                    <i class="ri-instagram-line cursor-pointer border-white border-[1px] rounded-full px-2 py-1"></i>
-                    <i class="ri-facebook-fill cursor-pointer border-white border-[1px] rounded-full px-2 py-1"></i>
+                <div class="flex gap-[15px] justify-start items-center">
+                                        
+                    <a href="https://www.facebook.com/geldixpharma" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/facebook.png" alt="facebook page" class="w-full h-full ">
+                    </a>
+                    <a href="https://www.instagram.com/geldixpharma/" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/instagram.png" alt="instagram page" class="w-full h-full rounded-full scale-[1.2]">
+                    </a>
+                    <a href="https://www.x.com/geldixpharma/" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/twitter.png" alt="twitter x page" class="w-full h-full scale-[1.1] ">
+                    </a>
+                    <a href="https://www.linkedin.com/in/geldix-private-limited-8098192a7/" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/linkedin.png" alt="linkedin page" class="w-full h-full ">
+                    </a>
                 </div>
     
             </div>
     
-            <div class="right flex flex-wrap min-w-[300px]">
+            <div class="right flex lg:justify-start justify-between flex-wrap min-w-[300px]">
     
-                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px]">
+                <div class="flex flex-col gap-[10px] pb-[30px] px-[10px]">
                     <h1 class="pb-[10px]">COMPANY</h1>
                     <a href="/">Home</a>
+                    <a href="/shop">Shop</a>
                     <a href="/">Contact</a>
-                    <a href="/">About</a>
-                    <a href="/">Shop</a>
+                    <a href="/#about-us">About</a>
                 </div>
     
                 <% if(categories.length> 0){ %>
-                    <div class="flex flex-col gap-[10px] w-[150px] pb-[30px]">
+                    <div class="flex flex-col gap-[10px] w-[150px] pb-[30px] px-[10px]">
                         <h1 class="pb-[10px]">CATEGORIES</h1>
                             <% categories.forEach(category=> { %>
-                                <a class="" href="/"><%= category.name %></a>
+                                <a class="" href="/shop/?cat=<%= category._id %>"><%= category.name %></a>
                             <% }) %>
                     </div>
                 <% } %>
     
-                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px]">
+                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px] px-[10px]">
                     <h1 class="pb-[10px]">STORE</h1>
                     <a href="/">Shop</a>
-                    <a href="/">My Account</a>
-                    <a href="/">Cart</a>
+                    <% if(user){ %>
+                        <% if(user.role === 'admin'){ %>
+                            <a href="/admin/dashboard">Dashboard</a>
+                        <% }else{ %>
+                            <a href="/account">My Account</a>
+                        <%} %>
+                    <% }else{ %>
+                        <a href="/login">Login</a>
+                    <% } %>
+                    <a href="/cart">Cart</a>
                 </div>
     
-                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px]">
+                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px] px-[10px]">
                     <h1 class="pb-[10px]">POLICIES</h1>
-                    <a href="/">Terms Of Use</a>
-                    <a href="/">Privacy Policy</a>
-                    <a href="/">Shipping Policy</a>
-                    <a href="/">Affiliate Policy</a>
-                    <a href="/">Cookie Policy</a>
+                    <a href="/terms-of-use">Terms Of Use</a>
+                    <a href="/privacy-policy">Privacy Policy</a>
+                    <a href="/shipping-policy">Shipping Policy</a>
+                    <a href="/cookie-policy">Cookie Policy</a>
                 </div>
     
             </div>

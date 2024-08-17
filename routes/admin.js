@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { catchAsyncEjsErrors } = require('../middlewares/catchAsyncErrors');
 const adminController = require('../controllers/adminController');
+const sitemapMiddleware = require('../middlewares/sitemapMiddleware');
 
 router.use((req, res, next) => {
     if (req.isAuthenticated() && req.user.role === 'admin') {
@@ -15,6 +16,8 @@ router.use((req, res, next) => {
     });
 
 });
+
+router.use(sitemapMiddleware);
 
 
 router.get('/', adminController.index);

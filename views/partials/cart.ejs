@@ -1,0 +1,41 @@
+<div class="cart hidden max-w-[450px] lg:w-[450px] w-full z-50 bg-white min-h-[100vh] absolute top-0 right-[-450px] px-[20px]" style="box-shadow: -14px 0px 79px 0px #00000081;">
+
+    <div class="header text-2xl py-[25px] bg-white flex justify-between items-center border-b-[1px] border-[#E2E2E2]">
+        <h1 class="font-[merriweather] text-[#191717]">Cart</h1>
+        <i class="ri-close-large-line cursor-pointer text-[#616161]"></i>
+    </div>
+
+    <div class="empty-cart-message text-center py-[30px] hidden">
+        <p class="text-[#191717] font-[merriweather] text-[24px]">Cart is empty</p>
+    </div>
+
+    <div class="products bg-white py-[30px] flex flex-col gap-[30px] border-b-[1px] border-[#E2E2E2]"></div>
+
+    <div class="calculations bg-white py-[30px] gap-[30px]">
+
+        <div class="all-charges flex flex-col gap-[10px] border-b-[1px] border-[#E2E2E2] pb-[30px]">
+
+            <div class="subtotal flex justify-between">
+                <p class="text-[#616161]">Subtotal</p>
+                <p class="amount text-[#191717] font-[merriweather]">₹0.00</p>
+            </div>
+
+            <div class="shipping flex justify-between">
+                <p class="text-[#616161]">Shipping</p>
+                <p class="amount text-[#616161]">Calculated Later</p>
+            </div>
+
+        </div>
+
+        <div class="total pt-[30px]">
+            <div class="flex justify-between">
+                <p class="text-[#191717]">Total</p>
+                <p class="text-[#191717] font-[merriweather]">₹0.00</p>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="checkout bg-[#967BB6] text-white w-full py-[12px] rounded-[58px] mb-[100px]">Proceed To Checkout</button>
+
+</div>

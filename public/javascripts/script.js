@@ -491,7 +491,7 @@ function displayProducts(products) {
                     ${product.sale > 0 ?
                     `<img loading="lazy" class="absolute top-0 left-0" src="/images/product/sale-tag.svg" alt="Sale Tag">` :
                     ``}
-                    <button class="add-to-cart absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2">Add to Cart</button>
+                    <button class="add-to-cart-btn absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2" data-id="${product._id}">Add to Cart</button>
                 </div>
 
                 <div class="product-details h-[82px] flex flex-col justify-evenly items-center w-full text-center">
@@ -569,71 +569,208 @@ function updatePagination(pagination) {
 }
 
 async function syncCartWithDatabase() {
-    try {
+    // try {
+    //     const response = await axios.get('/api/loggedin');
 
-        const response = await axios.get('/api/check-login');
-        
-        if (response.data.data.loggedIn) {
+    //     if (response.data.data.loggedIn) {
+
+    //         let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    //         if (cart.length > 0) {
+    //             await axios.post('/api/cart', { cart });
+    //             localStorage.removeItem('cart');
+    //         }
+    //     }
+    // } catch (error) {
+    //     console.error('Failed to sync cart with database:', error);
+    // }
+}
+
+function updateCartData() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
+    console.log("updated")
+
+
+    // Selectors for cart elements
+    const cartElement = document.querySelector('.cart');
+    const productsContainer = cartElement.querySelector('.products');
+    const subtotalElement = cartElement.querySelector('.subtotal .amount');
+    const totalElement = cartElement.querySelector('.total p:last-child');
+    const cartCountElements = document.querySelectorAll('.cart-btn p');
+    const emptyCartMessage = cartElement.querySelector('.empty-cart-message');
+
+    // Check if cart is empty
+    if (cart.items.length === 0) {
+        // Hide cart content and show empty cart message
+        productsContainer.innerHTML = '';
+        subtotalElement.textContent = '₹0.00';
+        totalElement.textContent = '₹0.00';
+        cartElement.querySelector('.calculations').style.display = 'none';
+        emptyCartMessage.style.display = 'block';
+        cartElement.querySelector('.checkout').style.display = 'none';
+    } else {
+        // Show cart content
+        cartElement.querySelector('.calculations').style.display = 'block';
+        emptyCartMessage.style.display = 'none';
+        cartElement.querySelector('.checkout').style.display = 'block';
+
+        // Clear existing products
+        productsContainer.innerHTML = '';
+
+        // Loop through cart items and generate HTML for each product
+        cart.items.forEach(item => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product', 'flex', 'gap-2', 'w-full');
             
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            if (cart.length > 0) {
-                await axios.post('/api/cart', { cart });
-                localStorage.removeItem('cart');
-            }
-        }
-    } catch (error) {
-        console.error('Failed to sync cart with database:', error);
-    }
-}
-
-function updateCartTotals(cartData) {
-    // Calculate subtotal
-    let subtotal = cartData.items.reduce((total, item) => total + item.price * item.quantity, 0);
-    
-    // Assume tax is a fixed value or a percentage of the subtotal
-    let tax = 5.00; // Example fixed tax
-    // let tax = subtotal * 0.08; // Example 8% tax rate
-    
-    // Calculate total
-    let total = subtotal + tax;
-    
-    // Update the UI
-    $('.all-charges .flex').eq(0).find('p').eq(1).text(`$${subtotal.toFixed(2)}`);
-    $('.all-charges .flex').eq(2).find('p').eq(1).text(`$${tax.toFixed(2)}`);
-    $('.total .flex').find('p').eq(1).text(`$${total.toFixed(2)}`);
-}
-
-function loadCartFromLocalStorage() {
-    const cartData = JSON.parse(localStorage.getItem('cart')) || [];
-    $('.cart .products').empty();
-    let subtotal = 0;
-    console.log(cartData)
-    cartData.forEach(product => {
-        const productHtml = `
-            <div class="product flex w-full">
-                <i class="delete ri-close-line cursor-pointer"></i>
+            productElement.innerHTML = `
+                <i class="delete ri-close-line cursor-pointer" data-id="${item.product._id}"></i>
                 <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
-                    <img src="${product.product.image}" alt="${product.product.name}" class="image w-[75px] h-[75px] ">
+                    <img src="/images/product/${item.product.image}" alt="${item.product.name}" class="image w-[75px] h-[75px] ">
                     <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
-                        <p class="text-[#191717] pr-[100px]">${product.product.name}</p>
+                        <p class="text-[#191717] pr-[100px]">${item.product.name}</p>
                         <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
-                            <i class="ri-subtract-line"></i>
-                            <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">${product.quantity}</p>
-                            <i class="ri-add-line"></i>
+                            <i class="ri-subtract-line cursor-pointer" data-id="${item.product._id}"></i>
+                            <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">${item.quantity}</p>
+                            <i class="ri-add-line cursor-pointer" data-id="${item.product._id}"></i>
                         </div>
                     </div>
                 </div>
-                <div class="price font-[merriweather] bg-white w-[100px]">$${product.product.price}</div>
-            </div>
-        `;
+                <div class="price font-[merriweather] bg-white w-[100px]">₹${item.product.price}</div>
+            `;
 
-        $('.products').append(productHtml);
-        subtotal += product.price * product.quantity;
+            // Append the product element to the container
+            productsContainer.appendChild(productElement);
+        });
 
-    });
+        // Update subtotal and total amounts
+        subtotalElement.textContent = `₹${cart.totalAmount.toFixed(2)}`;
+        totalElement.textContent = `₹${cart.totalAmount.toFixed(2)}`;
 
-    $('.calculations .subtotal .amount').text(`$${subtotal.toFixed(2)}`);
+        // Update the cart count
+        const totalItems = cart.items.length;
+        cartCountElements.forEach(element => {
+            element.textContent = totalItems;
+        });
+
+        // Event listeners for increase, decrease, and delete actions
+        productsContainer.querySelectorAll('.ri-add-line').forEach(element => {
+            element.addEventListener('click', increaseQuantity);
+        });
+
+        productsContainer.querySelectorAll('.ri-subtract-line').forEach(element => {
+            element.addEventListener('click', decreaseQuantity);
+        });
+
+        productsContainer.querySelectorAll('.delete').forEach(element => {
+            element.addEventListener('click', deleteProduct);
+        });
+    }
 }
+
+
+function increaseQuantity(event) {
+    const productId = event.target.dataset.id;
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    const productIndex = cart.items.findIndex(item => item.product._id === productId);
+
+    if (productIndex > -1 && cart.items[productIndex].quantity < 10) {
+        cart.items[productIndex].quantity++;
+        cart.totalAmount += parseFloat(cart.items[productIndex].product.price);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartData();
+    } else {
+        showToast('You can only add 10 items at a time', 'warning');
+    }
+}
+
+function decreaseQuantity(event) {
+    const productId = event.target.dataset.id;
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    const productIndex = cart.items.findIndex(item => item.product._id === productId);
+
+    if (productIndex > -1 && cart.items[productIndex].quantity > 1) {
+        cart.items[productIndex].quantity--;
+        cart.totalAmount -= parseFloat(cart.items[productIndex].product.price);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartData();
+    } else {
+        showToast('You need to add at least one item', 'warning');
+    }
+}
+
+function deleteProduct(event) {
+    const productId = event.target.dataset.id;
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    const productIndex = cart.items.findIndex(item => item.product._id === productId);
+
+    if (productIndex > -1) {
+        cart.totalAmount -= cart.items[productIndex].product.price * cart.items[productIndex].quantity;
+        cart.items.splice(productIndex, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartData();
+    }
+}
+
+async function addToCart(productId) {
+    try {
+        // Fetch product details
+        const response = await axios.get(`/api/product/${productId}`);
+        const product = response.data.data.product;
+
+        // Get cart from local storage
+        let cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
+        const productIndex = cart.items.findIndex(item => item.product._id === productId);
+
+        // Handle product stock and quantity
+        if (product && product.stock > 0) {
+            let quantity = 1; // Default quantity
+
+            if (productIndex > -1) {
+                // Product already in cart
+                if (cart.items[productIndex].quantity < 10) {
+                    cart.items[productIndex].quantity++;
+                    cart.totalAmount += parseFloat(product.price);
+                    showToast('Item quantity updated in cart', 'success');
+                } else {
+                    showToast('You can only add 10 items at a time', 'warning');
+                }
+            } else {
+                // New product in cart
+                cart.items.push({
+                    product: {
+                        _id: productId,
+                        name: product.name,
+                        price: (product.price * (1 - (product.sale / 100))).toFixed(2),
+                        image: product.images[0] || 'default.jpg'
+                    },
+                    quantity: quantity
+                });
+                cart.totalAmount += parseFloat(cart.items[cart.items.length - 1].product.price);
+                showToast('Item added to cart', 'success');
+            }
+
+            // Update local storage and UI
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartData();
+        } else {
+            showToast('Product not available', 'error');
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        showToast('An error occurred', 'error');
+    }
+}
+
+function setupAddToCartButtons() {
+    $(document).on('click', '.add-to-cart-btn', function() {
+        const productId = $(this).data('id');
+        addToCart(productId);
+    });
+}
+
+
+
+
+
 
 
 $(document).ready(function () {
@@ -647,8 +784,12 @@ $(document).ready(function () {
     cartAnimation();
     shopPageCheckboxAnimation();
     loginRegisterAnimation();
-    loadCartFromLocalStorage();
+    syncCartWithDatabase();
+    updateCartData();
+    setupAddToCartButtons();
 
+
+    // Login form submission
     $('#loginForm').on('submit', function (e) {
 
         e.preventDefault();
@@ -663,7 +804,7 @@ $(document).ready(function () {
 
                 await syncCartWithDatabase();
 
-                
+
                 if (data.data.redirect) {
                     setTimeout(() => {
                         window.location.href = data.data.redirect;
@@ -672,13 +813,14 @@ $(document).ready(function () {
             })
             .catch(error => {
                 const data = error.response.data;
-                
+
                 showToast(data.message, data.type);
             });
 
 
     });
 
+    // Register form submission
     $('#registerForm').on('submit', function (e) {
 
         e.preventDefault();
@@ -729,8 +871,9 @@ $(document).ready(function () {
 
     });
 
-    $('.add').on('click', function () {
-        let quantityInput = $(this).closest('.product-cart-control').find('#quantity');
+    // Increase quantity from single product page
+    $('.single-product-btn-control .add').on('click', function () {
+        let quantityInput = $(this).closest('.product-quantity').find('#quantity');
         let quantity = parseInt(quantityInput.val()) || 1;
         if (quantity < 10) {
             quantity++;
@@ -739,10 +882,10 @@ $(document).ready(function () {
             showToast('You can only add 10 items at a time', 'warning');
         }
     });
-    
-    // Decrease quantity
-    $('.sub').on('click', function () {
-        let quantityInput = $(this).closest('.product-cart-control').find('#quantity');
+
+    // Decrease quantity from single product page
+    $('.single-product-btn-control .sub').on('click', function () {
+        let quantityInput = $(this).closest('.product-quantity').find('#quantity');
         let quantity = parseInt(quantityInput.val()) || 1;
         if (quantity > 1) {
             quantity--;
@@ -752,44 +895,94 @@ $(document).ready(function () {
         }
     });
 
-    $('#add-to-cart').on('click', function () {
-        const productId = $(this).data('id');
-        const productName = $('h2').text();
-        const productPrice = parseFloat($('.product-new-price').text().replace('₹', ''));
-        const productImage = $('.product-image img').attr('src');
-        let quantityInput = $(this).closest('.product-cart-control').find('#quantity');
-        let quantity = parseInt(quantityInput.val()) || 1;
+    // Add to cart from single product page
+    $(document).on('click', '#single-add-to-cart-btn', async function () {
+        try {
+            const productId = $(this).data('id');
+            const response = await axios.get(`/api/product/${productId}`);
+            const product = response.data.data.product;
+            const response2 = await axios.get(`/api/loggedin`);
+            const isLoggedin = response2.data.data.loggedIn;
 
+            let quantityInput = $(this).closest('.single-product-btn-control').find('#quantity');
+            let quantity = parseInt(quantityInput.val());
 
-        console.log(productId, productName, productPrice, productImage);
+            if (product && product.stock > 0) {
+                const productName = product.name;
+                const productPrice = (product.price * (1 - (product.sale / 100))).toFixed(2);
+                const productImage = product.images[0] || 'default.jpg';
 
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                if (!isLoggedin) {
+                    let cart = JSON.parse(localStorage.getItem('cart')) || {
+                        user: null, // no user when not logged in
+                        items: [],
+                        totalAmount: 0,
+                        isOrderPlaced: false
+                    };
 
-        const existingProductIndex = cart.findIndex(item => item.product._id === productId);
+                    const existingProductIndex = cart.items.findIndex(item => item.product._id === productId);
 
-        if (existingProductIndex > -1) {
+                    if (existingProductIndex > -1) {
+                        // Update quantity if product already exists
+                        if (cart.items[existingProductIndex].quantity + quantity <= 10) {
+                            cart.items[existingProductIndex].quantity += quantity;
+                            showToast('Item added to cart', 'success');
+                        } else {
+                            showToast('You can only add 10 items at a time', 'warning');
+                        }
+                    } else {
+                        // Add new product to cart
+                        cart.items.push({
+                            product: {
+                                _id: productId,
+                                name: productName,
+                                price: productPrice,
+                                image: productImage
+                            },
+                            quantity: quantity
+                        });
+                        showToast('Item added to cart', 'success');
+                    }
 
-            cart[existingProductIndex].quantity += quantity;
+                    // Recalculate totalAmount
+                    cart.totalAmount = cart.items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
-        } else {
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartData();
+                } else {
+                    // If logged in, send to server
+                    const response3 = await axios.post('/api/cart/add', { productId, quantity });
+                    const data = response3.data;
+                    showToast(data.message, data.type);
+                    updateCartData();
+                }
+            } else {
+                showToast('Product not found', 'error');
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+                console.error('Response headers:', error.response.headers);
 
-            cart.push({
-                product: {
-                    _id: productId,
-                    name: productName,
-                    price: productPrice,
-                    image: productImage
-                },
-                quantity: quantity
-            });
+                if (error.response.status === 404) {
+                    showToast('Product not found', 'error');
+                } else {
+                    showToast('An error occurred', 'error');
+                }
+            } else if (error.request) {
+                console.error('Request data:', error.request);
+                console.error('No response received');
+            } else {
+                console.error('Error message:', error.message);
+            }
 
+            console.error('Error config:', error.config);
         }
-
-        localStorage.setItem('cart', JSON.stringify(cart));
-
-        showToast('Item added to cart', 'success');
-
     });
+
+
+
 
 
 

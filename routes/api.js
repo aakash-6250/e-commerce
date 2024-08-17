@@ -54,7 +54,7 @@ router.post('/login', apiController.login);
 router.get('/delete',isLoggedInAdmin, apiController.deleteAllDocuments);
 
 // GET /api/isloggedin
-router.get('/check-login', apiController.isLoggedIn);
+router.get('/loggedin', apiController.isLoggedIn);
 
 
 

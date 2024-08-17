@@ -16,6 +16,16 @@ router.get('/register', indexController.register);
 
 router.get('/account', indexController.account);
 
+router.get('/cart', indexController.cart);
+
+router.get('/terms-of-use', indexController.terms);
+
+router.get('/privacy-policy', indexController.privacy);
+
+router.get('/shipping-policy', indexController.shipping);
+
+router.get('/cookie-policy', indexController.cookie)
+
 
 
 router.get('/logout', isLoggedIn, async function (req, res, next) {

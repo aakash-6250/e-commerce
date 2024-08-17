@@ -61,6 +61,40 @@ indexController.account = catchAsyncEjsErrors(async (req, res, next) =>{
     res.render('account',);
 });
 
+// GET /cart
+indexController.cart = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('cart', { categories });
+});
+
+// GET /terms-of-use
+indexController.terms = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('termsOfUse', { categories });
+});
+
+// GET /privacy-policy
+indexController.privacy = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('privacyPolicy', { categories });
+});
+
+// GET /shipping-policy
+indexController.shipping = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('shippingPolicy', { categories });
+});
+
+// GET /cookie-policy
+indexController.cookie = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('cookiePolicy', { categories });
+});
 
 
 

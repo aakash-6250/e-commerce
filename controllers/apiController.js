@@ -50,7 +50,13 @@ apiController.getProducts = catchAsyncApiErrors(async (req, res, next) => {
     }
 
     if (sale !== undefined) {
-        query.sale = sale === 'true';
+        // If sale is 'true', check for sale percentage greater than 0%
+        if (sale === 'true') {
+            query.sale = { $gt: 0 };
+        } else {
+            // If sale is 'false', exclude products on sale
+            query.sale = 0;
+        }
     }
 
     if (search) {
@@ -105,6 +111,7 @@ apiController.getProducts = catchAsyncApiErrors(async (req, res, next) => {
         }
     });
 });
+
 
 // GET /api/product/:id
 apiController.getProductById = catchAsyncApiErrors(async (req, res, next) => {
@@ -198,7 +205,6 @@ apiController.updateAddress = catchAsyncApiErrors(async (req, res, next) => {
 });
 
 // isLogedIn Controller
-
 
 // GET
 apiController.isLoggedIn = catchAsyncApiErrors(async (req, res, next) => {

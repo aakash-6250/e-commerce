@@ -5,7 +5,6 @@
         <a href="/">
             <div class="logo flex flex-col justify-center items-center">
                 <h1 class="text-5xl font-bold text-[#0D5E59]">Geldix</h1>
-                <p class="text-sm">Geldix Pharmaceuticals Pvt. Ltd.</p>
             </div>
         </a>
         <i class="mobile-search-icon ri-search-line text-3xl cursor-pointer text-[#0D5E59]"></i>
@@ -82,7 +81,6 @@
 
         <a class="logo" href="/">
             <h1 class="text-5xl font-bold text-[#191717]">Geldix</h1>
-            <p class="text-sm">Geldix Pharmaceuticals Pvt. Ltd.</p>
         </a>
 
         <form action="/shop" method="get"
@@ -106,13 +104,14 @@
 
             </i>
 
-            <i class="ri-shopping-cart-line cart-btn text-lg  flex justify-center items-center text-[#191717] cursor-pointer relative">
+            <div class="ri-shopping-cart-line cart-btn text-lg flex justify-center items-center text-[#191717] cursor-pointer relative">
 
-                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping ">0</p>
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping">0</p>
 
                 <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
-
-            </i>
+                
+            </div>
+            
                 
         </div>
 
@@ -124,10 +123,10 @@
     <div class="desktop-menu text-[#191717] text-[16px] h-[35px] border-b-[2px] border-[#EEEEEE] flex items-center gap-[40px] md:px-[50px] lg:px-[100px] px-[25px]">
         <a href="/" class="uppercase hover:text-[#967BB6]">Home</a>
         <a href="/shop" class="uppercase hover:text-[#967BB6]">Shop</a>
-        <a href="/" class="uppercase hover:text-[#967BB6]">beauty</a>
-        <a href="/" class="uppercase hover:text-[#967BB6]">Hair</a>
-        <a href="/" class="uppercase hover:text-[#967BB6]">Miscellaneous</a>
-        <a href="/" class="uppercase hover:text-[#967BB6]">!Sale</a>
+        <a href="/shop?search=beauty" class="uppercase hover:text-[#967BB6]">beauty</a>
+        <a href="/shop?search=hair" class="uppercase hover:text-[#967BB6]">Hair</a>
+        <a href="/shop?search=miscellaneous" class="uppercase hover:text-[#967BB6]">Miscellaneous</a>
+        <a href="/shop?sale=true" class="uppercase hover:text-[#967BB6]">!Sale</a>
     </div>
 
     <div class="desktop-category-list-items flex items-center gap-[2.5vw] h-[40px] z-50 md:px-[50px] lg:px-[100px] px-[25px]">
@@ -181,73 +180,7 @@
 
 </div>
 
-<div class="cart hidden max-w-[450px] lg:w-[450px] w-full z-50 bg-white min-h-[100vh] fixed top-0 right-[-450px] px-[20px]" style="box-shadow: -14px 0px 79px 0px #00000081;" >
-
-    <div class="header text-2xl py-[25px] bg-white flex justify-between items-center border-b-[1px] border-[#E2E2E2]">
-        <h1 class="font-[merriweather] text-[#191717]">Cart</h1>
-        <i class="ri-close-large-line cursor-pointer text-[#616161]"></i>
-    </div>
-
-    <div class="products bg-white py-[30px] flex flex-col gap-[30px] border-b-[1px] border-[#E2E2E2]">
-
-        <div class="product flex w-full">
-
-            <i class="delete ri-close-line cursor-pointer"></i>
-
-            <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
-
-                <img src="/images/products/cart-product.png" alt="" class="image w-[75px] h-[75px] ">
-
-                <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
-                    <p class="text-[#191717] pr-[100px]">Asterwood Matrixyl 3000</p>
-                    <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
-                        <i class="ri-subtract-line text-[#0000002B]"></i>
-                        <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">1</p>
-                        <i class="ri-add-line"></i>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="price font-[merriweather] bg-white w-[100px]">$29.0</div>
-
-        </div>
-
-    </div>
-
-    <div class="calculations bg-white py-[30px] gap-[30px]">
-
-        <div class="all-charges flex flex-col gap-[10px] border-b-[1px] border-[#E2E2E2] pb-[30px]">
-
-            <div class="subtotal flex justify-between">
-                <p class="text-[#616161]">Subtotal</p>
-                <p class="amount text-[#191717] font-[merriweather]">₹</p>
-            </div>
-
-            <div class="shipping flex justify-between">
-                <p class="text-[#616161]">Shipping</p>
-                <p class="amount text-[#616161]">₹</p>
-            </div>
-
-            <div class="tax flex justify-between">
-                <p class="text-[#616161]">Tax</p>
-                <p class="amount text-[#191717] font-[merriweather]"></p>
-            </div>
-
-        </div>
-
-        <div class="total pt-[30px]">
-            <div class="flex justify-between">
-                <p class="text-[#191717]">Total</p>
-                <p class="text-[#191717] font-[merriweather]">₹</p>
-            </div>
-        </div>
-
-    </div>
-
-    <button class="checkout bg-[#967BB6] text-white w-full py-[12px] rounded-[58px]">Proceed To Checkout</button>
-
-</div>
+<%- include('./cart') %>
 
 
 
