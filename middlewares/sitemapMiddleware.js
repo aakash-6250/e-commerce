@@ -26,7 +26,7 @@ const generateURL = (loc, priority = 0.5, lastmod = new Date().toISOString(), ch
 
 const sitemapMiddleware = async (req, res, next) => {
     try {
-        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const baseUrl = `https://${req.get('host')}`;
         const filePath = path.join(__dirname, '../public/sitemap.xml');
 
         // Static URLs to be added to the sitemap
