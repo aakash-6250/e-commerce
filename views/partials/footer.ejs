@@ -33,9 +33,9 @@
     
             </div>
     
-            <div class="right flex lg:justify-start justify-between flex-wrap min-w-[300px]">
+            <div class="right flex lg:justify-start justify-start flex-wrap min-w-[300px]">
     
-                <div class="flex flex-col gap-[10px] pb-[30px] px-[10px]">
+                <div class="flex flex-col gap-[10px] min-w-[170px] pb-[30px]  ">
                     <h1 class="pb-[10px]">COMPANY</h1>
                     <a href="/">Home</a>
                     <a href="/shop">Shop</a>
@@ -44,7 +44,7 @@
                 </div>
     
                 <% if(categories.length> 0){ %>
-                    <div class="flex flex-col gap-[10px] w-[150px] pb-[30px] px-[10px]">
+                    <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
                         <h1 class="pb-[10px]">CATEGORIES</h1>
                             <% categories.forEach(category=> { %>
                                 <a class="" href="/shop/?cat=<%= category._id %>"><%= category.name %></a>
@@ -52,12 +52,12 @@
                     </div>
                 <% } %>
     
-                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px] px-[10px]">
+                <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
                     <h1 class="pb-[10px]">STORE</h1>
                     <a href="/">Shop</a>
                     <% if(user){ %>
                         <% if(user.role === 'admin'){ %>
-                            <a href="/admin/dashboard">Dashboard</a>
+                            <a href="/admin/">Dashboard</a>
                         <% }else{ %>
                             <a href="/account">My Account</a>
                         <%} %>
@@ -67,7 +67,7 @@
                     <a href="/cart">Cart</a>
                 </div>
     
-                <div class="flex flex-col gap-[10px] w-[150px] pb-[30px] px-[10px]">
+                <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
                     <h1 class="pb-[10px]">POLICIES</h1>
                     <a href="/terms-of-use">Terms Of Use</a>
                     <a href="/privacy-policy">Privacy Policy</a>
