@@ -587,7 +587,6 @@ async function syncCartWithDatabase() {
 
 function updateCartData() {
     const cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
-    console.log("updated")
 
 
     // Selectors for cart elements

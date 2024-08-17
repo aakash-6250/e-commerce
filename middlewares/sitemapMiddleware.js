@@ -43,9 +43,6 @@ const sitemapMiddleware = async (req, res, next) => {
             { path: '/cookie-policy', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
         ];
 
-        const socialMediaUrls = [
-            { url: 'https://www.instagram.com/geldixpharma/', priority: 0.1, lastmod: new Date().toISOString(), changefreq: 'never' },
-        ];
 
         // Prepare sitemap content
         let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
@@ -60,11 +57,6 @@ const sitemapMiddleware = async (req, res, next) => {
         const dynamicUrls = await fetchDynamicUrlsFromDatabase();
         dynamicUrls.forEach(({ loc, priority, lastmod, changefreq }) => {
             sitemapContent += generateURL(`${baseUrl}${loc}`, priority, lastmod, changefreq);
-        });
-
-        // Add social media URLs with metadata
-        socialMediaUrls.forEach(({ url, priority, lastmod, changefreq }) => {
-            sitemapContent += generateURL(url, priority, lastmod, changefreq);
         });
 
         sitemapContent += `</urlset>`;
