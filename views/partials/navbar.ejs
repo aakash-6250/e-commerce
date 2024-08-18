@@ -40,19 +40,28 @@
 
 </section>
 
-<div class="mobile-menu-container hidden lg:hidden w-screen h-screen fixed z-50 top-0 left-0 bg-[#0000007c]">
-    <div class="mobile-menu-list bg-white w-[85%] h-screen relative pt-10">
-        <i
-            class="mobile-menu-list-close ri-close-large-line text-2xl absolute top-4 right-4 cursor-pointer text-[#0D5E59]"></i>
+<div class="mobile-menu-container hidden lg:hidden w-screen h-screen fixed overflow-scroll z-50 top-0 left-0 bg-[#0000007c]">
+
+    <div class="mobile-menu-list  flex flex-col bg-white h-max min-h-full w-[85%] relative py-[50px]">
+
+        <i class="mobile-menu-list-close ri-close-large-line text-2xl absolute top-4 right-4 cursor-pointer text-[#0D5E59]"></i>
+
+        <a href="/" class="mobile-menu-item-static cursor-pointer  text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">Home</a>
+
+        <a href="/shop" class="mobile-menu-item-static cursor-pointer text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">Shop</a>
+
         <% if(categories && categories.length> 0){ %>
             <% categories.forEach(category=> { %>
+
                 <div class="mobile-menu-item cursor-pointer text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">
+
                     <%= category.name %>
-                        <% if( categories.subcategories && category.subcategories.length> 0){ %>
+
+                        <% if( category.subcategories && category.subcategories.length> 0){ %>
                             <div class="mobile-menu-item-subcategory hidden flex-col gap-1 ml-4 mt-2">
                                 <% category.subcategories.forEach(subcategory=> { %>
-                                    <a class="mobile-menu-item-subcategory-item flex justify-between text-base gap-[5vw] p-3 bg-[#EBF6F5] rounded"
-                                        href="/shop?subcategory=<%= subcategory._id %> ">
+
+                                    <a class="mobile-menu-item-subcategory-item flex justify-between text-base gap-[5vw] p-3 bg-[#EBF6F5] rounded" href="/shop?cat=<%= category._id %>&subcat=<%= subcategory._id %>">
                                         <p>
                                             <%= subcategory.name %>
                                         </p>
@@ -67,6 +76,7 @@
                 <% }) %>
                     <% } %>
     </div>
+    
 </div>
 
 <div class="mobile-search-bar-container hidden w-screen h-screen fixed top-0 left-0 bg-[#0000007c] z-50">

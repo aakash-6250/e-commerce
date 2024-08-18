@@ -39,7 +39,7 @@ function mobileMenuAnimation() {
             gsap.from(mobileMenuList, {
                 x: '-100%',
                 opacity: 1,
-                duration: 0.5
+                duration: 0.3
             });
         });
 
@@ -273,8 +273,8 @@ function cartAnimation() {
             cart.classList.remove("hidden");
             gsap.to(cart, {
                 x: '-450px',
-                duration: 0.5,
-                ease: 'power2.out'
+                duration: 1,
+                ease: 'elastic.out(1,0.75)',
             });
         });
 
@@ -282,8 +282,8 @@ function cartAnimation() {
             if (!cart.contains(e.target) && e.target !== btn) {
                 gsap.to(cart, {
                     x: '100%',
-                    duration: 0.5,
-                    ease: 'power2.in',
+                    duration: 1,
+                    ease: 'elastic.out(1,0.75)',
                     onComplete: () => {
                         cart.classList.add("hidden");
                     }
@@ -358,8 +358,7 @@ function loginRegisterAnimation() {
             loginRegister.classList.remove("hidden");
             gsap.to(loginRegister, {
                 x: '-450px',
-                duration: 0.5,
-                ease: 'power2.out'
+                duration: 0.3,
             });
         });
 
@@ -367,8 +366,7 @@ function loginRegisterAnimation() {
             if (!loginRegister.contains(e.target) && e.target !== btn) {
                 gsap.to(loginRegister, {
                     x: '100%',
-                    duration: 0.5,
-                    ease: 'power2.in',
+                    duration: 0.3,
                     onComplete: () => {
                         loginRegister.classList.add("hidden");
                     }
@@ -381,8 +379,7 @@ function loginRegisterAnimation() {
         if (e.target === loginRegisterCloseBtn) {
             gsap.to(loginRegister, {
                 x: '100%',
-                duration: 0.5,
-                ease: 'power2.in',
+                duration: 0.3,
                 onComplete: () => {
                     loginRegister.classList.add("hidden");
                 }

@@ -443,6 +443,8 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         // Set additional properties
         if (sale) product.sale = sale;
 
+        if(featured) product.featured = featured==='true'?true:false;
+
         product.published = true;
 
         await product.save();
