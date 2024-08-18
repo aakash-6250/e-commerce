@@ -15,7 +15,7 @@
     style="box-shadow: 0px -4px  6px -1px #a1a1aa;">
 
     <% if(user){ %>
-        <a href="<%= user.role === "customer" ? '/account' : '/admin/dashboard' %>"><i class="ri-user-line flex justify-center items-center text-[#191717] cursor-pointer text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1"></i></a>
+        <a href="<%= user.role === "customer" ? '/account' : '/admin' %>"><i class="ri-user-line flex justify-center items-center text-[#191717] cursor-pointer text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1"></i></a>
     <% }else{ %>
         <i class="login-register-btn account-btn ri-user-line flex justify-center items-center text-[#191717] cursor-pointer text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1"></i>
     <% } %>

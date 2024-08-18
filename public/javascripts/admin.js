@@ -255,7 +255,7 @@ function displayProducts(products) {
                     <p class="product-name">${product.name}</p>
                 </div>
                 <div class="price w-[130px]">
-                    <p>$ ${product.price}</p>
+                    <p>₹ ${product.price}</p>
                 </div>
                 <div class="quantity w-[130px]">
                     <p>${product.stock}</p>
@@ -270,7 +270,7 @@ function displayProducts(products) {
                 }
                 </div>
                 <div class="revenue w-[130px]">
-                    <p>$ ${product.order * product.price}</p>
+                    <p>₹ ${product.order * product.price}</p>
                 </div>
                 <div class="actions min-w-[130px] flex justify-around items-center">
                     <a class="edit-product-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 " href="/admin/product/${product._id}/edit">

@@ -54,10 +54,10 @@
     
                 <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
                     <h1 class="pb-[10px]">STORE</h1>
-                    <a href="/">Shop</a>
+                    <a href="/shop">Shop</a>
                     <% if(user){ %>
                         <% if(user.role === 'admin'){ %>
-                            <a href="/admin/">Dashboard</a>
+                            <a href="/admin">Dashboard</a>
                         <% }else{ %>
                             <a href="/account">My Account</a>
                         <%} %>
