@@ -130,5 +130,7 @@ dist
 .pnp.*
 
 
-# sitemap.xml
-sitemap.xml
+
+
+# .xml files
+/public/*.xml
