@@ -32,7 +32,7 @@ const sitemapMiddleware = async (req, res, next) => {
         // Static URLs to be added to the sitemap
         const staticUrls = [
             { path: '', priority: 1.0, lastmod: new Date().toISOString(), changefreq: 'daily' },
-            { path: '/shop', priority: 0.8, lastmod: new Date().toISOString(), changefreq: 'daily' },
+            { path: '/products', priority: 0.8, lastmod: new Date().toISOString(), changefreq: 'daily' },
             { path: '/login', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'monthly' },
             { path: '/register', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'monthly' },
             { path: '/account', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'monthly' },
@@ -82,9 +82,9 @@ async function fetchDynamicUrlsFromDatabase() {
         urls.push({ loc: `/product/${product._id}`, priority: 0.6, lastmod: new Date().toISOString(), changefreq: 'weekly' });
     });
     categories.forEach(category => {
-        urls.push({ loc: `/shop/?cat=${category._id}`, priority: 0.6, lastmod: new Date().toISOString(), changefreq: 'weekly' });
+        urls.push({ loc: `/products/?cat=${category._id}`, priority: 0.6, lastmod: new Date().toISOString(), changefreq: 'weekly' });
         category.subcategories.forEach(subcategory => {
-            urls.push({ loc: `/shop/?cat=${category._id}&subcat=${subcategory._id}`, priority: 0.6, lastmod: new Date().toISOString(), changefreq: 'weekly' });
+            urls.push({ loc: `/products/?cat=${category._id}&subcat=${subcategory._id}`, priority: 0.6, lastmod: new Date().toISOString(), changefreq: 'weekly' });
        });
     });
     return urls;

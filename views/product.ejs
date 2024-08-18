@@ -8,7 +8,7 @@
 
                     <div class="product-image xl:h-[560px] lg:h-[450px] w-full ">
                         <% if(product.images.length > 0){ %>
-                            <img src="/image/product/<%= product.image[0] %>" alt="<%= product.name %>" class="w-full h-full object-cover">
+                            <img src="/images/product/<%= product.images[0] %>" alt="<%= product.name %>" class="w-full h-full object-cover">
                         <% }else{ %>
                             <img src="/images/product/default.jpg" alt="<%= product.name %>" class="w-full h-full object-cover">
                         <% } %>

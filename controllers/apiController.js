@@ -223,8 +223,8 @@ apiController.isLoggedIn = catchAsyncApiErrors(async (req, res, next) => {
 
 // POST /api/register
 apiController.register = catchAsyncApiErrors(async (req, res, next) => {
-    const { firstName, lastName, email, phone, password } = req.body;
-    if (!(firstName && lastName && email && phone && password)) {
+    const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
+    if (!(firstName && lastName && email && phone && password, confirmPassword)) {
         throw new ApiError(400, 'All fields are required.', 'error');
     }
 
@@ -234,7 +234,8 @@ apiController.register = catchAsyncApiErrors(async (req, res, next) => {
     }
 
     const user = new User({ firstName, lastName, email, phone });
-    await user.setPassword(password);
+    if(password !== confirmPassword) throw new ApiError(400, 'Password and confirm password do not match.', 'error');
+    else user.setPassword(password);
     await user.save();
 
     sendSuccessResponse(res, 'Registration successful.', { redirect: '/login' });
@@ -403,7 +404,7 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
     let somethingAdded = false;
 
     for (let productData of data) {
-        const { name, description, price, category, subcategory, stock, brand, featured, sale } = productData;
+        const { name, description, price, category, subcategory, stock, brand, featured, sale, published, trending } = productData;
 
         // Check if the product already exists
         const existingProduct = await Product.findOne({ name });
@@ -445,7 +446,9 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
 
         if(featured) product.featured = featured==='true'?true:false;
 
-        product.published = true;
+        if(published) product.published = published==='true'?true:false;
+
+        if(trending) product.trending = trending==='true'?true:false;
 
         await product.save();
     }
@@ -466,7 +469,7 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, 'Product not found.', 'error');
 
-    const { name, description, price, category, subcategory, stock, brand, sale, featured, published, imagesToDelete } = req.body;
+    const { name, description, price, category, subcategory, stock, brand, sale, featured, published, trending, imagesToDelete } = req.body;
 
     if (name) product.name = name;
     if (description) product.description = description;
@@ -474,6 +477,7 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     if (stock) product.stock = stock;
     if (brand) product.brand = brand;
     if (sale) product.sale = sale;
+    if (trending) product.trending = trending==='true'?true:false;
     if (featured) product.featured = featured==='true'?true:false;
     if (published) product.published = published==='true'?true:false;
 
@@ -530,6 +534,8 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
 
         const currentImageCount = product.images.length;
         const newImages = req.files.map(file => file.filename).slice(0, 5 - currentImageCount);
+
+        if(newImages.length === 0) throw new ApiError(400, 'Product can have maximum 5 images.', 'error');
 
 
         const imagesToKeep = product.images.concat(newImages).slice(0, 5);

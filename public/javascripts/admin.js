@@ -652,6 +652,7 @@ $(document).ready(function () {
         const sale = e.target.querySelector('#sale').value;
         const featured = e.target.querySelector('#featured').checked;
         const images = e.target.querySelector('#images').files;
+        const trending = e.target.querySelector('#trending').checked;
         const published = e.target.querySelector('#published').checked;
         const productId = e.target.querySelector('#productId').value;
 
@@ -664,6 +665,7 @@ $(document).ready(function () {
         formData.append('stock', parseInt(stock));
         formData.append('brand', brand);
         formData.append('sale', parseInt(sale));
+        formData.append('trending', trending);
         formData.append('featured', featured);
         formData.append('published', published);
         formData.append('productId', productId);

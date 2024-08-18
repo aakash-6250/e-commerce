@@ -9,18 +9,31 @@
 
                 <h1 class="text-[merriweather] text-[28px] text-[#000000]">Login</h1>
 
-                <form class="flex flex-col items-center gap-[40px]" id="loginForm" method="POST">
+                <form class="flex flex-col items-center gap-[20px]" id="loginForm" method="POST">
 
                     <div class="w-full">
                         <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]   text-[#616161]" type="email" name="email" id="email" placeholder="Enter Your Email" required>
                         <div class="text-red-500 hidden px-[20px] text-sm w-full" id="emailError">Invalid email ID</div>
                     </div>
 
-                    <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717] text-[#616161]" type="password" name="password" id="password" placeholder="Enter Your Password" required>
+
+                    <div class="w-full relative">
+                        <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717] text-[#616161]" type="password" name="password" id="password" placeholder="Enter Your Password" required>
+
+                        <i id="togglePassword" class="ri-eye-line text-[#616161] absolute right-[20px] top-[50%] transform -translate-y-1/2 cursor-pointer">
+                        </i>
+                    </div>
 
                     <button class="w-max px-[50px] py-[12px] rounded-[58px] focus:outline-none focus:border-[2px] focus:border-purple-950 text-white bg-[#967BB6]">Login</button>
 
                 </form>
+
+                <p class="text-[#616161]">Forgot Password? <a href="/forgot-password" class="text-blue-600">Reset Password</a></p>
+
+                <p class="text-[#616161]">Don't have an account? <a href="/register" class="text-blue-600">Register</a></p>
+
+                <p class="text-[#616161] text-xs text-center">By continuing, you agree to our <a href="/terms-and-conditions" class="text-blue-600">Terms of Service</a> and <a href="/privacy-policy" class="text-blue-600">Privacy Policy</a></p>
+
             </div>
         </div>
 

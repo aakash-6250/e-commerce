@@ -21,6 +21,7 @@ const productSchema = new mongoose.Schema(
         brand: { type: String, default: "No brand provided." },
         sale: { type: Number, default: 0 },
         views: { type: Number, default: 0 },
+        trending: { type: Boolean, default: false },
         featured: { type: Boolean, default: false },
         published: { type: Boolean, default: false }
     }, { timestamps: true }

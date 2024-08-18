@@ -1,4 +1,4 @@
-<div class="cart hidden max-w-[450px] lg:w-[450px] w-full z-30 bg-white min-h-[100vh] absolute lg:top-0 top-[80px] right-[-450px] px-[20px] " style="box-shadow: -14px 0px 79px 0px #00000081;">
+<div class="cart hidden max-w-[450px] lg:w-[450px] w-full z-50 bg-white min-h-[100vh] fixed top-0 right-[-450px] px-[20px] " style="box-shadow: -14px 0px 79px 0px #00000081;">
 
     <div class="header text-2xl py-[25px] bg-white flex justify-between items-center border-b-[1px] border-[#E2E2E2]">
         <h1 class="font-[merriweather] text-[#191717]">Cart</h1>
@@ -9,7 +9,7 @@
         <p class="text-[#191717] font-[merriweather] text-[24px]">Cart is empty</p>
     </div>
 
-    <div class="products bg-white py-[30px] flex flex-col gap-[30px] border-b-[1px] border-[#E2E2E2]"></div>
+    <div class="products max-h-[350px] overflow-scroll bg-white py-[30px] flex flex-col gap-[30px] border-b-[1px] border-[#E2E2E2]"></div>
 
     <div class="calculations bg-white py-[30px] gap-[30px]">
 
@@ -36,6 +36,6 @@
 
     </div>
 
-    <button class="checkout bg-[#967BB6] text-white w-full py-[12px] rounded-[58px] mb-[100px]">Proceed To Checkout</button>
+    <a href="/cart" class="checkout bg-[#967BB6] text-white text-center w-full py-[12px] rounded-[58px] mb-[100px]">Proceed To Checkout</a>
 
 </div>

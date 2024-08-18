@@ -479,7 +479,7 @@ function displayProducts(products) {
             productElement.className = 'product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group';
 
             productElement.innerHTML = `
-                <div class="product-image relative h-[330px] w-full flex justify-center items-center">
+                <div class="product-image relative h-[330px] w-full flex justify-center  items-center">
                     ${product.images.length > 0 ?
                     `<img loading="lazy" src="/images/product/${product.images[0]}" alt="${product.name}" class="h-[330px] w-full object-cover">` :
                     `<img loading="lazy" src="/images/product/default.jpg" alt="Default Image" class="h-[330px] w-full object-cover">`
@@ -494,7 +494,7 @@ function displayProducts(products) {
                 <div class="product-details h-[82px] flex flex-col justify-evenly items-center w-full text-center">
                     <a href="/product/${product._id}" class="product-name text-[#191717] flex  flex-col justify-evenly items-center w-full h-full">
 
-                    <p class="hover:border-b-[1px] w-max border-[#191717]">${product.name}</p>
+                    <p class="hover:border-b-[1px] uppercase w-max border-[#191717]">${product.name}</p>
                     <div class="product-price flex justify-center items-center gap-[10px]">
                         ${product.sale > 0 ?
                     `<strike class="product-old-price text-[#ACACAC] font-[merriweather]">&#8377 ${product.price}</strike>
@@ -766,9 +766,6 @@ function setupAddToCartButtons() {
 
 
 
-
-
-
 $(document).ready(function () {
     mobileSearchBarAnimation();
     mobileMenuAnimation();
@@ -784,6 +781,21 @@ $(document).ready(function () {
     updateCartData();
     setupAddToCartButtons();
 
+
+    $(document).on('click', '#togglePassword', function () {
+        const passwordField = document.getElementById('password');
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+    
+        if(this.classList.contains('ri-eye-close-line')) {
+            this.classList.remove('ri-eye-close-line');
+            this.classList.add('ri-eye-line');
+        } else {
+            this.classList.remove('ri-eye-line');
+            this.classList.add('ri-eye-close-line');
+        }
+    
+    });
 
     // Login form submission
     $('#loginForm').on('submit', function (e) {
@@ -823,6 +835,7 @@ $(document).ready(function () {
         const email = e.target.querySelector('#email').value;
         const emailInput = e.target.querySelector('#email');
         const password = e.target.querySelector('#password').value;
+        const confirmPassword = e.target.querySelector('#confirmPassword').value;
         const firstName = e.target.querySelector('#firstName').value;
         const lastName = e.target.querySelector('#lastName').value;
         const phoneInput = e.target.querySelector('#phone');
@@ -844,7 +857,7 @@ $(document).ready(function () {
             emailInput.classList.remove('border-red-500'); // Remove the red border if valid
             emailError.classList.add('hidden'); // Hide the error message
 
-            axios.post('/api/register', { email, password, firstName, lastName, phone })
+            axios.post('/api/register', { email, password, confirmPassword, firstName, lastName, phone })
                 .then(response => {
                     const data = response.data;
                     // Display toast message

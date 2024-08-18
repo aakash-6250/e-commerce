@@ -13,7 +13,7 @@
                     Shop 2, Katara Hills, Rapadia Village, 462043, Bhopal, Madhya Pradesh, India
                 </a>
                 
-                <a href="mailto:info@geldix.in?subject=Enquiry from website&body=Hello Geldix Pharmaceuticals" target="_blank"  >Email : <span class="hover:text-blue-600">info@geldix.in</span></a>
+                <a href="mailto:info@geldix.in?subject=Enquiry from website&body=Hello Geldix Pharmaceuticals" target="_blank" class="font-bold" >Email : <span class="hover:text-blue-600 font-normal">info@geldix.in</span></a>
     
                 <div class="flex gap-[15px] justify-start items-center">
                                         
@@ -36,25 +36,25 @@
             <div class="right flex lg:justify-start justify-start flex-wrap min-w-[300px]">
     
                 <div class="flex flex-col gap-[10px] min-w-[170px] pb-[30px]  ">
-                    <h1 class="pb-[10px]">COMPANY</h1>
+                    <h1 class="pb-[10px] font-bold">COMPANY</h1>
                     <a href="/">Home</a>
-                    <a href="/shop">Shop</a>
-                    <a href="/">Contact</a>
+                    <a href="/products">Products</a>
+                    <a href="/contact">Contact</a>
                     <a href="/#about-us">About</a>
                 </div>
     
                 <% if(categories.length> 0){ %>
                     <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
-                        <h1 class="pb-[10px]">CATEGORIES</h1>
+                        <h1 class="pb-[10px] font-bold">CATEGORIES</h1>
                             <% categories.forEach(category=> { %>
-                                <a class="" href="/shop/?cat=<%= category._id %>"><%= category.name %></a>
+                                <a class="" href="/products/?cat=<%= category._id %>"><%= category.name %></a>
                             <% }) %>
                     </div>
                 <% } %>
     
                 <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
-                    <h1 class="pb-[10px]">STORE</h1>
-                    <a href="/shop">Shop</a>
+                    <h1 class="pb-[10px] font-bold">STORE</h1>
+                    <a href="/products">Products</a>
                     <% if(user){ %>
                         <% if(user.role === 'admin'){ %>
                             <a href="/admin">Dashboard</a>
@@ -68,11 +68,12 @@
                 </div>
     
                 <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
-                    <h1 class="pb-[10px]">POLICIES</h1>
-                    <a href="/terms-of-use">Terms Of Use</a>
+                    <h1 class="pb-[10px] font-bold">POLICIES</h1>
                     <a href="/privacy-policy">Privacy Policy</a>
-                    <a href="/shipping-policy">Shipping Policy</a>
                     <a href="/cookie-policy">Cookie Policy</a>
+                    <a href="/terms-and-conditions">Terms and Conditions</a>
+                    <a href="/shipping-and-delivery">Shipping and Delivery</a>
+                    <a href="/cancelation-and-refund">Cancelation and Refund</a>
                 </div>
     
             </div>
@@ -81,7 +82,7 @@
     </div>
 
     <div class="copyright min-h-[52px] border-t-[1px] border-zinc-300 flex justify-center items-center">
-        <p class="text-[14px] text-white">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-white" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
+        <p class="text-[14px] text-white">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-blue-500" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
     </div>
 
 </div>

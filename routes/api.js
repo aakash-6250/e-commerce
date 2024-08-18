@@ -16,10 +16,10 @@ router.get('/product/:id', apiController.getProductById);
 router.delete('/product/:id', isLoggedInAdmin, apiController.deleteProduct);
 
 // POST /api/product
-router.post('/product/',isLoggedInAdmin, multerMiddleware.product, apiController.createProduct);
+router.post('/product/',isLoggedInAdmin, multerMiddleware.product, multerMiddleware.resizeProductImages, apiController.createProduct);
 
 // PATCH /api/product/:id
-router.patch('/product/:id',isLoggedInAdmin, multerMiddleware.product, apiController.updateProduct);
+router.patch('/product/:id',isLoggedInAdmin, multerMiddleware.product, multerMiddleware.resizeProductImages, apiController.updateProduct);
 
 // POST /api/product/bulk
 router.post('/product/bulk',isLoggedInAdmin, multerMiddleware.excel, apiController.bulkUpload);

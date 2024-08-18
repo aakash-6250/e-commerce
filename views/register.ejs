@@ -9,26 +9,45 @@
 
                 <h1 class="text-[merriweather] text-[28px] text-[#000000]">Register</h1>
 
-                <form class="flex flex-col items-center gap-[40px]" id="registerForm" method="POST">
+                <form class="flex flex-col items-center gap-[20px]" id="registerForm" method="POST">
+
                     <div class="w-full">
                         <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]   text-[#616161]" type="text" name="firstName" id="firstName" placeholder="Enter Your First Name" required>
                     </div>
+
                     <div class="w-full">
                         <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]   text-[#616161]" type="text" name="lastName" id="lastName" placeholder="Enter Your last Name" required>
                     </div>
+
                     <div class="w-full">
                         <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]   text-[#616161]" type="email" name="email" id="email" placeholder="Enter Your Email" required>
                         <div class="text-red-500 hidden px-[20px] text-sm w-full" id="emailError">Invalid email ID</div>
                     </div>
+
                     <div class="w-full">
                         <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]   text-[#616161]" type="tel" name="phone" id="phone" placeholder="Enter Your Phone Number" required>
                         <div class="text-red-500 hidden px-[20px] text-sm w-full" id="phoneError">Invalid phone number</div>
                     </div>
-                    <div class="w-full">
+
+                    <div class="w-full relative">
                         <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]  text-[#616161]" type="password" name="password" id="password" placeholder="Enter Your Password" required>
+                        <i id="togglePassword" class="ri-eye-line text-[#616161] absolute right-[20px] top-[50%] transform -translate-y-1/2 cursor-pointer">
+                        </i>
                     </div>
+
+                    <div class="w-full relative">
+                        <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]  text-[#616161]" type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Your Password" required>
+                        <i id="togglePassword" class="ri-eye-line text-[#616161] absolute right-[20px] top-[50%] transform -translate-y-1/2 cursor-pointer">
+                        </i>
+                    </div>
+
                     <button class="w-max px-[50px] py-[12px] rounded-[58px] focus:outline-none focus:border-purple-900 focus:border-[2px]  text-white bg-[#967BB6]">Register</button>
+
                 </form>
+
+                <p class="text-[#616161]">Already have an account? <a href="/login" class="text-blue-600">Login</a></p>
+
+                <p class="text-[#616161] text-xs text-center">By continuing, you agree to our <a href="/terms-and-conditions" class="text-blue-600">Terms of Service</a> and <a href="/privacy-policy" class="text-blue-600">Privacy Policy</a></p>
             </div>
         </div>
 

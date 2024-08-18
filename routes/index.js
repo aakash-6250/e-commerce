@@ -6,7 +6,7 @@ const Category = require('../models/category.model');
 
 router.get('/', indexController.index);
 
-router.get('/shop', indexController.shop);
+router.get('/products', indexController.shop);
 
 router.get('/product/:id', indexController.product);
 
@@ -16,15 +16,20 @@ router.get('/register', indexController.register);
 
 router.get('/account', indexController.account);
 
+router.get('/contact', indexController.contact);
+
 router.get('/cart', indexController.cart);
 
-router.get('/terms-of-use', indexController.terms);
+router.get('/terms-and-conditions', indexController.terms);
 
 router.get('/privacy-policy', indexController.privacy);
 
-router.get('/shipping-policy', indexController.shipping);
+router.get('/shipping-and-delivery', indexController.shipping);
 
 router.get('/cookie-policy', indexController.cookie)
+
+router.get('/cancelation-and-refund', indexController.cancelation);
+
 
 
 

@@ -194,7 +194,7 @@
                             At Geldix Pharmaceuticals, your health and well-being are our top priorities. If you have any questions or concerns, please feel free to contact us anytime. We're here to help.
                         </p>
                     
-                        <a href="/shop" class="text-white py-[12px] px-[24px] rounded-[58px] bg-[#967BB6] w-max hover:text-[#191717] hover:bg-white">Explore Products</a>
+                        <a href="/products" class="text-white py-[12px] px-[24px] rounded-[58px] bg-[#967BB6] w-max hover:text-[#191717] hover:bg-white">Explore Products</a>
                 
                     </div>
                 </div>
@@ -238,10 +238,10 @@
 
                                             <div class="product-price flex justify-center items-center gap-[10px]">
                                                 <% if(product.sale > 0){ %>
-                                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">$ <%= product.price %></strike>
-                                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$ <%= (product.price*((100-product.sale)/100)).toFixed(2) %></p>
+                                                    <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">₹ <%= product.price %></strike>
+                                                    <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">₹ <%= (product.price*((100-product.sale)/100)).toFixed(2) %></p>
                                                 <% }else{ %>
-                                                <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">$ <%= product.price %></p>
+                                                <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">₹ <%= product.price %></p>
                                                 <% } %>
                                             </div>
 
@@ -255,7 +255,7 @@
     
                         </div>
     
-                        <a href="/shop?featured=true" class="px-[24px] py-[12px] rounded-[58px] bg-[#967BB6] m-auto text-white">View More Products</a>
+                        <a href="/products?featured=true" class="px-[24px] py-[12px] rounded-[58px] bg-[#967BB6] m-auto text-white">View More Products</a>
                     </div>
                 
                 </section>

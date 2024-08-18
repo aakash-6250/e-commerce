@@ -96,6 +96,20 @@ indexController.cookie = catchAsyncEjsErrors(async (req, res, next) =>{
     res.render('cookiePolicy', { categories });
 });
 
+// GET /cancelation-refund-policy
+indexController.cancelation = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('cancelationRefund', { categories });
+});
+
+// GET /contact
+indexController.contact = catchAsyncEjsErrors(async (req, res, next) =>{
+    const categories = await Category.find().populate('subcategories').exec();
+
+    res.render('contact', { categories });
+});
+
 
 
 
