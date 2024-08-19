@@ -1,18 +1,20 @@
 User-agent: *
-Disallow: /admin/
-Disallow: /login/
-Disallow: /register/
-Disallow: /cart/
-Disallow: /checkout/
-Disallow: /api/
-Disallow: /account/
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /cart
+Disallow: /checkout
+Disallow: /api
+Disallow: /account
 Allow: /
-Allow: /shop/
+Allow: /products
 Allow: /product/
-Allow: /about-us/
-Allow: /contact/
-
-
-
+Allow: /about-us
+Allow: /contact
+Allow: /privacy-policy
+Allow: /cookie-policy
+Allow: /terms-and-conditions
+Allow: /shipping-policy
+Allow: /cancelation-and-refund
 
 Sitemap: https://geldix.in/sitemap.xml

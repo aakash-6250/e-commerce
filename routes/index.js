@@ -24,7 +24,7 @@ router.get('/terms-and-conditions', indexController.terms);
 
 router.get('/privacy-policy', indexController.privacy);
 
-router.get('/shipping-and-delivery', indexController.shipping);
+router.get('/shipping-policy', indexController.shipping);
 
 router.get('/cookie-policy', indexController.cookie)
 

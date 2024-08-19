@@ -316,6 +316,8 @@ apiController.deleteUser = catchAsyncApiErrors(async (req, res, next) => {
 apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
     const { name, description, price, category, subcategory, stock, brand, sale, featured, published } = req.body;
 
+    const descriptionArray = description.split('\n').map(point => point.trim()).filter(point => point);
+
     const requiredFields = ['name', 'description', 'price', 'category', 'subcategory', 'stock', 'brand'];
     const missingFields = requiredFields.filter(field => !req.body[field]);
 
@@ -326,7 +328,7 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
     const existingProduct = await Product.findOne({ name });
     if (existingProduct) throw new ApiError(400, 'A product with this name already exists.', 'error');
 
-    const product = new Product({ name, description, price, stock, brand, sale, featured });
+    const product = new Product({ name, description : descriptionArray, price, stock, brand, sale, featured });
 
     const categoryExist = await Category.findById(category);
     if (!categoryExist) throw new ApiError(400, 'Category not found.', 'error');
@@ -412,8 +414,10 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
 
         somethingAdded = true;
 
+        const descriptionArray = description.split(';').map(point => point.trim()).filter(point => point);
+
         // Create new product instance
-        const product = new Product({ name, description, price, stock, brand });
+        const product = new Product({ name, description : descriptionArray, price, stock, brand });
 
         // Check and create category
         let categoryExist = await Category.findOne({ name: category });
@@ -471,8 +475,10 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
 
     const { name, description, price, category, subcategory, stock, brand, sale, featured, published, trending, imagesToDelete } = req.body;
 
+    const descriptionArray = description.split('\n').map(point => point.trim()).filter(point => point);
+
     if (name) product.name = name;
-    if (description) product.description = description;
+    if (description) product.description = descriptionArray;
     if (price) product.price = price;
     if (stock) product.stock = stock;
     if (brand) product.brand = brand;

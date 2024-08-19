@@ -37,10 +37,11 @@ const sitemapMiddleware = async (req, res, next) => {
             { path: '/register', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'monthly' },
             { path: '/account', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'monthly' },
             { path: '/cart', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'weekly' },
-            { path: '/terms-of-use', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
+            { path: '/terms-and-conditions', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
             { path: '/privacy-policy', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
             { path: '/shipping-policy', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
             { path: '/cookie-policy', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
+            { path: '/cancelation-and-refund', priority: 0.5, lastmod: new Date().toISOString(), changefreq: 'yearly' },
         ];
 
 

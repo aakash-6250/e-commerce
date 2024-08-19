@@ -2,22 +2,34 @@
     <%- include('./partials/navbar') %>
         <main class="w-screen lg:bg-white max-w-[1920px] m-auto">
 
-            <section class="product-container py-[70px] px:[100px] flex justify-center items-center w-full min-h-[740px] bg-[#FFF9F4]">
+            <section class="product-container px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto flex justify-center items-center w-full min-h-[740px] bg-[#FFF9F4] ">
 
-                <div class="product  flex justify-between items-start gap-[100px] max-w-[1142px] w-[100%] ">
+                <div class="product  flex flex-col lg:flex-row lg:items-stretch justify-between items-start gap-[100px] max-w-[1142px] w-[100%] ">
 
-                    <div class="product-image xl:h-[560px] lg:h-[450px] w-full ">
-                        <% if(product.images.length > 0){ %>
-                            <img src="/images/product/<%= product.images[0] %>" alt="<%= product.name %>" class="w-full h-full object-cover">
-                        <% }else{ %>
-                            <img src="/images/product/default.jpg" alt="<%= product.name %>" class="w-full h-full object-cover">
-                        <% } %>
+                    <div class="product-images w-1/2 relative overflow-hidden">
+
+                        <div class="slider-wrapper relative w-full h-full">
+
+                            <% if(product.images.length > 0){ %>
+                                <% product.images.forEach((image, index) => { %>
+                                    <img src="/images/product/<%= image %>" alt="<%= product.name %>" class="slider-image absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>" data-index="<%= index %>">
+                                <% }) %>
+                            <% }else{ %>
+                                <img src="/images/product/default.jpg" alt="<%= product.name %>" class="w-full h-full object-contain opacity-100">
+                            <% } %>
+
+                        </div>
+
+                        <button class="slider-prev absolute left-0 top-1/2 transform border-[1px] border-black -translate-y-1/2 bg-white text-black px-2 py-1 rounded-full"><i class="ri-arrow-left-wide-line font-bold"></i></button>
+
+                        <button class="slider-next absolute right-0 top-1/2 transform border-[1px] border-black -translate-y-1/2 bg-white text-black px-2 py-1 rounded-full"><i class="ri-arrow-right-wide-line font-bold"></i></button>
+
                     </div>
 
-                    <div class="product-details w-full ">
+                    <div class="product-details w-1/2 ">
 
-                        <div class="product-name h-[104px] border-b-[2px] border-[#E2E2E2] flex items-center font-normal">
-                            <h2 class="text-[#191717] font-[merriweather] text-[36px] font-bold"><%= product.name %></h2>
+                        <div class="product-name min-h-[104px] border-b-[2px] border-[#E2E2E2] flex items-center font-normal py-4">
+                            <h2 class="text-[#191717] font-[merriweather] text-[24px] font-bold"><%= product.name %></h2>
                         </div>
 
                         <div class="product-price h-[104px] text-[24px] flex items-center gap-[20px] font-light">
@@ -30,10 +42,14 @@
                         </div>
 
                         <div class="product-desc text-[16px] text-[#616161]">
-                            <p class="font-[lato] "><%= product.description %></p>
+                            <% if(product.description.length > 0){ %>
+                                <% product.description.forEach((desc)=>{ %>
+                                    <li><%= desc %></li>
+                                <% }) %>
+                            <% } %>
                         </div>
 
-                        <div class="single-product-btn-control flex justify-between items-center">
+                        <div class="single-product-btn-control flex justify-between items-center  ">
 
                             <div class="product-quantity flex gap-1 items-center bg-white rounded-full px-4 ">
                                 <i class="sub ri-subtract-line text-[16px] cursor-pointer" id="decrease-quantity"></i>

@@ -21,7 +21,7 @@
                 <div class="label-input w-full">
                     <label for="description" class="text-lg font-bold dark:text-[#94A3B8]">Product Description : </label>
         
-                    <textarea name="description" id="description" placeholder="Product Description"  class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600"><%= product.description %></textarea>
+                    <textarea name="description" id="description" placeholder="Product Description"  class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600"><%= product.description.join('\n') %></textarea>
                 </div>
         
                 <div class="label-input w-full">

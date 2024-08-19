@@ -19,7 +19,8 @@ function mobileSearchBarAnimation() {
             gsap.from(mobileSearchBar, {
                 y: '-100%',
                 opacity: 1,
-                duration: 0.5
+                duration: 1,
+                ease: 'elastic.out(1,0.75)',
             });
         });
     }
@@ -39,7 +40,8 @@ function mobileMenuAnimation() {
             gsap.from(mobileMenuList, {
                 x: '-100%',
                 opacity: 1,
-                duration: 0.3
+                duration: 1,
+                ease: 'elastic.out(1,0.75)',
             });
         });
 
@@ -358,7 +360,8 @@ function loginRegisterAnimation() {
             loginRegister.classList.remove("hidden");
             gsap.to(loginRegister, {
                 x: '-450px',
-                duration: 0.3,
+                duration: 1,
+                ease: 'elastic.out(1,0.75)',
             });
         });
 
@@ -366,7 +369,8 @@ function loginRegisterAnimation() {
             if (!loginRegister.contains(e.target) && e.target !== btn) {
                 gsap.to(loginRegister, {
                     x: '100%',
-                    duration: 0.3,
+                    duration: 1,
+                    ease: 'elastic.out(1,0.75)',
                     onComplete: () => {
                         loginRegister.classList.add("hidden");
                     }
@@ -389,31 +393,6 @@ function loginRegisterAnimation() {
 
 }
 
-// function showToast(message, type = 'info') {
-//     let bgColor = '#3182CE'; // Default to blue for info
-
-//     switch (type) {
-//         case 'success':
-//             bgColor = '#48BB78'; // Green
-//             break;
-//         case 'error':
-//             bgColor = '#F56565'; // Red
-//             break;
-//         case 'warning':
-//             bgColor = '#ED8936'; // Orange
-//             break;
-//     }
-
-//     Toastify({
-//         text: message,
-//         duration: 3000,
-//         close: true,
-//         gravity: 'top',
-//         position: 'right',
-//         backgroundColor: bgColor,
-//         stopOnFocus: true,
-//     }).showToast();
-// }
 
 function showToast(message = "Something went wrong...", type = 'info') {
     let bgColor = '#3182CE'; // Default to blue for info
@@ -476,10 +455,10 @@ function displayProducts(products) {
             const productStock = product.stock > 0 ? 'Available' : 'Out of stock';
             const productElement = document.createElement('div');
 
-            productElement.className = 'product h-[412px] shadow-md shadow-zinc-200 w-[263px] relative group';
+            productElement.className = 'product min-h-[412px] shadow-md shadow-zinc-200 lg:w-[263px] w-[300px] relative group';
 
             productElement.innerHTML = `
-                <div class="product-image relative h-[330px] w-full flex justify-center  items-center">
+                <div class="product-image relative min-h-[330px] w-full flex justify-center  items-center">
                     ${product.images.length > 0 ?
                     `<img loading="lazy" src="/images/product/${product.images[0]}" alt="${product.name}" class="h-[330px] w-full object-cover">` :
                     `<img loading="lazy" src="/images/product/default.jpg" alt="Default Image" class="h-[330px] w-full object-cover">`
@@ -491,10 +470,11 @@ function displayProducts(products) {
                     <button class="add-to-cart-btn absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2" data-id="${product._id}">Add to Cart</button>
                 </div>
 
-                <div class="product-details h-[82px] flex flex-col justify-evenly items-center w-full text-center">
-                    <a href="/product/${product._id}" class="product-name text-[#191717] flex  flex-col justify-evenly items-center w-full h-full">
+                <div class="product-details min-h-[82px] h-[calc(100%-330px)] flex items-center w-full text-center">
 
-                    <p class="hover:border-b-[1px] uppercase w-max border-[#191717]">${product.name}</p>
+                    <a href="/product/${product._id}" class="product-name text-[#191717] flex  flex-col gap-[10px] justify-evenly items-center w-full h-max p-[20px]">
+
+                    <p class="capitalize w-full ">${product.name}</p>
                     <div class="product-price flex justify-center items-center gap-[10px]">
                         ${product.sale > 0 ?
                     `<strike class="product-old-price text-[#ACACAC] font-[merriweather]">&#8377 ${product.price}</strike>
@@ -763,6 +743,27 @@ function setupAddToCartButtons() {
     });
 }
 
+function singleProductImageSlider(){
+    let currentIndex = 0;
+    const $images = $('.slider-image');
+    const totalImages = $images.length;
+
+    function showImage(index) {
+        $images.removeClass('opacity-100').addClass('opacity-0');
+        $images.eq(index).removeClass('opacity-0').addClass('opacity-100');
+    }
+
+    $('.slider-next').on('click', function () {
+        currentIndex = (currentIndex + 1) % totalImages;
+        showImage(currentIndex);
+    });
+
+    $('.slider-prev').on('click', function () {
+        currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+        showImage(currentIndex);
+    });
+}
+
 
 
 
@@ -780,6 +781,7 @@ $(document).ready(function () {
     syncCartWithDatabase();
     updateCartData();
     setupAddToCartButtons();
+    singleProductImageSlider();
 
 
     $(document).on('click', '#togglePassword', function () {
@@ -826,6 +828,18 @@ $(document).ready(function () {
             });
 
 
+    });
+
+    $('#registerForm #confirmPassword').on('input', function (e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = e.target.value;
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+        if (password !== confirmPassword) {
+            confirmPasswordError.classList.remove('hidden');
+        } else {
+            confirmPasswordError.classList.add('hidden');
+        }
     });
 
     // Register form submission
@@ -991,6 +1005,7 @@ $(document).ready(function () {
     });
 
 
+    
 
 
 
