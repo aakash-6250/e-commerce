@@ -222,7 +222,7 @@ apiController.deleteUser = catchAsyncApiErrors(async (req, res, next) => {
 
 // GET /api/product
 apiController.getProductsByUser = catchAsyncApiErrors(async (req, res, next) => {
-    let { page = 1, limit = 10, cat, subcat, featured, sale, search } = req.query;
+    let { page = 1, limit = 10, cat, subcat, featured, search } = req.query;
 
     // Parse and validate pagination parameters
     page = parseInt(page, 10);
@@ -247,16 +247,6 @@ apiController.getProductsByUser = catchAsyncApiErrors(async (req, res, next) => 
 
     if (featured !== undefined) {
         query.featured = featured === 'true';
-    }
-
-    if (sale !== undefined) {
-        // If sale is 'true', check for sale percentage greater than 0%
-        if (sale === 'true') {
-            query.sale = { $gt: 0 };
-        } else {
-            // If sale is 'false', exclude products on sale
-            query.sale = 0;
-        }
     }
 
     if (search) {
@@ -320,7 +310,7 @@ apiController.getProductsByUser = catchAsyncApiErrors(async (req, res, next) => 
 
 // POST
 apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
-    const { name, description, price, category, subcategory, stock, brand, sale, featured, published } = req.body;
+    const { name, description, price, discountedPrice, category, subcategory, stock, brand, featured, published } = req.body;
 
     const descriptionArray = description.split('\n').map(point => point.trim()).filter(point => point);
 
@@ -334,7 +324,7 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
     const existingProduct = await Product.findOne({ name });
     if (existingProduct) throw new ApiError(400, 'A product with this name already exists.', 'error');
 
-    const product = new Product({ name, description : descriptionArray, price, stock, brand, sale, featured });
+    const product = new Product({ name, description : descriptionArray, price, discountedPrice, stock, brand });
 
     const categoryExist = await Category.findById(category);
     if (!categoryExist) throw new ApiError(400, 'Category not found.', 'error');
@@ -372,6 +362,8 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
 
     product.published = published == 'true' ? true : false;
 
+    product.trending = trending == 'true' ? true : false;
+
     product.featured = featured == 'true' ? true : false;
 
     await product.save();
@@ -404,16 +396,6 @@ apiController.getProductsByAdmin = catchAsyncApiErrors(async (req, res, next) =>
 
     if (featured !== undefined) {
         query.featured = featured === 'true';
-    }
-
-    if (sale !== undefined) {
-        // If sale is 'true', check for sale percentage greater than 0%
-        if (sale === 'true') {
-            query.sale = { $gt: 0 };
-        } else {
-            // If sale is 'false', exclude products on sale
-            query.sale = 0;
-        }
     }
 
     if (search) {
@@ -493,17 +475,17 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         throw new ApiError(400, 'You can only upload 100 products at a time.', 'error');
     }
 
-    const requiredFields = ['name', 'description', 'originalPrice', 'category', 'subcategory', 'stock', 'brand'];
+    const requiredFields = ['name', 'description', 'price', 'category', 'subcategory', 'stock', 'brand'];
     const invalidRows = data.filter(product => !requiredFields.every(field => product[field]));
 
     if (invalidRows.length > 0) {
-        throw new ApiError(400, 'Some rows are missing required fields.', 'error');
+        throw new ApiError(400, 'Some columns are missing required fields.', 'error');
     }
 
     let somethingAdded = false;
 
     for (let productData of data) {
-        const { name, description, originalPrice, discountedPrice, category, subcategory, stock, brand, featured, published, trending } = productData;
+        const { name, description, price, discountedPrice, category, subcategory, stock, brand, featured, published, trending } = productData;
 
         // Check if the product already exists
         const existingProduct = await Product.findOne({ name });
@@ -514,7 +496,7 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         const descriptionArray = description.split(';').map(point => point.trim()).filter(point => point);
 
         // Create new product instance
-        const product = new Product({ name, description : descriptionArray, originalPrice, discountedPrice, stock, brand });
+        const product = new Product({ name, description : descriptionArray, price, stock, brand });
 
         // Check and create category
         let categoryExist = await Category.findOne({ name: category });
@@ -542,6 +524,8 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         product.category = categoryExist._id;
         product.subcategory = subcategoryExist._id;
 
+        if(discountedPrice) product.discountedPrice = discountedPrice;
+
         // Set additional properties
         if(featured) product.featured = featured==='TRUE'?true:false;
 
@@ -568,17 +552,16 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, 'Product not found.', 'error');
 
-    const { name, description, originalPrice, discountedPrice, category, subcategory, stock, brand, sale, featured, published, trending, imagesToDelete } = req.body;
+    const { name, description, price, discountedPrice, category, subcategory, stock, brand, featured, published, trending, imagesToDelete } = req.body;
 
     const descriptionArray = description.split('\n').map(point => point.trim()).filter(point => point);
 
     if (name && name !== product.name) product.name = name;
     if (descriptionArray && descriptionArray !== product.description) product.description = descriptionArray;
-    if (originalPrice && originalPrice !== product.originalPrice) product.originalPrice = originalPrice;
+    if (price && price !== product.price) product.price = price;
     if (discountedPrice && discountedPrice !== product.discountedPrice) product.discountedPrice = discountedPrice;
     if (stock && stock !== product.stock) product.stock = stock;
     if (brand && brand !== product.brand) product.brand = brand;
-    if (sale && sale !== product.sale) product.sale = sale;
     if (trending && trending !== product.trending) product.trending = trending==='true'?true:false;
     if (featured && featured !== product.featured) product.featured = featured==='true'?true:false;
     if (published && published !== product.published) product.published = published==='true'?true:false;

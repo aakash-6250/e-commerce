@@ -73,11 +73,10 @@ router.post('/register', apiController.register);
 
 
 function isLoggedInAdmin(req, res, next){
-    // if (req.isAuthenticated() && req.user.role === 'admin') {
-    //     return next();
-    // }
-    // throw new ApiError(403, 'You are not authorized to access this route.', 'error');
-    next();
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        return next();
+    }
+    throw new ApiError(403, 'You are not authorized to access this route.', 'error');
 };
 
 function isLoggedIn(req, res, next){

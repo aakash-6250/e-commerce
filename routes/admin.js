@@ -5,16 +5,15 @@ const adminController = require('../controllers/adminController');
 const sitemapMiddleware = require('../middlewares/sitemapMiddleware');
 
 router.use((req, res, next) => {
-    // if (req.isAuthenticated() && req.user.role === 'admin') {
-    //     return next();
-    // }
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        return next();
+    }
     
-    // res.status(403).render('error', { 
-    //     message: 'Unauthorized access. Admin only.', 
-    //     status: "403",
-    //     redirect: '/login'
-    // });
-    next();
+    res.status(403).render('error', { 
+        message: 'Unauthorized access. Admin only.', 
+        status: "403",
+        redirect: '/login'
+    });
 
 });
 
