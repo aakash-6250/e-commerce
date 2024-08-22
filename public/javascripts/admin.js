@@ -659,13 +659,12 @@ $(document).ready(function () {
 
         const name = e.target.querySelector('#name').value;
         const description = e.target.querySelector('#description').value;
-        const originalPrice = e.target.querySelector('#original-price').value;
+        const price = e.target.querySelector('#price').value;
         const discountedPrice = e.target.querySelector('#discounted-price').value;
         const category = e.target.querySelector('#category').value;
         const subcategory = e.target.querySelector('#subcategory').value;
         const stock = e.target.querySelector('#stock').value;
         const brand = e.target.querySelector('#brand').value;
-        const sale = e.target.querySelector('#sale').value;
         const featured = e.target.querySelector('#featured').checked;
         const images = e.target.querySelector('#images').files;
         const trending = e.target.querySelector('#trending').checked;
@@ -675,13 +674,12 @@ $(document).ready(function () {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
-        formData.append('originalPrice', parseFloat(originalPrice));
+        formData.append('price', parseFloat(price));
         formData.append('discountedPrice', parseFloat(discountedPrice));
         formData.append('category', category);
         formData.append('subcategory', subcategory);
         formData.append('stock', parseInt(stock));
         formData.append('brand', brand);
-        formData.append('sale', parseInt(sale));
         formData.append('trending', trending);
         formData.append('featured', featured);
         formData.append('published', published);

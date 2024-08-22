@@ -373,7 +373,7 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
 
 // GET /api/product
 apiController.getProductsByAdmin = catchAsyncApiErrors(async (req, res, next) => {
-    let { page = 1, limit = 10, cat, subcat, featured, sale, search } = req.query;
+    let { page = 1, limit = 10, cat, subcat, featured, search } = req.query;
 
     // Parse and validate pagination parameters
     page = parseInt(page, 10);
