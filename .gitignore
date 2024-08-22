@@ -134,3 +134,5 @@ dist
 
 # .xml files
 /public/*.xml
+
+/public/images/product/*.webp
