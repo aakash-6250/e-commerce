@@ -260,7 +260,7 @@ function displayProducts(products) {
 
                 </div>
                 <div class="original-price w-[130px]">
-                    <p>₹ ${product.originalPrice}</p>
+                    <p>₹ ${product.price}</p>
                 </div>
                 <div class="discount-price w-[130px]">
                     <p>₹ ${product.discountedPrice}</p>
@@ -281,7 +281,7 @@ function displayProducts(products) {
                     <p>${product.published}</p>
                 </div>
                 <div class="revenue w-[130px]">
-                    <p>₹ ${product.order * product.originalPrice}</p>
+                    <p>₹ ${product.order * product.price}</p>
                 </div>
                 <div class="actions min-w-[130px] flex justify-around items-center">
                     <a class="edit-product-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 " href="/admin/product/${product._id}/edit">
@@ -535,28 +535,32 @@ $(document).ready(function () {
         const name = e.target.querySelector('#name').value;
         const description = e.target.querySelector('#description').value;
         const price = e.target.querySelector('#price').value;
+        const discountedPrice = e.target.querySelector('#discounted-price').value;
         const category = e.target.querySelector('#category').value;
         const subcategory = e.target.querySelector('#subcategory').value;
         const subcategoryInput = e.target.querySelector('#subcategory');
         const stock = e.target.querySelector('#stock').value;
         const brand = e.target.querySelector('#brand').value;
-        const sale = e.target.querySelector('#sale').value;
-        const featured = e.target.querySelector('#featured').checked;
         const images = e.target.querySelector('#images').files;
+        const featured = e.target.querySelector('#featured').checked;
         const published = e.target.querySelector('#published').checked;
+        const trending = e.target.querySelector('#trending').checked;
+
 
         // Create a FormData object
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', parseFloat(price));
+        formData.append('discountedPrice', parseFloat(discountedPrice));
         formData.append('category', category);
         formData.append('subcategory', subcategory);
         formData.append('stock', parseInt(stock));
         formData.append('brand', brand);
-        formData.append('sale', parseInt(sale));
         formData.append('featured', featured);
         formData.append('published', published);
+        formData.append('trending', trending);
+
 
         // Append each image file to the FormData
         for (let i = 0; i < images.length; i++) {

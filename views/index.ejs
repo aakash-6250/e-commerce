@@ -41,13 +41,13 @@
               </h1>
               <% if(product.discountedPrice){ %>
               <div class="flex gap-4">
-                <strike class="text-[#ACACAC]">Rs <%= product.originalPrice %>
+                <strike class="text-[#ACACAC]">Rs <%= product.price %>
                 </strike>
                 <p class="text-emerald-500">Rs <%= product.discountedPrice %>
                 </p>
               </div>
               <% }else{ %>
-              <p class="text-emerald-500">Rs <%= product.originalPrice %>
+              <p class="text-emerald-500">Rs <%= product.price %>
               </p>
               <% } %>
             </div>

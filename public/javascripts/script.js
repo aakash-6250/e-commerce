@@ -486,13 +486,13 @@ function displayProducts(products) {
                         <div class="product-price flex justify-center items-center gap-[10px]">
                             ${ product.discountedPrice> 0 ?
                                 `<strike class="product-old-price text-[#ACACAC] font-[merriweather] ">
-                                    ₹ ${ product.originalPrice }
+                                    ₹ ${ product.price }
                                 </strike>
                                 <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">
                                     ₹ ${ product.discountedPrice }
                                 </p>`:
                                 `<p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">
-                                    ₹ ${ product.originalPrice }
+                                    ₹ ${ product.price }
                                 </p>`
                             }
                         </div>
@@ -746,7 +746,7 @@ async function addToCart(productId, qty = 1) {
             }
         } else {
             // Product is not in the cart, add it
-            const productPrice = product.discountedPrice > 0 ? product.discountedPrice : product.originalPrice;
+            const productPrice = product.discountedPrice > 0 ? product.discountedPrice : product.price;
             cart.items.push({
                 product: {
                     _id: productId,
