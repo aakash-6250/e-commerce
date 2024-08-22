@@ -131,16 +131,16 @@
 <div class="desktop-menu-container relative shadow-md shadow-zinc-300 hidden lg:block border-y-[2px] border-[#EEEEEE] w-full max-w-[1920px] m-auto">
 
     <div class="desktop-menu text-[#191717] text-[16px] h-[35px] border-b-[2px] border-[#EEEEEE] flex items-center gap-[40px] md:px-[50px] lg:px-[100px] px-[25px]">
-        <a href="/" class="uppercase hover:text-[#967BB6]">Home</a>
-        <a href="/products" class="uppercase hover:text-[#967BB6]">Products</a>
-        <a href="/products?sale=true" class="uppercase hover:text-[#967BB6]">!Sale</a>
+        <a href="/" class="capitalize hover:text-[#967BB6]">Home</a>
+        <a href="/products" class="capitalize hover:text-[#967BB6]">Products</a>
+        <a href="/products?sale=true" class="capitalize hover:text-[#967BB6]">!Sale</a>
     </div>
 
     <div class="desktop-category-list-items flex items-center gap-[2.5vw] h-[40px] z-50 md:px-[50px] lg:px-[100px] px-[25px]">
         <% if(categories.length> 0){ %>
             <% categories.forEach(category=> { %>
                 <div class="desktop-menu-item cursor-pointer">
-                    <div class="flex items-center h-[35px] hover:text-[#967BB6]">
+                    <div class="flex items-center h-[35px] capitalize hover:text-[#967BB6]">
                         <%= category.name %>
                         <i class="ri-arrow-right-s-line text-lg "></i>
                     </div>
@@ -150,7 +150,7 @@
                             <% category.subcategories.forEach(subcategory=> { %>
                                 <a class="desktop-menu-list-subcategory-item hover:text-blue-500 hover:bg-[#EBF6F5] px-3 py-1 flex justify-between w-1/2"
                                     href="/products?cat=<%= category._id %>&subcat=<%= subcategory._id %> ">
-                                    <p>
+                                    <p class="capitalize">
                                         <%= subcategory.name %>
                                     </p>
                                     <p>

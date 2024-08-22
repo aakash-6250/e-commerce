@@ -33,9 +33,9 @@
     
             </div>
     
-            <div class="right flex lg:justify-start justify-start flex-wrap min-w-[300px]">
+            <div class="right flex lg:justify-start justify-start gap-[30px] flex-wrap min-w-[300px]">
     
-                <div class="flex flex-col gap-[10px] min-w-[170px] pb-[30px]  ">
+                <div class="flex flex-col gap-[10px] pb-[30px] ">
                     <h1 class="pb-[10px] font-bold">COMPANY</h1>
                     <a href="/">Home</a>
                     <a href="/products">Products</a>
@@ -44,7 +44,7 @@
                 </div>
     
                 <% if(categories.length> 0){ %>
-                    <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
+                    <div class="flex flex-col gap-[10px] pb-[30px]  ">
                         <h1 class="pb-[10px] font-bold">CATEGORIES</h1>
                             <% categories.forEach(category=> { %>
                                 <a class="" href="/products/?cat=<%= category._id %>"><%= category.name %></a>
@@ -52,7 +52,7 @@
                     </div>
                 <% } %>
     
-                <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
+                <div class="flex flex-col gap-[10px] pb-[30px]  ">
                     <h1 class="pb-[10px] font-bold">STORE</h1>
                     <a href="/products">Products</a>
                     <% if(user){ %>
@@ -67,7 +67,7 @@
                     <a href="/cart">Cart</a>
                 </div>
     
-                <div class="flex flex-col gap-[10px]  min-w-[170px] pb-[30px]  ">
+                <div class="flex flex-col gap-[10px] pb-[30px]  ">
                     <h1 class="pb-[10px] font-bold">POLICIES</h1>
                     <a href="/privacy-policy">Privacy Policy</a>
                     <a href="/cookie-policy">Cookie Policy</a>

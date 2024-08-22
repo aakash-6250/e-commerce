@@ -19,13 +19,17 @@ const cartSchema = new mongoose.Schema(
                 required: [true, "Quantity is required"] 
             }
         }],
+        subTotalAmount:{
+            type: Number,
+            default: 0
+        },
+        shippingCharge:{
+            type: Number,
+            default: 0
+        },
         totalAmount: { 
             type: Number, 
             default: 0 
-        },
-        isOrderPlaced: { 
-            type: Boolean, 
-            default: false 
         }
     }, 
     { timestamps: true }

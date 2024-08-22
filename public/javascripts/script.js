@@ -459,30 +459,46 @@ function displayProducts(products) {
 
             productElement.innerHTML = `
                 <div class="product-image relative min-h-[330px] w-full flex justify-center  items-center">
-                    ${product.images.length > 0 ?
-                    `<img loading="lazy" src="/images/product/${product.images[0]}" alt="${product.name}" class="h-[330px] w-full object-cover">` :
-                    `<img loading="lazy" src="/images/product/default.jpg" alt="Default Image" class="h-[330px] w-full object-cover">`
-                }
 
-                    ${product.sale > 0 ?
-                    `<img loading="lazy" class="absolute top-0 left-0" src="/images/product/sale-tag.svg" alt="Sale Tag">` :
-                    ``}
-                    <button class="add-to-cart-btn absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2" data-id="${product._id}">Add to Cart</button>
+                    ${
+                        product.images.length > 0 ?
+                        `<img loading="lazy" src="/images/product/${product.images[0]}" alt="${product.name}" class="h-[330px] w-full object-cover">` :
+                        `<img loading="lazy" src="/images/product/default.jpg" alt="Default Image" class="h-[330px] w-full object-cover">`
+                    }
+
+                    ${
+                        product.discountedPrice > 0 ?
+                        `<img loading="lazy" class="absolute top-0 left-0" src="/images/product/sale-tag.svg" alt="Sale Tag">` :
+                        ``
+                    }
+                        <button class="add-to-cart-btn absolute whitespace-nowrap lg:hidden lg:bottom-1/2 bottom-4 left-1/2 bg-[#967BB6] text-white hover:bg-white hover:text-black rounded-[58px] py-[12px] px-[50px] lg:group-hover:flex  -translate-x-1/2 lg:translate-y-1/2" data-id="${product._id}">Add to Cart</button>
+
                 </div>
 
-                <div class="product-details min-h-[82px] h-[calc(100%-330px)] flex items-center w-full text-center">
+                <div class="product-details min-h-[82px] w-full h-[82px] flex items-center text-center">
 
-                    <a href="/product/${product._id}" class="product-name text-[#191717] flex  flex-col gap-[10px] justify-evenly items-center w-full h-max p-[20px]">
+                    <a href="/product/${ product._id } " class="product-name text-[#191717] flex  flex-col  justify-evenly items-center w-full h-max p-[20px]">
 
-                    <p class="capitalize w-full ">${product.name}</p>
-                    <div class="product-price flex justify-center items-center gap-[10px]">
-                        ${product.sale > 0 ?
-                    `<strike class="product-old-price text-[#ACACAC] font-[merriweather]">&#8377 ${product.price}</strike>
-                         <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">&#8377 ${(product.price * ((100 - product.sale) / 100)).toFixed(2)}</p>` :
-                    `<p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather]">&#8377 ${product.price}</p>`}
-                    </div>
+                        <p class="capitalie w-full h-[50px] hover:border-b border-zinc-500 overflow-hidden">
+                            ${ product.name }
+                        </p>
+
+                        <div class="product-price flex justify-center items-center gap-[10px]">
+                            ${ product.discountedPrice> 0 ?
+                                `<strike class="product-old-price text-[#ACACAC] font-[merriweather] ">
+                                    ₹ ${ product.originalPrice }
+                                </strike>
+                                <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">
+                                    ₹ ${ product.discountedPrice }
+                                </p>`:
+                                `<p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">
+                                    ₹ ${ product.originalPrice }
+                                </p>`
+                            }
+                        </div>
 
                     </a>
+
                 </div>
             `;
 
@@ -566,7 +582,6 @@ function updateCartData() {
     const cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
 
 
-    // Selectors for cart elements
     const cartElement = document.querySelector('.cart');
     const productsContainer = cartElement.querySelector('.products');
     const subtotalElement = cartElement.querySelector('.subtotal .amount');
@@ -574,35 +589,33 @@ function updateCartData() {
     const cartCountElements = document.querySelectorAll('.cart-btn p');
     const emptyCartMessage = cartElement.querySelector('.empty-cart-message');
 
-    // Check if cart is empty
+    
     if (cart.items.length === 0) {
-        // Hide cart content and show empty cart message
+        
         productsContainer.innerHTML = '';
         subtotalElement.textContent = '₹0.00';
         totalElement.textContent = '₹0.00';
-        cartElement.querySelector('.calculations').style.display = 'none';
         emptyCartMessage.style.display = 'block';
+        cartElement.querySelector('.calculations').style.display = 'none';
         cartElement.querySelector('.checkout').style.display = 'none';
     } else {
-        // Show cart content
-        cartElement.querySelector('.calculations').style.display = 'block';
+        
         emptyCartMessage.style.display = 'none';
+        cartElement.querySelector('.calculations').style.display = 'block';
         cartElement.querySelector('.checkout').style.display = 'block';
 
-        // Clear existing products
         productsContainer.innerHTML = '';
 
-        // Loop through cart items and generate HTML for each product
         cart.items.forEach(item => {
             const productElement = document.createElement('div');
             productElement.classList.add('product', 'flex', 'gap-2', 'w-full');
-            
+
             productElement.innerHTML = `
                 <i class="delete ri-close-line cursor-pointer" data-id="${item.product._id}"></i>
                 <div class="product-details h-[75px] w-full flex gap-[5px] justify-between items-start">
                     <img src="/images/product/${item.product.image}" alt="${item.product.name}" class="image w-[75px] h-[75px] ">
                     <div class="name h-full flex flex-col pl-[5px] w-full justify-between items-start">
-                        <p class="text-[#191717] pr-[100px]">${item.product.name}</p>
+                        <p class="text-[#191717] overflow-hidden">${item.product.name}</p>
                         <div class="increase-decrease-qty flex gap-[10px] text-[#191717]">
                             <i class="ri-subtract-line cursor-pointer" data-id="${item.product._id}"></i>
                             <p class="current-qty rounded-full w-max px-2" style="box-shadow: 0px 1px 10px 0px #00000014;">${item.quantity}</p>
@@ -610,16 +623,14 @@ function updateCartData() {
                         </div>
                     </div>
                 </div>
-                <div class="price font-[merriweather] bg-white w-[100px]">₹${item.product.price}</div>
+                <div class="price font-[merriweather] w-[100px]">₹ ${item.product.price}</div>
             `;
 
-            // Append the product element to the container
             productsContainer.appendChild(productElement);
         });
 
-        // Update subtotal and total amounts
-        subtotalElement.textContent = `₹${cart.totalAmount.toFixed(2)}`;
-        totalElement.textContent = `₹${cart.totalAmount.toFixed(2)}`;
+        subtotalElement.textContent = `₹ ${cart.subTotalAmount}`;
+        totalElement.textContent = `₹ ${cart.totalAmount}`;
 
         // Update the cart count
         const totalItems = cart.items.length;
@@ -645,105 +656,141 @@ function updateCartData() {
 
 function increaseQuantity(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    let cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0, shippingAmount: 0 };
     const productIndex = cart.items.findIndex(item => item.product._id === productId);
 
-    if (productIndex > -1 && cart.items[productIndex].quantity < 10) {
-        cart.items[productIndex].quantity++;
-        cart.totalAmount += parseFloat(cart.items[productIndex].product.price);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartData();
-    } else {
-        showToast('You can only add 10 items at a time', 'warning');
+    if (productIndex > -1) {
+        if (cart.items[productIndex].quantity < 20) {
+            cart.items[productIndex].quantity++;
+            cart.totalAmount += parseFloat(cart.items[productIndex].product.price);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartData();
+            showToast('Quantity increased', 'success'); // Feedback to user
+        } else {
+            showToast('You can only add up to 20 of this product.', 'warning');
+        }
     }
 }
 
 function decreaseQuantity(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    let cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0, shippingAmount: 0 };
     const productIndex = cart.items.findIndex(item => item.product._id === productId);
 
-    if (productIndex > -1 && cart.items[productIndex].quantity > 1) {
-        cart.items[productIndex].quantity--;
-        cart.totalAmount -= parseFloat(cart.items[productIndex].product.price);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartData();
-    } else {
-        showToast('You need to add at least one item', 'warning');
+    if (productIndex > -1) {
+        if (cart.items[productIndex].quantity > 1) {
+            cart.items[productIndex].quantity--;
+            cart.totalAmount -= parseFloat(cart.items[productIndex].product.price);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartData();
+            showToast('Quantity decreased', 'success'); // Feedback to user
+        } else {
+            showToast('You need to have at least one quantity in the cart', 'warning');
+        }
     }
 }
 
 function deleteProduct(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    let cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0, shippingAmount: 0 };
     const productIndex = cart.items.findIndex(item => item.product._id === productId);
 
     if (productIndex > -1) {
-        cart.totalAmount -= cart.items[productIndex].product.price * cart.items[productIndex].quantity;
+        // Calculate total amount to deduct
+        const productTotalPrice = cart.items[productIndex].product.price * cart.items[productIndex].quantity;
+        cart.totalAmount -= productTotalPrice;
         cart.items.splice(productIndex, 1);
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartData();
+        showToast('Product removed from cart', 'success'); // Feedback to user
+    } else {
+        showToast('Product not found in cart', 'warning'); // Handling product not found
     }
 }
 
-async function addToCart(productId) {
+
+async function addToCart(productId, qty = 1) {
     try {
         // Fetch product details
         const response = await axios.get(`/api/product/${productId}`);
         const product = response.data.data.product;
 
-        // Get cart from local storage
-        let cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
+        if (!product || product.stock < 1) {
+            throw new Error("Product not found or currently out of stock.");
+        }
+
+        // Check if the user is logged in
+        const response2 = await axios.get('/api/loggedin');
+        const isLoggedin = response2.data.data.loggedIn;
+
+        // Retrieve or initialize cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || {
+            items: [],
+            subTotalAmount: 0,
+            shippingAmount: 0,
+            totalAmount: 0
+        };
+
+        // Check if the product is already in the cart
         const productIndex = cart.items.findIndex(item => item.product._id === productId);
 
-        // Handle product stock and quantity
-        if (product && product.stock > 0) {
-            let quantity = 1; // Default quantity
-
-            if (productIndex > -1) {
-                // Product already in cart
-                if (cart.items[productIndex].quantity < 10) {
-                    cart.items[productIndex].quantity++;
-                    cart.totalAmount += parseFloat(product.price);
-                    showToast('Item quantity updated in cart', 'success');
-                } else {
-                    showToast('You can only add 10 items at a time', 'warning');
-                }
+        if (productIndex > -1) {
+            // Product is already in the cart, update the quantity
+            if (cart.items[productIndex].quantity >= 20) {
+                showToast("You can only add up to 20 of this product.", "warning");
             } else {
-                // New product in cart
-                cart.items.push({
-                    product: {
-                        _id: productId,
-                        name: product.name,
-                        price: (product.price * (1 - (product.sale / 100))).toFixed(2),
-                        image: product.images[0] || 'default.jpg'
-                    },
-                    quantity: quantity
-                });
-                cart.totalAmount += parseFloat(cart.items[cart.items.length - 1].product.price);
-                showToast('Item added to cart', 'success');
+                cart.items[productIndex].quantity += qty;
+                cart.subTotalAmount += parseFloat(cart.items[productIndex].product.price * qty);
+                cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
+                showToast('Product quantity updated in cart', 'success');
             }
-
-            // Update local storage and UI
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartData();
         } else {
-            showToast('Product not available', 'error');
+            // Product is not in the cart, add it
+            const productPrice = product.discountedPrice > 0 ? product.discountedPrice : product.originalPrice;
+            cart.items.push({
+                product: {
+                    _id: productId,
+                    name: product.name,
+                    price: productPrice,
+                    image: product.images[0] || 'default.jpg'
+                },
+                quantity: qty
+            });
+
+            cart.subTotalAmount += parseFloat(productPrice * qty);
+            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
+
+            showToast('Item added to cart', 'success');
         }
+
+        // Save updated cart to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartData();
+
+        if(isLoggedin) syncCartWithDatabase();
+        
     } catch (error) {
         console.error('Error adding to cart:', error);
-        showToast('An error occurred', 'error');
+
+        if (error.response && error.response.data) {
+            const data = error.response.data;
+            showToast(data.message, data.type);
+        } else {
+            showToast(error.message, "error");
+        }
     }
 }
 
+
 function setupAddToCartButtons() {
-    $(document).on('click', '.add-to-cart-btn', function() {
+    $(document).on('click', '.add-to-cart-btn', function () {
         const productId = $(this).data('id');
-        addToCart(productId);
+        const qty = $(this).data('qty');
+        addToCart(productId, qty);
     });
 }
 
-function singleProductImageSlider(){
+function singleProductImageSlider() {
     let currentIndex = 0;
     const $images = $('.slider-image');
     const totalImages = $images.length;
@@ -788,15 +835,15 @@ $(document).ready(function () {
         const passwordField = document.getElementById('password');
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordField.setAttribute('type', type);
-    
-        if(this.classList.contains('ri-eye-close-line')) {
+
+        if (this.classList.contains('ri-eye-close-line')) {
             this.classList.remove('ri-eye-close-line');
             this.classList.add('ri-eye-line');
         } else {
             this.classList.remove('ri-eye-line');
             this.classList.add('ri-eye-close-line');
         }
-    
+
     });
 
     // Login form submission
@@ -1005,7 +1052,7 @@ $(document).ready(function () {
     });
 
 
-    
+
 
 
 

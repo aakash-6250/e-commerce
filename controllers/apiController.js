@@ -9,6 +9,7 @@ const fs = require('fs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const path = require('path');
+const { default: mongoose } = require('mongoose');
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 
@@ -22,99 +23,12 @@ const apiController = {};
 
 // Product Controller
 
-// GET /api/product
-apiController.getProducts = catchAsyncApiErrors(async (req, res, next) => {
-    let { page = 1, limit = 10, cat, subcat, featured, sale, search } = req.query;
-
-    // Parse and validate pagination parameters
-    page = parseInt(page, 10);
-    limit = parseInt(limit, 10);
-
-    if (isNaN(page) || page < 1) page = 1;
-    if (isNaN(limit) || limit < 1) limit = 10;
-    if (limit > 30) limit = 30;
-
-    // Build the query object
-    const query = {};
-
-    if (subcat) {
-        query.subcategory = subcat;
-    }
-
-    if (cat) {
-        query.category = cat;
-    }
-
-    if (featured !== undefined) {
-        query.featured = featured === 'true';
-    }
-
-    if (sale !== undefined) {
-        // If sale is 'true', check for sale percentage greater than 0%
-        if (sale === 'true') {
-            query.sale = { $gt: 0 };
-        } else {
-            // If sale is 'false', exclude products on sale
-            query.sale = 0;
-        }
-    }
-
-    if (search) {
-        // Replace "+" with space in the search string
-        search = search.replace(/\+/g, ' ');
-
-        // Handle search with spaces
-        const searchTerms = search.trim().split(/\s+/); // Split by spaces and remove extra spaces
-        const searchRegexArray = searchTerms.map(term => new RegExp(term, 'i'));
-
-        query.$and = searchRegexArray.map(regex => ({
-            $or: [
-                { name: regex },
-                { description: regex },
-                { brand: regex }
-            ]
-        }));
-    }
-
-    // Count the total number of products matching the query
-    const totalProducts = await Product.countDocuments(query);
-
-    if (totalProducts === 0) throw new ApiError(404, 'No products found.', 'error');
-
-    const totalPages = Math.ceil(totalProducts / limit);
-
-    if (page > totalPages) page = totalPages;
-
-    // Fetch products with pagination and applied query
-    const products = await Product.find(query)
-        .populate([
-            {
-                path: 'category',
-                select: '_id name',
-            },
-            {
-                path: 'subcategory',
-                select: '_id name',
-            }
-        ])
-        .skip((page - 1) * limit)
-        .limit(limit);
-
-    // Send the success response with the products and pagination data
-    sendSuccessResponse(res, 'Products fetched successfully.', {
-        products,
-        pagination: {
-            currentPage: page,
-            totalPages,
-            totalProducts,
-            pageSize: limit,
-        }
-    });
-});
-
 
 // GET /api/product/:id
 apiController.getProductById = catchAsyncApiErrors(async (req, res, next) => {
+
+    if(!mongoose.isValidObjectId(req.params.id)) throw new ApiError(404, 'Invalid product ID', 'Error');
+
     const product = await Product.findById(req.params.id).populate([
         {
             path: 'category',
@@ -306,6 +220,98 @@ apiController.deleteUser = catchAsyncApiErrors(async (req, res, next) => {
     sendSuccessResponse(res, 'User deleted successfully.', { user });
 });
 
+// GET /api/product
+apiController.getProductsByUser = catchAsyncApiErrors(async (req, res, next) => {
+    let { page = 1, limit = 10, cat, subcat, featured, sale, search } = req.query;
+
+    // Parse and validate pagination parameters
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 10;
+    if (limit > 30) limit = 30;
+
+    // Build the query object
+    const query = {};
+
+    query.published= true;
+
+    if (subcat) {
+        query.subcategory = subcat;
+    }
+
+    if (cat) {
+        query.category = cat;
+    }
+
+    if (featured !== undefined) {
+        query.featured = featured === 'true';
+    }
+
+    if (sale !== undefined) {
+        // If sale is 'true', check for sale percentage greater than 0%
+        if (sale === 'true') {
+            query.sale = { $gt: 0 };
+        } else {
+            // If sale is 'false', exclude products on sale
+            query.sale = 0;
+        }
+    }
+
+    if (search) {
+        // Replace "+" with space in the search string
+        search = search.replace(/\+/g, ' ');
+
+        // Handle search with spaces
+        const searchTerms = search.trim().split(/\s+/); // Split by spaces and remove extra spaces
+        const searchRegexArray = searchTerms.map(term => new RegExp(term, 'i'));
+
+        query.$and = searchRegexArray.map(regex => ({
+            $or: [
+                { name: regex },
+                { description: regex },
+                { brand: regex }
+            ]
+        }));
+    }
+
+    // Count the total number of products matching the query
+    const totalProducts = await Product.countDocuments(query);
+
+    if (totalProducts === 0) throw new ApiError(404, 'No products found.', 'error');
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    if (page > totalPages) page = totalPages;
+
+    // Fetch products with pagination and applied query
+    const products = await Product.find(query)
+        .populate([
+            {
+                path: 'category',
+                select: '_id name',
+            },
+            {
+                path: 'subcategory',
+                select: '_id name',
+            }
+        ])
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    // Send the success response with the products and pagination data
+    sendSuccessResponse(res, 'Products fetched successfully.', {
+        products,
+        pagination: {
+            currentPage: page,
+            totalPages,
+            totalProducts,
+            pageSize: limit,
+        }
+    });
+});
+
 
 
 
@@ -373,6 +379,97 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
     sendSuccessResponse(res, 'Product created successfully.', { product, redirect: '/admin/products'});
 });
 
+// GET /api/product
+apiController.getProductsByAdmin = catchAsyncApiErrors(async (req, res, next) => {
+    let { page = 1, limit = 10, cat, subcat, featured, sale, search } = req.query;
+
+    // Parse and validate pagination parameters
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 10;
+    if (limit > 30) limit = 30;
+
+    // Build the query object
+    const query = {};
+
+    if (subcat) {
+        query.subcategory = subcat;
+    }
+
+    if (cat) {
+        query.category = cat;
+    }
+
+    if (featured !== undefined) {
+        query.featured = featured === 'true';
+    }
+
+    if (sale !== undefined) {
+        // If sale is 'true', check for sale percentage greater than 0%
+        if (sale === 'true') {
+            query.sale = { $gt: 0 };
+        } else {
+            // If sale is 'false', exclude products on sale
+            query.sale = 0;
+        }
+    }
+
+    if (search) {
+        // Replace "+" with space in the search string
+        search = search.replace(/\+/g, ' ');
+
+        // Handle search with spaces
+        const searchTerms = search.trim().split(/\s+/); // Split by spaces and remove extra spaces
+        const searchRegexArray = searchTerms.map(term => new RegExp(term, 'i'));
+
+        query.$and = searchRegexArray.map(regex => ({
+            $or: [
+                { name: regex },
+                { description: regex },
+                { brand: regex }
+            ]
+        }));
+    }
+
+    // Count the total number of products matching the query
+    const totalProducts = await Product.countDocuments(query);
+
+    if (totalProducts === 0) throw new ApiError(404, 'No products found.', 'error');
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    if (page > totalPages) page = totalPages;
+
+    // Fetch products with pagination and applied query
+    const products = await Product.find(query)
+        .populate([
+            {
+                path: 'category',
+                select: '_id name',
+            },
+            {
+                path: 'subcategory',
+                select: '_id name',
+            }
+        ])
+        .select('+order')
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    // Send the success response with the products and pagination data
+    sendSuccessResponse(res, 'Products fetched successfully.', {
+        products,
+        pagination: {
+            currentPage: page,
+            totalPages,
+            totalProducts,
+            pageSize: limit,
+        }
+    });
+});
+
 // POST
 apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
     if (!req.file) {
@@ -396,7 +493,7 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         throw new ApiError(400, 'You can only upload 100 products at a time.', 'error');
     }
 
-    const requiredFields = ['name', 'description', 'price', 'category', 'subcategory', 'stock', 'brand'];
+    const requiredFields = ['name', 'description', 'originalPrice', 'category', 'subcategory', 'stock', 'brand'];
     const invalidRows = data.filter(product => !requiredFields.every(field => product[field]));
 
     if (invalidRows.length > 0) {
@@ -406,7 +503,7 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
     let somethingAdded = false;
 
     for (let productData of data) {
-        const { name, description, price, category, subcategory, stock, brand, featured, sale, published, trending } = productData;
+        const { name, description, originalPrice, discountedPrice, category, subcategory, stock, brand, featured, published, trending } = productData;
 
         // Check if the product already exists
         const existingProduct = await Product.findOne({ name });
@@ -417,7 +514,7 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         const descriptionArray = description.split(';').map(point => point.trim()).filter(point => point);
 
         // Create new product instance
-        const product = new Product({ name, description : descriptionArray, price, stock, brand });
+        const product = new Product({ name, description : descriptionArray, originalPrice, discountedPrice, stock, brand });
 
         // Check and create category
         let categoryExist = await Category.findOne({ name: category });
@@ -446,13 +543,11 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         product.subcategory = subcategoryExist._id;
 
         // Set additional properties
-        if (sale) product.sale = sale;
+        if(featured) product.featured = featured==='TRUE'?true:false;
 
-        if(featured) product.featured = featured==='true'?true:false;
+        if(published) product.published = published==='TRUE'?true:false;
 
-        if(published) product.published = published==='true'?true:false;
-
-        if(trending) product.trending = trending==='true'?true:false;
+        if(trending) product.trending = trending==='TRUE'?true:false;
 
         await product.save();
     }
@@ -473,19 +568,20 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) throw new ApiError(404, 'Product not found.', 'error');
 
-    const { name, description, price, category, subcategory, stock, brand, sale, featured, published, trending, imagesToDelete } = req.body;
+    const { name, description, originalPrice, discountedPrice, category, subcategory, stock, brand, sale, featured, published, trending, imagesToDelete } = req.body;
 
     const descriptionArray = description.split('\n').map(point => point.trim()).filter(point => point);
 
-    if (name) product.name = name;
-    if (description) product.description = descriptionArray;
-    if (price) product.price = price;
-    if (stock) product.stock = stock;
-    if (brand) product.brand = brand;
-    if (sale) product.sale = sale;
-    if (trending) product.trending = trending==='true'?true:false;
-    if (featured) product.featured = featured==='true'?true:false;
-    if (published) product.published = published==='true'?true:false;
+    if (name && name !== product.name) product.name = name;
+    if (descriptionArray && descriptionArray !== product.description) product.description = descriptionArray;
+    if (originalPrice && originalPrice !== product.originalPrice) product.originalPrice = originalPrice;
+    if (discountedPrice && discountedPrice !== product.discountedPrice) product.discountedPrice = discountedPrice;
+    if (stock && stock !== product.stock) product.stock = stock;
+    if (brand && brand !== product.brand) product.brand = brand;
+    if (sale && sale !== product.sale) product.sale = sale;
+    if (trending && trending !== product.trending) product.trending = trending==='true'?true:false;
+    if (featured && featured !== product.featured) product.featured = featured==='true'?true:false;
+    if (published && published !== product.published) product.published = published==='true'?true:false;
 
     if(category && subcategory && category !== product.category) {
 
@@ -519,7 +615,6 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     
             await subcategoryExist.save();
     }
-
 
     if (imagesToDelete && imagesToDelete.length > 0) {
         product.images = product.images.filter(image => {
@@ -593,12 +688,26 @@ apiController.deleteProduct = catchAsyncApiErrors(async (req, res, next) => {
 
 // GET 
 apiController.deleteAllDocuments = catchAsyncApiErrors(async (req, res, next) => {
+    
+    const products = await Product.find().select('images -_id');
+    
     await Product.deleteMany();
     await Category.deleteMany();
     await Subcategory.deleteMany();
 
+    products.forEach(product => {
+        product.images.forEach(image => {
+            try {
+                fs.unlinkSync(path.join(__dirname, '..', 'public', 'images', 'product', image));
+            } catch (error) {
+                console.error(`Error deleting image ${image}: ${error.message}`);
+            }
+        });
+    });
+
     sendSuccessResponse(res, 'All documents deleted successfully.');
 });
+
 
 
 

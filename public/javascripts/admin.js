@@ -218,7 +218,7 @@ function fetchProducts(page = 1, limit = 12) {
     params.set('limit', limit);
 
 
-    const apiUrl = `/api/product?${params.toString()}`;
+    const apiUrl = `/api/product-admin?${params.toString()}`;
 
     axios.get(apiUrl)
         .then(response => {
@@ -242,35 +242,46 @@ function displayProducts(products) {
             const productStock = product.stock > 0 ? 'Available' : 'Out of stock';
             const productElement = document.createElement('div');
 
-            productElement.className = 'product px-3 h-[70px] rounded-xl flex items-center min-w-[1200px] hover:bg-[#EDF1F5] hover:dark:bg-[#3E4757] odd:bg-[#F2F7FB] odd:dark:bg-[#202D3F]';
+            productElement.className = 'product px-3 h-[70px] rounded-xl flex items-center min-w-[1200px] hover:bg-[#EDF1F5] hover:dark:bg-[#3E4757] odd:bg-[#F2F7FB] odd:dark:bg-[#202D3F] ';
 
             productElement.innerHTML = `
-                <div class="product-img-name w-[400px] flex items-center gap-[30px]">
-                    <div class="product-img w-[70px] h-[70px] overflow-hidden rounded-[5px] flex items-center justify-center bg-gray-300 dark:bg-gray-600">
+                <div class="product-img-name w-[400px] h-full flex items-center justify-between ">
+
+                    <div class="product-img w-[60px] h-[60px] overflow-hidden rounded-[5px] flex items-center justify-center bg-gray-300 dark:bg-gray-600 ">
+
                         ${product.images.length > 0 ?
                     `<img src="/images/product/${product.images[0]}" alt="${product.name}" class="h-full w-full">` :
-                    `<i class="ri-image-line text-4xl text-gray-500 dark:text-gray-400"></i>`
+                    `<i class="ri-image-line text-4xl text-gray-500 dark:text-gray-400 w-full"></i>`
                 }
+
                     </div>
-                    <p class="product-name">${product.name}</p>
+
+                    <p class="product-name w-[80%] overflow-hidden truncate">${product.name}</p>
+
                 </div>
-                <div class="price w-[130px]">
-                    <p>₹ ${product.price}</p>
+                <div class="original-price w-[130px]">
+                    <p>₹ ${product.originalPrice}</p>
+                </div>
+                <div class="discount-price w-[130px]">
+                    <p>₹ ${product.discountedPrice}</p>
                 </div>
                 <div class="quantity w-[130px]">
                     <p>${product.stock}</p>
                 </div>
-                <div class="sale w-[130px]">
-                    <p>${product.sale}%</p>
-                </div>
-                <div class="stock w-[130px]">
+                <div class="stock w-[130px] ">
                     ${product.stock > 0 ?
-                    `<p class="available bg-green-50 dark:bg-green-100 text-green-700 w-[80%] px-1 rounded-[5px]">${productStock}</p>` :
+                    `<p class="available bg-green-50 dark:bg-green-100 text-green-700 px-1 rounded-[5px]">${productStock}</p>` :
                     `<p class="bg-[#FFF2ED] dark:bg-[#432F25] text-[#FF6117] w-[80%] px-1 rounded-[5px]">${productStock}</p>`
                 }
                 </div>
+                <div class="featured w-[130px]">
+                    <p>${product.featured}</p>
+                </div>
+                <div class="published w-[130px]">
+                    <p>${product.published}</p>
+                </div>
                 <div class="revenue w-[130px]">
-                    <p>₹ ${product.order * product.price}</p>
+                    <p>₹ ${product.order * product.originalPrice}</p>
                 </div>
                 <div class="actions min-w-[130px] flex justify-around items-center">
                     <a class="edit-product-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 " href="/admin/product/${product._id}/edit">
@@ -384,7 +395,7 @@ function initializeCategoryForm() {
             const tagElement = $('<span>')
                 .addClass('subcategory-tag px-3 py-1 bg-[#E8F5E9] text-[#455A64] rounded-[5px] flex items-center gap-[5px]')
                 .text(subcategoryName);
-            
+
             // Add a remove button to each tag
             const removeButton = $('<button>')
                 .addClass('text-white bg-[#C8E6C9] hover:bg-[#ef9a9a] rounded-full w-[20px] h-[20px] flex  items-center justify-center ri-close-line text-xl')
@@ -642,9 +653,14 @@ $(document).ready(function () {
     $('#edit-product-form').on('submit', function (e) {
         e.preventDefault();
 
+        const submitBtn = e.target.querySelector('#submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('cursor-not-allowed');
+
         const name = e.target.querySelector('#name').value;
         const description = e.target.querySelector('#description').value;
-        const price = e.target.querySelector('#price').value;
+        const originalPrice = e.target.querySelector('#original-price').value;
+        const discountedPrice = e.target.querySelector('#discounted-price').value;
         const category = e.target.querySelector('#category').value;
         const subcategory = e.target.querySelector('#subcategory').value;
         const stock = e.target.querySelector('#stock').value;
@@ -659,7 +675,8 @@ $(document).ready(function () {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
-        formData.append('price', parseFloat(price));
+        formData.append('originalPrice', parseFloat(originalPrice));
+        formData.append('discountedPrice', parseFloat(discountedPrice));
         formData.append('category', category);
         formData.append('subcategory', subcategory);
         formData.append('stock', parseInt(stock));
@@ -695,6 +712,9 @@ $(document).ready(function () {
                 const data = error.response.data;
                 showToast(data.message, data.type);
             });
+
+        submitBtn.classList.add('cursor-not-allowed');
+
 
     });
 
@@ -795,14 +815,14 @@ $(document).ready(function () {
         // Get the parent subcategory item
         const subcategoryItem = $(this).closest('.subcategory-item');
         const deleteInput = subcategoryItem.find('input[id="delete"]');
-    
+
         // Toggle the deletion state
         const isMarkedForDeletion = deleteInput.val() === 'true';
         deleteInput.val(isMarkedForDeletion ? 'false' : 'true');
-    
+
         // Toggle the appearance of the subcategory item
         subcategoryItem.toggleClass('marked-for-deletion', !isMarkedForDeletion);
-    
+
         // Update the button colors using Tailwind CSS classes
         if (isMarkedForDeletion) {
             $(this).removeClass('bg-red-400 text-white hover:text-white hover:bg-red-500').addClass('bg-white hover:bg-red-400 hover:text-white');
@@ -878,9 +898,9 @@ $(document).ready(function () {
 
     $(document).on('click', '.delete-category-btn', function (e) {
         e.preventDefault(); // Prevents the default action if it's inside a form
-    
+
         const categoryId = $(this).data('id');
-    
+
         // Show custom confirm dialog
         showCustomConfirm('Are you sure you want to delete this category?', (confirmed) => {
             if (confirmed) {
@@ -888,7 +908,7 @@ $(document).ready(function () {
                     .then(response => {
                         const data = response.data;
                         showToast(data.message, data.type);
-    
+
                         if (data.data && data.data.redirect) {
                             setTimeout(() => {
                                 window.location.href = data.data.redirect;
@@ -907,7 +927,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
 
     $(document).on('click', '.delete-product-btn', function (e) {
         e.preventDefault(); // Prevent the default action of the button or link
