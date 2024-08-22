@@ -2,17 +2,17 @@
 <%- include('./partials/navbar') %>
 <main class="w-screen lg:bg-white max-w-[1920px] m-auto">
 
-  <section class="product-container px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto flex justify-center items-center w-full min-h-[740px] bg-[#FFF9F4] ">
+  <section class="product-container px-[20px] py-[70px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto flex justify-center items-center w-full min-h-[740px] bg-[#FFF9F4] ">
 
-    <div class="product  flex flex-col lg:flex-row lg:items-stretch justify-between items-start gap-[100px] max-w-[1142px] w-[100%] ">
+    <div class="product  flex flex-col xl:flex-row lg:items-stretch justify-between items-start gap-[30px] xl:gap-[70px] max-w-[1142px] w-[100%] p-[20px]">
 
-      <div class="product-images w-1/2 relative overflow-hidden">
+      <div class="product-images w-full xl:w-1/2 relative overflow-hidden">
 
-        <div class="slider-wrapper relative w-full h-full">
+        <div class="slider-wrapper relative w-full h-full min-h-[450px]">
 
           <% if(product.images.length > 0){ %>
           <% product.images.forEach((image, index) => { %>
-          <img src="/images/product/<%= image %>" alt="<%= product.name %>" class="slider-image absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>" data-index="<%= index %>">
+          <img src="/images/product/<%= image %>" alt="product image" class="slider-image absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out <%= index === 0 ? 'opacity-100' : 'opacity-0' %>" data-index="<%= index %>">
           <% }) %>
           <% }else{ %>
           <img src="/images/product/default.jpg" alt="<%= product.name %>" class="w-full h-full object-contain opacity-100">
@@ -22,15 +22,15 @@
 
         <% if(product.images.length > 1){ %>
 
-        <button class="slider-prev absolute left-0 top-1/2 transform border-[1px] border-black -translate-y-1/2 bg-white text-black px-2 py-1 rounded-full"><i class="ri-arrow-left-wide-line font-bold"></i></button>
+        <button class="slider-prev absolute left-0 top-1/2 transform border-[1px] border-black -translate-y-1/2 bg-white opacity-[0.7] text-black px-2 py-1 rounded-full"><i class="ri-arrow-left-wide-line font-bold"></i></button>
 
-        <button class="slider-next absolute right-0 top-1/2 transform border-[1px] border-black -translate-y-1/2 bg-white text-black px-2 py-1 rounded-full"><i class="ri-arrow-right-wide-line font-bold"></i></button>
+        <button class="slider-next absolute right-0 top-1/2 transform border-[1px] border-black -translate-y-1/2 bg-white opacity-[0.7] text-black px-2 py-1 rounded-full"><i class="ri-arrow-right-wide-line font-bold"></i></button>
 
         <% } %>
 
       </div>
 
-      <div class="product-details w-1/2 ">
+      <div class="product-details w-full xl:w-1/2 ">
 
         <div class="product-name min-h-[104px] border-b-[2px] border-[#E2E2E2] flex items-center font-normal py-4">
           <h2 class="text-[#191717] font-[merriweather] text-[24px] font-bold"><%= product.name %></h2>
@@ -53,7 +53,7 @@
           <% } %>
         </div>
 
-        <div class="single-product-btn-control flex justify-between items-center  ">
+        <div class="single-product-btn-control flex gap-[10px] justify-between items-center  ">
 
           <div class="product-quantity flex gap-1 items-center bg-white rounded-full px-4 ">
             <i class="sub ri-subtract-line text-[16px] cursor-pointer" id="decrease-quantity"></i>
@@ -61,12 +61,12 @@
             <i class="add ri-add-line text-[16px] cursor-pointer" id="increase-quantity"></i>
           </div>
 
-          <div class="product-add-to-cart py-[30px]">
+          <div class="product-add-to-cart py-[30px] w-full">
 
-            <button id="single-add-to-cart-btn" class="bg-[#967BB6] text-white font-[lato] text-[16px] w-[359px] h-[48px] rounded-[58px] flex items-center gap-[20px] justify-center" data-id="<%= product._id %>">
+            <button id="add-to-cart-btn" class="bg-[#967BB6] text-white font-[lato] text-[16px] max-w-[359px] w-[100%] h-[48px] rounded-[58px] flex items-center gap-[20px] justify-center" data-id="<%= product._id %>" data-qty="1">
               <p>Add to Cart</p>
-              <% if(product.sale > 0){ %>
-              <p class="product-new-price bg-transparent text-white ">&#8377 <%= (product.price*((100-product.sale)/100)).toFixed(2) %></p>
+              <% if(product.discountedPrice > 0){ %>
+              <p class="product-new-price bg-transparent text-white ">&#8377 <%= product.discountedPrice %></p>
               <% }else{ %>
               <p class="product-new-price bg-transparent text-white ">&#8377 <%= product.price %></p>
               <% } %>
