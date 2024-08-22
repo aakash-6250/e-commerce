@@ -39,7 +39,7 @@
               <h1 class="max-h-[50px] overflow-hidden">
                 <%= product.name %>
               </h1>
-              <% if(product.discountedPrice){ %>
+              <% if(product.discountedPrice > 0){ %>
               <div class="flex gap-4">
                 <strike class="text-[#ACACAC]">Rs <%= product.price %>
                 </strike>
