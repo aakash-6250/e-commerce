@@ -12,25 +12,31 @@
 
             <div class="w-full flex gap-4 flex-wrap">
         
-                <div class="label-input w-full">
+                <div class="name-label-input w-full">
                     <label for="name" class="text-lg font-bold dark:text-[#94A3B8]">Product Name : </label>
 
-                    <input type="text" name="name" id="name" placeholder="Product Name" required class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
+                    <input type="text" name="name" id="name" placeholder="Product Name" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
                 </div>
         
-                <div class="label-input w-full">
+                <div class="description-label-input w-full">
                     <label for="description" class="text-lg font-bold dark:text-[#94A3B8]">Product Description : </label>
         
-                    <textarea name="description" id="description" placeholder="Product Description" required  class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600"></textarea>
+                    <textarea name="description" id="description" placeholder="Product Description"  class="mt-1 p-2 block w-full h-[200px] rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600"></textarea>
                 </div>
         
-                <div class="label-input w-full">
-                    <label for="price" class="text-lg font-bold dark:text-[#94A3B8]">Product Price : </label>
+                <div class="original-price-label-input w-full">
+                    <label for="price" class="text-lg font-bold dark:text-[#94A3B8]">Product Original Price : </label>
         
-                    <input type="text" name="price" id="price" placeholder="Product Price"  required class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
+                    <input type="text" name="price" id="price" placeholder="Product Original Price" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
+                </div>
+
+                <div class="discounted-price-label-input w-full">
+                    <label for="discounted-price" class="text-lg font-bold dark:text-[#94A3B8]">Product Discounted Price : </label>
+        
+                    <input type="text" name="discountedPrice" id="discounted-price" placeholder="Product Discounted Price" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
                 </div>
         
-                <div class="label-input w-full">
+                <div class="category-label-input w-full">
                     <label for="category" class="text-lg font-bold dark:text-[#94A3B8]">Product Category : </label>
         
                     <select name="category" id="category" required class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600">
@@ -53,25 +59,19 @@
                     </select>
                 </div>
         
-                <div class="label-input w-full">
+                <div class="stock-label-input w-full">
                     <label for="stock" class="text-lg font-bold dark:text-[#94A3B8]">Product Quantity : </label>
         
-                    <input type="text" name="stock" id="stock"  required  placeholder="Product Quantity" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
+                    <input type="text" name="stock" id="stock"  placeholder="Product Quantity" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
                 </div>
 
-                <div class="label-input w-full">
+                <div class="brand-label-input w-full">
                     <label for="brand" class="text-lg font-bold dark:text-[#94A3B8]">Product Brand : </label>
         
-                    <input type="text" name="brand" id="brand" required  placeholder="Product Brand" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
-                </div>
-
-                <div class="label-input w-full">
-                    <label for="sale" class="text-lg font-bold dark:text-[#94A3B8]">Product Sale : </label>
-        
-                    <input type="text" name="sale" id="sale" required  placeholder="Product Sale In %" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
+                    <input type="text" name="brand" id="brand"  placeholder="Product Brand" class="mt-1 p-2 block w-full rounded-[10px] border-gray-300 border-[1px] outline-none dark:bg-[#202D3F] dark:border-gray-600" >
                 </div>
         
-                <div class="label-input w-full">
+                <div class="upload-images-label-input w-full">
                     <label for="images" class="border-dashed border-[1px] border-blue-600 rounded-xl w-full cursor-pointer flex flex-col justify-center items-center gap-[5px] p-3">
                         <i class="ri-upload-cloud-2-line text-5xl"></i>
                         <p class="file-label text-lg text-zinc-400 text-center">Drag and drop product images here or <span class="text-blue-600">browse</span> ( max 5 images )</p>
@@ -85,19 +85,28 @@
                 </div>
 
 
-                <div class="label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4">
+                <div class="trending-label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4 ">
                     
-                    <input type="checkbox" name="published" id="published" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 cursor-pointer">
+                    <input type="checkbox" name="trending" id="trending" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600  cursor-pointer" >
 
-                    <label for="published" class="text-lg font-bold dark:text-[#94A3B8] cursor-pointer">Publish</label>
+                    <label for="trending" class="text-lg font-bold dark:text-[#94A3B8] cursor-pointer">Trending</label>
 
                 </div>
 
-                <div class="label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4 ">
+                <div class="featured-label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4 ">
                     
-                    <input type="checkbox" name="status" id="featured" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600  cursor-pointer" >
+                    <input type="checkbox" name="featured" id="featured" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600  cursor-pointer" >
 
                     <label for="featured" class="text-lg font-bold dark:text-[#94A3B8] cursor-pointer">Featured</label>
+
+                </div>
+
+
+                <div class="published-label-input flex items-center w-max gap-5 border-gray-300 border-[1px] dark:border-gray-600 rounded-[10px] mt-1 p-2 px-4">
+                    
+                    <input type="checkbox" name="published" id="published" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 cursor-pointer" >
+
+                    <label for="published" class="text-lg font-bold dark:text-[#94A3B8] cursor-pointer">Publish</label>
 
                 </div>
 
