@@ -39,7 +39,7 @@
               <h1 class="max-h-[50px] overflow-hidden">
                 <%= product.name %>
               </h1>
-              <% if(product.discountedPrice > 0){ %>
+              <% if( product.discountedPrice > 0){ %>
               <div class="flex gap-4">
                 <strike class="text-[#ACACAC]">Rs <%= product.price %>
                 </strike>
@@ -204,14 +204,14 @@
               <div class="product-price flex justify-center items-center gap-[10px]">
                 <% if(product.discountedPrice> 0){ %>
                 <strike class="product-old-price text-[#ACACAC] font-[merriweather] ">
-                  ₹ <%= product.originalPrice %>
+                  ₹ <%= product.price %>
                 </strike>
                 <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">
                   ₹ <%= product.discountedPrice %>
                 </p>
                 <% }else{ %>
                 <p class="product-new-price bg-transparent text-[#967BB6] font-[merriweather] ">
-                  ₹ <%= product.originalPrice %>
+                  ₹ <%= product.price %>
                 </p>
                 <% } %>
               </div>
