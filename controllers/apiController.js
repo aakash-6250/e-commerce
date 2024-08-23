@@ -310,7 +310,7 @@ apiController.getProductsByUser = catchAsyncApiErrors(async (req, res, next) => 
 
 // POST
 apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
-    const { name, description, price, discountedPrice, category, subcategory, stock, brand, featured, published } = req.body;
+    const { name, description, price, discountedPrice, category, subcategory, stock, brand, featured, trending, published } = req.body;
 
     const descriptionArray = description.split('\n').map(point => point.trim()).filter(point => point);
 
