@@ -87,7 +87,7 @@ indexController.product = catchAsyncEjsErrors(async (req, res, next) => {
         product.save();
     }
 
-    res.render('product', { categories, product });
+    res.render('product', { categories, product ,title: product.name, description: product.description});
 });
 
 // GET /login

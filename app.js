@@ -11,7 +11,7 @@ const passport = require('passport');
 let indexRouter = require('./routes/index');
 let adminsRouter = require('./routes/admin');
 let apiRouter = require('./routes/api');
-const userMiddleware = require('./middlewares/userMiddleware');
+const localsMiddleware = require('./middlewares/localsMiddleware');
 
 
 const { apiErrorHandler } = require('./middlewares/apiErrorHandler');
@@ -50,7 +50,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // Apply the user middleware
-app.use(userMiddleware);
+app.use(localsMiddleware);
 
 // Routes
 app.use('/', indexRouter);
