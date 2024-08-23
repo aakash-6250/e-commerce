@@ -4,12 +4,14 @@ const User = require('../models/user.model');
 const Category = require('../models/category.model');
 const Subcategory = require('../models/subcategory.model');
 const Product = require('../models/product.model');
+const Cart = require('../models/cart.model');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const path = require('path');
 const { default: mongoose } = require('mongoose');
+const { products } = require('./adminController');
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 
@@ -80,43 +82,6 @@ apiController.login = catchAsyncApiErrors(async (req, res, next) => {
 
 
 
-
-
-// Address Controller
-
-// GET
-apiController.getAddressByUser = catchAsyncApiErrors(async (req, res, next) => {
-    const addresses = await Address.find({ user: req.params.id });
-    if (addresses.length === 0) throw new ApiError(404, 'No addresses found.', 'error');
-
-    sendSuccessResponse(res, 'Addresses fetched successfully.', { addresses });
-});
-
-// POST
-apiController.createAddress = catchAsyncApiErrors(async (req, res, next) => {
-    const { user, name, phone, address, city, state, country, zipCode } = req.body;
-    if (!(user && name && phone && address && city && state && country && zipCode)) {
-        throw new ApiError(400, 'All fields are required.', 'error');
-    }
-
-    const addressObj = new Address({ user, name, phone, address, city, state, country, zipCode });
-    await addressObj.save();
-
-    await User.findByIdAndUpdate(user, { $push: { addresses: addressObj._id } });
-
-    sendSuccessResponse(res, 'Address created successfully.', { address: addressObj });
-});
-
-// PATCH
-apiController.updateAddress = catchAsyncApiErrors(async (req, res, next) => {
-    const address = await Address.findById(req.params.id);
-    if (!address) throw new ApiError(404, 'Address not found.', 'error');
-
-    const { name, phone, address: addr, city, state, country, zipCode } = req.body;
-    if (name) address.name = name;
-
-
-});
 
 // isLogedIn Controller
 
@@ -872,7 +837,82 @@ apiController.deleteAddress = catchAsyncApiErrors(async (req, res, next) => {
 });
 
 
+// Address Controller
 
+// GET
+apiController.getAddressByUser = catchAsyncApiErrors(async (req, res, next) => {
+    const addresses = await Address.find({ user: req.params.id });
+    if (addresses.length === 0) throw new ApiError(404, 'No addresses found.', 'error');
+
+    sendSuccessResponse(res, 'Addresses fetched successfully.', { addresses });
+});
+
+// POST
+apiController.createAddress = catchAsyncApiErrors(async (req, res, next) => {
+    const { user, name, phone, address, city, state, country, zipCode } = req.body;
+    if (!(user && name && phone && address && city && state && country && zipCode)) {
+        throw new ApiError(400, 'All fields are required.', 'error');
+    }
+
+    const addressObj = new Address({ user, name, phone, address, city, state, country, zipCode });
+    await addressObj.save();
+
+    await User.findByIdAndUpdate(user, { $push: { addresses: addressObj._id } });
+
+    sendSuccessResponse(res, 'Address created successfully.', { address: addressObj });
+});
+
+// PATCH
+apiController.updateAddress = catchAsyncApiErrors(async (req, res, next) => {
+    const address = await Address.findById(req.params.id);
+    if (!address) throw new ApiError(404, 'Address not found.', 'error');
+
+    const { name, phone, address: addr, city, state, country, zipCode } = req.body;
+    if (name) address.name = name;
+
+
+});
+
+
+//                         Cart Controller
+
+apiController.syncCart = catchAsyncApiErrors(async (req, res, next)=>{
+    
+    if(!req.user) throw new ApiError(401, "User not authenticated", "error")
+
+    const clientCart = req.body.cart;
+
+    if(!clientCart || !Array.isArray(clientCart.items) || !clientCart.items.length === 0) throw new ApiError(409, "Invalid cart", "error") 
+
+    
+    let cart = await Cart.findOne({user: req.user._id});
+    
+    if(!cart) cart = new Cart({user: req.user._id});
+
+    cart.items = clientCart.items.map(item => ({
+        product: item._id,
+        quantity: item.quantity > 0 && item.quantity < 20 ? item.quantity : 1
+    }))
+
+    cart.subTotalAmount = 0;
+    cart.totalAmount= 0;
+
+
+    for(item of cart.items){
+        const product = await Product.findById(item.product);
+        const price = product.discountedPrice > 0 ? product.discountedPrice : product.price;
+        cart.subTotalAmount += price * item.quantity;
+    }
+
+    if(cart.subTotalAmount !== clientCart.subTotalAmount ) throw new ApiError(409, 'Incorrect cart subtotal', 'error')
+
+    cart.totalAmount = cart.subTotalAmount + cart.shippingAmount;
+
+    cart.save();
+
+    sendSuccessResponse(res, 'Cart synced to database')
+
+});
 
 
 //                         Orders Controller

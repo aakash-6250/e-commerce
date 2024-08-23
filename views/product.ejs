@@ -56,14 +56,14 @@
         <div class="single-product-btn-control flex gap-[10px] justify-between items-center  ">
 
           <div class="product-quantity flex gap-1 items-center bg-white rounded-full px-4 ">
-            <i class="sub ri-subtract-line text-[16px] cursor-pointer" id="decrease-quantity"></i>
+            <i class="inc-dec-qty ri-subtract-line text-[16px] cursor-pointer" id="decrease-quantity" data-value="-1"></i>
             <input type="text" name="quantity" id="quantity" class="text-[#616161] w-[50px] outline-none h-[50px] text-center" value="1" disabled>
-            <i class="add ri-add-line text-[16px] cursor-pointer" id="increase-quantity"></i>
+            <i class="inc-dec-qty ri-add-line text-[16px] cursor-pointer" id="increase-quantity" data-value="1"></i>
           </div>
 
           <div class="product-add-to-cart py-[30px] w-full">
 
-            <button id="add-to-cart-btn" class="bg-[#967BB6] text-white font-[lato] text-[16px] max-w-[359px] w-[100%] h-[48px] rounded-[58px] flex items-center gap-[20px] justify-center" data-id="<%= product._id %>" data-qty="1">
+            <button id="add-to-cart-btn" class="add-to-cart-btn bg-[#967BB6] text-white font-[lato] text-[16px] max-w-[359px] w-[100%] h-[48px] rounded-[58px] flex items-center gap-[20px] justify-center" data-id="<%= product._id %>" data-qty="1">
               <p>Add to Cart</p>
               <% if(product.discountedPrice > 0){ %>
               <p class="product-new-price bg-transparent text-white ">&#8377 <%= product.discountedPrice %></p>

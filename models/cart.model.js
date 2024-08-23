@@ -23,7 +23,7 @@ const cartSchema = new mongoose.Schema(
             type: Number,
             default: 0
         },
-        shippingCharge:{
+        shippingAmount:{
             type: Number,
             default: 0
         },

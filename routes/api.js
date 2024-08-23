@@ -70,6 +70,11 @@ router.post('/register', apiController.register);
 
 
 
+//          Cart
+
+router.post('/cart', apiController.syncCart);
+
+
 
 
 function isLoggedInAdmin(req, res, next){

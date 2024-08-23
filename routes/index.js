@@ -10,11 +10,11 @@ router.get('/products', indexController.shop);
 
 router.get('/product/:id', indexController.product);
 
-router.get('/login', indexController.login);
+router.get('/login', isLogedOut, indexController.login);
 
-router.get('/register', indexController.register);
+router.get('/register',isLogedOut, indexController.register);
 
-router.get('/account', indexController.account);
+router.get('/account', isLoggedIn, indexController.account);
 
 router.get('/contact', indexController.contact);
 
@@ -48,27 +48,17 @@ function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  req.session.errorMessage = "You need to login first";
-  req.session.messageType = "error";
-  res.redirect(req.headers.referer || '/');
-}
 
-function isLoggedInAdmin(req, res, next) {
-  if (req.isAuthenticated() && req.user.role === 'admin') {
-      return next();
-  }
-  req.session.errorMessage = "Unauthorized access. Admin only.";
-  req.session.messageType = "error";
-  res.redirect('/login');
+  res.redirect('/');
+  
 }
 
 function isLogedOut(req, res, next) {
   if (!req.isAuthenticated()) {
     return next();
   }
-  req.session.errorMessage = "You are already logged in.";
-  req.session.messageType = "error";
-  res.redirect(req.headers.referer || '/');
+  res.redirect('/')
+  
 }
 
 module.exports = router;
