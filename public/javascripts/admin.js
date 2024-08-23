@@ -538,7 +538,6 @@ $(document).ready(function () {
         const discountedPrice = e.target.querySelector('#discounted-price').value;
         const category = e.target.querySelector('#category').value;
         const subcategory = e.target.querySelector('#subcategory').value;
-        const subcategoryInput = e.target.querySelector('#subcategory');
         const stock = e.target.querySelector('#stock').value;
         const brand = e.target.querySelector('#brand').value;
         const images = e.target.querySelector('#images').files;
@@ -577,6 +576,12 @@ $(document).ready(function () {
                 const data = response.data;
 
                 showToast(data.message, data.type);
+
+                if (data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
 
             })
             .catch(error => {
