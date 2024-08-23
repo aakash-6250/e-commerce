@@ -38,7 +38,7 @@ multerMiddleware.resizeProductImages = async (req, res, next) => {
             const processedImageStream = imageStream.pipe(
                 sharp()
                     .rotate()
-                    .webp({ quality: 80 })
+                    .webp({ quality: 100 })
             );
 
             const writeStream = fs.createWriteStream(finalImagePath);
