@@ -743,7 +743,7 @@ function increaseQuantity(event) {
         let productExist = cart.items[productIndex];
         if (productExist.quantity < 20) {
             productExist.quantity++;
-            cart.subTotalAmount += productExist.price;
+            cart.subTotalAmount += parseFloat(productExist.price);
             cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartData();
@@ -792,8 +792,8 @@ function deleteProduct(event) {
     if (productIndex > -1) {
         // Calculate total amount to deduct
         let productExist = cart.items[productIndex];
-        const productTotalPrice = productExist.price * productExist.quantity;
-        cart.subTotalAmount -= productTotalPrice;
+        const productTotalPrice = parseFloat(productExist.price * productExist.quantity);
+        cart.subTotalAmount -= parseFloat(productTotalPrice);
         cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount)
         cart.items.splice(productIndex, 1);
         localStorage.setItem('cart', JSON.stringify(cart));
