@@ -72,10 +72,7 @@ apiController.login = catchAsyncApiErrors(async (req, res, next) => {
                 return next(new ApiError(500, 'Server error', 'error'));
             }
 
-
-
-            const redirectPath = user.role === 'admin' ? '/admin' : '/';
-            return sendSuccessResponse(res, 'Login successful.', { redirect: redirectPath });
+            return sendSuccessResponse(res, 'Login successful.', { redirect: '/' });
         });
     })(req, res, next);
 });
@@ -891,7 +888,7 @@ apiController.syncCart = catchAsyncApiErrors(async (req, res, next)=>{
 
     cart.items = clientCart.items.map(item => ({
         product: item._id,
-        quantity: item.quantity > 0 && item.quantity < 20 ? item.quantity : 1
+        quantity: item.quantity > 0 && item.quantity < 21 ? item.quantity : 1
     }))
 
     cart.subTotalAmount = 0;
@@ -902,7 +899,10 @@ apiController.syncCart = catchAsyncApiErrors(async (req, res, next)=>{
         const product = await Product.findById(item.product);
         const price = product.discountedPrice > 0 ? product.discountedPrice : product.price;
         cart.subTotalAmount += price * item.quantity;
+        console.log(price, item.quantity)
     }
+
+    console.log(cart.subTotalAmount , clientCart.subTotalAmount)
 
     if(cart.subTotalAmount !== clientCart.subTotalAmount ) throw new ApiError(409, 'Incorrect cart subtotal', 'error')
 

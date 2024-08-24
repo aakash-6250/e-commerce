@@ -587,7 +587,7 @@ function setupAddToCartButtons() {
 }
 
 function updateCartData() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
+    const cart = getCart() || { items: [], totalAmount: 0 };
 
 
     const cartElement = document.querySelector('.cart');
@@ -661,6 +661,43 @@ function updateCartData() {
     }
 }
 
+function getCart() {
+    const cartData = JSON.parse(localStorage.getItem('cart'));
+
+    if (cartData && !cartData.timestamp) {
+        localStorage.removeItem('cart');
+        return null;
+    }
+
+    if (cartData) {
+        const currentTime = new Date().getTime();
+        const timeElapsed = currentTime - cartData.timestamp;
+
+        const expirationTime = 24 * 60 * 60 * 1000;
+
+        if (timeElapsed > expirationTime) {
+            localStorage.removeItem('cart');
+            return null;
+        }
+
+        return cartData;
+    }
+
+    return null;
+}
+
+function saveCart(cart) {
+    const cartData = {
+        items: cart.items,
+        subTotalAmount: cart.subTotalAmount,
+        shippingAmount: cart.shippingAmount,
+        totalAmount: cart.totalAmount,
+        timestamp: new Date().getTime()
+    };
+    localStorage.setItem('cart', JSON.stringify(cartData));
+}
+
+
 async function addToCart(productId, qty = 1) {
     try {
         // Fetch product details
@@ -672,11 +709,12 @@ async function addToCart(productId, qty = 1) {
         }
 
         // Retrieve or initialize cart from localStorage
-        let cart = JSON.parse(localStorage.getItem('cart')) || {
+        let cart = getCart() || {
             items: [],
             subTotalAmount: 0,
             shippingAmount: 0,
-            totalAmount: 0
+            totalAmount: 0,
+            timestamp: new Date().getTime()
         };
 
         // Check if the product is already in the cart
@@ -689,12 +727,12 @@ async function addToCart(productId, qty = 1) {
                 showToast("Maximum 20 quantity is allowed", "warning");
             } else {
                 productExist.quantity += qty;
-                cart.subTotalAmount += parseFloat(productExist.price * qty);
+                cart.subTotalAmount += parseFloat((productExist.price * qty).toFixed(2));
                 showToast('Product quantity updated in cart', 'success');
             }
         } else {
             // Product is not in the cart, add it
-            const price = product.discountedPrice > 0 ? product.discountedPrice : product.price;
+            const price = product.discountedPrice > 0 ? product.discountedPrice.toFixed(2) : product.price.toFixed(2);
             cart.items.push({
                 _id: productId,
                 name: product.name,
@@ -711,8 +749,7 @@ async function addToCart(productId, qty = 1) {
         cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
 
 
-        // Save updated cart to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
+        saveCart(cart);
         updateCartData();
         syncCartWithDatabase();
 
@@ -731,21 +768,29 @@ async function addToCart(productId, qty = 1) {
 
 function increaseQuantity(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart')) || {
+    let cart = getCart() || {
         items: [],
         subTotalAmount: 0,
         shippingAmount: 0,
-        totalAmount: 0
+        totalAmount: 0,
+        timestamp: new Date().getTime()
     };
+
     const productIndex = cart.items.findIndex(item => item._id === productId);
 
     if (productIndex > -1) {
         let productExist = cart.items[productIndex];
         if (productExist.quantity < 20) {
             productExist.quantity++;
-            cart.subTotalAmount += parseFloat(productExist.price);
-            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
-            localStorage.setItem('cart', JSON.stringify(cart));
+
+            const productPrice = parseFloat(productExist.price) || 0;
+            const subTotal = parseFloat(cart.subTotalAmount) || 0;
+
+            cart.subTotalAmount = parseFloat((subTotal + productPrice).toFixed(2));
+
+            cart.totalAmount = parseFloat((cart.subTotalAmount + cart.shippingAmount).toFixed(2));
+
+            saveCart(cart);
             updateCartData();
             syncCartWithDatabase();
         } else {
@@ -756,11 +801,12 @@ function increaseQuantity(event) {
 
 function decreaseQuantity(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart')) || {
+    let cart = getCart() || {
         items: [],
         subTotalAmount: 0,
         shippingAmount: 0,
-        totalAmount: 0
+        totalAmount: 0,
+        timestamp: new Date().getTime()
     };
     const productIndex = cart.items.findIndex(item => item._id === productId);
 
@@ -768,9 +814,15 @@ function decreaseQuantity(event) {
         let productExist = cart.items[productIndex];
         if (productExist.quantity > 1) {
             productExist.quantity--;
-            cart.subTotalAmount -= parseFloat(productExist.price);
-            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
-            localStorage.setItem('cart', JSON.stringify(cart));
+
+            const productPrice = parseFloat(productExist.price) || 0;
+            const subTotal = parseFloat(cart.subTotalAmount) || 0;
+
+            cart.subTotalAmount = parseFloat((subTotal - productPrice).toFixed(2));
+
+            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount).toFixed(2);
+
+            saveCart(cart);
             updateCartData();
             syncCartWithDatabase();
         } else {
@@ -781,11 +833,12 @@ function decreaseQuantity(event) {
 
 function deleteProduct(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart')) || {
+    let cart = getCart() || {
         items: [],
         subTotalAmount: 0,
         shippingAmount: 0,
-        totalAmount: 0
+        totalAmount: 0,
+        timestamp: new Date().getTime()
     };
     const productIndex = cart.items.findIndex(item => item._id === productId);
 
@@ -796,7 +849,12 @@ function deleteProduct(event) {
         cart.subTotalAmount -= parseFloat(productTotalPrice);
         cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount)
         cart.items.splice(productIndex, 1);
-        localStorage.setItem('cart', JSON.stringify(cart));
+
+        saveCart(cart);
+
+        if(cart.items.length === 0) localStorage.removeItem('cart');
+
+
         updateCartData();
         syncCartWithDatabase();
         showToast('Product removed from cart', 'success'); // Feedback to user
@@ -828,21 +886,29 @@ function singleProductImageSlider() {
 
 function increaseQuantityBeforeCheckout(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart')) || {
+    let cart = getCart() || {
         items: [],
         subTotalAmount: 0,
         shippingAmount: 0,
-        totalAmount: 0
+        totalAmount: 0,
+        timestamp: new Date().getTime()
     };
+
     const productIndex = cart.items.findIndex(item => item._id === productId);
 
     if (productIndex > -1) {
         let productExist = cart.items[productIndex];
         if (productExist.quantity < 20) {
             productExist.quantity++;
-            cart.subTotalAmount += productExist.price;
-            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
-            localStorage.setItem('cart', JSON.stringify(cart));
+
+            const productPrice = parseFloat(productExist.price) || 0;
+            const subTotal = parseFloat(cart.subTotalAmount) || 0;
+
+            cart.subTotalAmount = parseFloat((subTotal + productPrice).toFixed(2));
+
+            cart.totalAmount = parseFloat((cart.subTotalAmount + cart.shippingAmount).toFixed(2));
+
+            saveCart(cart);
             updateCartData();
             updateCartDataBeforeCheckout();
             syncCartWithDatabase();
@@ -854,11 +920,12 @@ function increaseQuantityBeforeCheckout(event) {
 
 function decreaseQuantityBeforeCheckout(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart')) || {
+    let cart = getCart() || {
         items: [],
         subTotalAmount: 0,
         shippingAmount: 0,
-        totalAmount: 0
+        totalAmount: 0,
+        timestamp: new Date().getTime()
     };
     const productIndex = cart.items.findIndex(item => item._id === productId);
 
@@ -866,9 +933,15 @@ function decreaseQuantityBeforeCheckout(event) {
         let productExist = cart.items[productIndex];
         if (productExist.quantity > 1) {
             productExist.quantity--;
-            cart.subTotalAmount -= parseFloat(productExist.price);
-            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount);
-            localStorage.setItem('cart', JSON.stringify(cart));
+
+            const productPrice = parseFloat(productExist.price) || 0;
+            const subTotal = parseFloat(cart.subTotalAmount) || 0;
+
+            cart.subTotalAmount = parseFloat((subTotal - productPrice).toFixed(2));
+
+            cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount).toFixed(2);
+
+            saveCart(cart);
             updateCartData();
             updateCartDataBeforeCheckout();
             syncCartWithDatabase();
@@ -880,22 +953,28 @@ function decreaseQuantityBeforeCheckout(event) {
 
 function deleteProductBeforeCheckout(event) {
     const productId = event.target.dataset.id;
-    let cart = JSON.parse(localStorage.getItem('cart')) || {
+    let cart = getCart() || {
         items: [],
         subTotalAmount: 0,
         shippingAmount: 0,
-        totalAmount: 0
+        totalAmount: 0,
+        timestamp: new Date().getTime()
     };
     const productIndex = cart.items.findIndex(item => item._id === productId);
 
     if (productIndex > -1) {
         // Calculate total amount to deduct
         let productExist = cart.items[productIndex];
-        const productTotalPrice = productExist.price * productExist.quantity;
-        cart.subTotalAmount -= productTotalPrice;
+        const productTotalPrice = parseFloat(productExist.price * productExist.quantity);
+        cart.subTotalAmount -= parseFloat(productTotalPrice);
         cart.totalAmount = parseFloat(cart.subTotalAmount + cart.shippingAmount)
         cart.items.splice(productIndex, 1);
-        localStorage.setItem('cart', JSON.stringify(cart));
+
+        saveCart(cart);
+
+        if(cart.items.length === 0) localStorage.removeItem('cart');
+
+
         updateCartData();
         updateCartDataBeforeCheckout();
         syncCartWithDatabase();
@@ -906,7 +985,7 @@ function deleteProductBeforeCheckout(event) {
 }
 
 function updateCartDataBeforeCheckout() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || { items: [], totalAmount: 0 };
+    const cart = getCart() || { items: [], totalAmount: 0 };
 
 
     const cartElement = document.querySelector('.cart-before-checkout');
