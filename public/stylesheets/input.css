@@ -50,3 +50,29 @@ body {
 main>.container {
     min-height: calc(100vh - 120px);
 }
+
+
+@layer components {
+    .user-invalid:user-invalid {
+        @apply outline outline-2 outline-red-500;
+    }
+
+    .user-invalid:focus:user-invalid {
+        @apply outline outline-2 outline-red-500;
+    }
+
+    .user-valid:user-valid {
+        @apply outline outline-2 outline-green-500;
+    }
+
+    .user-valid:focus:user-valid {
+        @apply outline outline-2 outline-green-500;
+    }
+}
+
+@layer utilities {
+    .no-spinner {
+        -webkit-appearance: none;
+        -moz-appearance: textfield;
+    }
+}

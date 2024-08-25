@@ -1,112 +1,114 @@
 <%- include('../partials/header') %>
 
 <%- include('../partials/sidebar') %>
-<main class="relative bg-[#F2F7FB] dark:bg-[#0F172A] w-full pb-[50px] ">
-<%- include('../partials/navbar') %>
 
+<main class="relative bg-[#F2F7FB] dark:bg-[#0F172A] w-full pb-[50px] flex-shrink-0">
+  <%- include('../partials/navbar') %>
 
+  <div class="container w-full px-6 py-8 flex flex-col gap-[30px] ">
 
-
-<div class="container w-full px-6 py-8 flex  flex-col gap-[30px] m-auto">
     <h1 class="font-[merriweather] text-2xl font-bold">All Products</h1>
 
     <div class="product-list-container w-full py-1 px-3 dark:bg-[#1E293B] bg-white rounded-xl">
 
-        <div class="product-list-options flex justify-start lg:justify-between px-4 py-2 flex-wrap gap-[30px]  items-center w-full">
+      <div class="product-list-options flex justify-start lg:justify-between px-4 py-2 flex-wrap gap-[30px]  items-center w-full">
 
-            <form class="search-product-form flex justify-between items-center rounded-xl overflow-hidden border-[1px] border-zinc-300 bg-white dark:bg-[#202D3F] dark:text-zinc-600">
-                <input type="text" class="w-[300px] lg:w-[400px] h-[40px] px-3 rounded-[5px] bg-white outline-none dark:bg-[#202D3F] dark:text-zinc-600" placeholder="Search products">
-                <button class="h-[40px] dark:text-zinc-600 rounded-[5px]">
-                    <i class="search-btn ri-search-line px-2 py-1 text-xl"></i>
-                </button>
-            </form>
+        <form class="search-product-form flex justify-between items-center rounded-xl overflow-hidden border-[1px] border-zinc-300 bg-white dark:bg-[#202D3F] dark:text-zinc-600" method="get" action="/admin/products/">
+          <input type="text" name="search" class="w-[300px] lg:w-[400px] h-[40px] px-3 rounded-[5px] bg-white outline-none dark:bg-[#202D3F] dark:text-zinc-600" placeholder="Search products">
+          <button class="h-[40px] dark:text-zinc-600 rounded-[5px]">
+            <i class="search-btn ri-search-line px-2 py-1 text-xl"></i>
+          </button>
+        </form>
 
-            <form id="show-product-form" class="show-product-form flex items-center justify-center gap-[10px]">
-                <label for="show-product" class="text-lg cursor-pointer">Showing</label>
-                <select name="show-product" id="show-product" class="py-1 bg-white px-2 rounded-[5px] dark:bg-[#202D3F] border-[1px] border-zinc-300 cursor-pointer">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                </select>
-                <label for="show-product" class="text-lg cursor-pointer">products</label>
-            </form>
-            
+        <form id="show-product-form" class="show-product-form flex items-center justify-center gap-[10px]">
+          <label for="show-product" class="text-lg cursor-pointer">Showing</label>
+          <select name="show-product" id="show-product" class="py-1 bg-white px-2 rounded-[5px] dark:bg-[#202D3F] border-[1px] border-zinc-300 cursor-pointer">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </select>
+          <label for="show-product" class="text-lg cursor-pointer">products</label>
+        </form>
 
-            <a class="add-product-btn flex items-center gap-[10px] border-[1px] dark:border-[0px] px-4 py-2 rounded-xl text-blue-600 border-blue-500 bg-white " href="/admin/product/add">
-                <i class="ri-add-line text-xl"></i>
-                <p class="">Add Product</p>
-            </a>
+
+        <a class="add-product-btn flex items-center gap-[10px] border-[1px] dark:border-[0px] px-4 py-2 rounded-xl text-blue-600 border-blue-500 bg-white " href="/admin/product/add">
+          <i class="ri-add-line text-xl"></i>
+          <p class="">Add Product</p>
+        </a>
+
+      </div>
+
+      <div class="product-list text-center dark:bg-[#1E293B] rounded-2xl w-full p-5 flex flex-col gap-[20px] justify-center overflow-x-auto">
+
+        <div class="heading dark:bg-[#202D3F] px-3 py-2 rounded-xl flex *:flex-shrink-0 items-stretch font-extrabold min-w-[1200px] w-max">
+
+          <div class="product-img-desc w-[400px] flex-shrink-0">
+            <p>Product</p>
+          </div>
+          <div class="price w-[130px] flex-shrink-0">
+            <p>Original Price</p>
+          </div>
+          <div class="price w-[130px] ">
+            <p>Discounted Price</p>
+          </div>
+          <div class="quantity w-[130px] ">
+            <p>Quantity</p>
+          </div>
+          <div class="stock w-[130px] ">
+            <p>Stock</p>
+          </div>
+          <div class="featured w-[130px] ">
+            <p>Featured</p>
+          </div>
+          <div class="published w-[130px] ">
+            <p>Published</p>
+          </div>
+          <div class="revenue w-[130px]">
+            <p>Total Revenue</p>
+          </div>
+          <div class="actions w-[130px]">
+            <p>Actions</p>
+          </div>
+        </div>
+
+        <div class="products flex flex-col gap-[10px] ">
+
+
 
         </div>
 
-        <div class="product-list text-center bg-white dark:bg-[#1E293B] rounded-2xl w-full p-5 flex flex-col gap-[20px] justify-center overflow-x-auto">
+      </div>
 
-            <div class="heading bg-[#F2F7FB] dark:bg-[#202D3F] px-3 py-2 rounded-xl flex items-stretch font-extrabold min-w-[1200px]">
-                
-                <div class="product-img-desc w-[400px] flex-shrink-0">
-                    <p>Product</p>
-                </div>
-                <div class="price w-[130px]">
-                    <p>Original Price</p>
-                </div>
-                <div class="price w-[130px] ">
-                    <p>Discounted Price</p>
-                </div>
-                <div class="quantity w-[130px] ">
-                    <p>Quantity</p>
-                </div>
-                <div class="stock w-[130px] ">
-                    <p>Stock</p>
-                </div>
-                <div class="featured w-[130px] ">
-                    <p>Featured</p>
-                </div>
-                <div class="published w-[130px] ">
-                    <p>Published</p>
-                </div>
-                <div class="revenue w-[130px]">
-                    <p>Total Revenue</p>
-                </div>
-                <div class="actions w-[130px]">
-                    <p>Actions</p>
-                </div>
-            </div>
-    
-            <div class="products flex flex-col gap-[10px] ">
+      <div class="pagination-container flex justify-center gap-[10px] md:justify-between  flex-wrap items-center min-h-[70px] py-2 border-t-[1px] border-zinc-600">
+        <p class="entries-count text-zinc-500">Showing</p>
+        <div class="controls flex items-center gap-[5px] h-full">
+          <button class="prev-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
+            <i class="ri-arrow-left-s-line text-2xl"></i>
+          </button>
+          <div class="page-btns-container flex items-center gap-[5px] h-[60px] p-1">
 
-                
-
-            </div>
-            
+          </div>
+          <button class="next-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
+            <i class="ri-arrow-right-s-line text-2xl"></i>
+          </button>
         </div>
-
-        <div class="pagination-container flex justify-center gap-[10px] md:justify-between  flex-wrap items-center min-h-[70px] py-2 border-t-[1px] border-zinc-600">
-            <p class="entries-count text-zinc-500">Showing</p>
-            <div class="controls flex items-center gap-[5px] h-full">
-                <button class="prev-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
-                    <i class="ri-arrow-left-s-line text-2xl"></i>
-                </button>
-                <div class="page-btns-container flex items-center gap-[5px] h-[60px] p-1">
-                    
-                </div>
-                <button class="next-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
-                    <i class="ri-arrow-right-s-line text-2xl"></i>
-                </button>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
-
-
-
 
     
-<footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center ">
+  </div>
+
+
+
+
+
+  <footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center ">
     <p class="text-center text-zinc-600">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-blue-600" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
-</footer>
+  </footer>
 </main>
 <%- include('../partials/footer') %>
 
 <script>
-    fetchProducts();
+  fetchProducts();
 </script>

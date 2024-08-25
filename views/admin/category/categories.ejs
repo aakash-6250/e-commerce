@@ -1,85 +1,70 @@
 <%- include('../partials/header') %>
 
 <%- include('../partials/sidebar') %>
+
 <main class="relative bg-[#F2F7FB] dark:bg-[#0F172A] w-full pb-[50px] ">
-<%- include('../partials/navbar') %>
+  <%- include('../partials/navbar') %>
 
-
-
-
-<div class="container w-full px-6 py-8 flex  flex-col gap-[30px] m-auto">
+  <div class="container w-full px-6 py-8 flex  flex-col gap-[30px] m-auto">
     <h1 class="font-[merriweather] text-2xl font-bold">All Category</h1>
 
     <div class="product-list-container w-full py-1 px-3 dark:bg-[#1E293B] bg-white rounded-xl">
 
-        <div class="category-list bg-white dark:bg-[#1E293B] rounded-2xl w-full p-5 flex flex-col gap-[20px] justify-center overflow-x-auto">
+      <div class="category-list bg-white dark:bg-[#1E293B] rounded-2xl w-full p-5 flex flex-col gap-[20px] justify-center overflow-x-auto">
 
-            <div class="heading bg-[#F2F7FB] dark:bg-[#202D3F] px-3 py-2 rounded-xl flex justify-around items-center font-extrabold min-w-[400px] text-center">
-                <div class="category min-w-[130px]">
-                    <p>Product</p>
-                </div>
-                <div class="number-subcategory min-w-[130px]">
-                    <p>No. Subcategory</p>
-                </div>
-                <div class="quantity min-w-[130px]">
-                    <p>No. Product</p>
-                </div>
-                <div class="actions min-w-[130px]">
-                    <p>Actions</p>
-                </div>
+        <div class="heading bg-[#F2F7FB] dark:bg-[#202D3F] px-3 py-2 rounded-xl flex justify-around items-center font-extrabold min-w-[400px] text-center">
+          <div class="category min-w-[130px]">
+            <p>Product</p>
+          </div>
+          <div class="number-subcategory min-w-[130px]">
+            <p>No. Subcategory</p>
+          </div>
+          <div class="quantity min-w-[130px]">
+            <p>No. Product</p>
+          </div>
+          <div class="actions min-w-[130px]">
+            <p>Actions</p>
+          </div>
+        </div>
+
+        <div class="categories flex flex-col gap-[10px] ">
+
+          <% categories.forEach(category => { %>
+          <div class="category bg-white dark:bg-[#202D3F] px-3 py-2 rounded-xl flex justify-around items-center min-w-[400px] text-center">
+            <div class="category min-w-[130px]">
+              <p><%= category.name %></p>
             </div>
+            <div class="number-subcategory min-w-[130px]">
+              <p><%= category.num_subcategories %></p>
+            </div>
+            <div class="quantity min-w-[130px]">
+              <p><%= category.num_products %></p>
+            </div>
+            <div class="actions min-w-[130px] flex justify-around items-center">
+              <a class="edit-category-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 " href="/admin/category/<%= category._id %>/edit">
+                <i class="ri-pencil-line text-2xl"></i>
+              </a>
+              <button class="delete-category-btn px-2 py-1 rounded-full hover:bg-red-600 hover:text-white border-[1px] border-zinc-200 " data-id="<%= category._id %>">
+                <i class="ri-delete-bin-line text-2xl"></i>
+              </button>
+            </div>
+          </div>
+          <% }) %>
+
+        </div>
+
+      </div>
+
     
-            <div class="categories flex flex-col gap-[10px] ">
-
-                <% categories.forEach(category => { %>
-                    <div class="category bg-white dark:bg-[#202D3F] px-3 py-2 rounded-xl flex justify-around items-center min-w-[400px] text-center">
-                        <div class="category min-w-[130px]">
-                            <p><%= category.name %></p>
-                        </div>
-                        <div class="number-subcategory min-w-[130px]">
-                            <p><%= category.num_subcategories %></p>
-                        </div>
-                        <div class="quantity min-w-[130px]">
-                            <p><%= category.num_products %></p>
-                        </div>
-                        <div class="actions min-w-[130px] flex justify-around items-center">
-                            <a class="edit-category-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 " href="/admin/category/<%= category._id %>/edit">
-                                <i class="ri-pencil-line text-2xl"></i>
-                            </a>
-                            <button class="delete-category-btn px-2 py-1 rounded-full hover:bg-red-600 hover:text-white border-[1px] border-zinc-200 " data-id="<%= category._id %>">
-                                <i class="ri-delete-bin-line text-2xl"></i>
-                            </button>
-                        </div>
-                    </div>
-                <% }) %>
-
-            </div>
-            
-        </div>
-
-        <div class="pagination-container flex justify-center gap-[10px] md:justify-between  flex-wrap items-center min-h-[70px] py-2 border-t-[1px] border-zinc-600">
-            <p class="entries-count text-zinc-500">Showing</p>
-            <div class="controls flex items-center gap-[5px] h-full">
-                <button class="prev-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
-                    <i class="ri-arrow-left-s-line text-2xl"></i>
-                </button>
-                <div class="page-btns-container flex items-center gap-[5px] h-[60px] p-1">
-                    
-                </div>
-                <button class="next-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
-                    <i class="ri-arrow-right-s-line text-2xl"></i>
-                </button>
-            </div>
-        </div>
     </div>
-</div>
+  </div>
 
 
 
 
-    
-<footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center ">
+
+  <footer class="h-[50px] absolute bottom-0 left-0 w-full dark:bg-[#1E293B] bg-white flex justify-center items-center ">
     <p class="text-center text-zinc-600">Design with <span class="heart text-red-600"><i class="ri-heart-line"></i></span> by <a class="hover:text-red-600 text-blue-600" href="https://www.linkedin.com/in/aakash6250">Aakash Patel</a> All rights reserved.</p>
-</footer>
+  </footer>
 </main>
 <%- include('../partials/footer') %>

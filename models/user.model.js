@@ -23,8 +23,7 @@ const userSchema = new mongoose.Schema(
             type: [{
                 type: mongoose.Schema.Types.ObjectId, 
                 ref: 'Address'
-            }], 
-            validate: [arrayLimit, '{PATH} exceeds the limit of 3'],
+            }]
         },
         phone: { 
             type: String,
@@ -41,9 +40,6 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-function arrayLimit(val) {
-    return val.length <= 3;
-}
 
 userSchema.plugin(plm, { usernameField: 'email' });
 

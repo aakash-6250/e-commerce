@@ -7,12 +7,12 @@ const addressSchema = new Schema({
         ref: 'User',
         required: true
     },
-    name: {
+    firstName: {
         type: String,
         required: true,
         trim: true
     },
-    phone: {
+    lastName: {
         type: String,
         required: true,
         trim: true
@@ -37,7 +37,12 @@ const addressSchema = new Schema({
         required: true,
         trim: true
     },
-    zipCode: {
+    zip: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    phone:{
         type: String,
         required: true,
         trim: true

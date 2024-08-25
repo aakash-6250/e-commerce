@@ -1,5 +1,7 @@
 const Category = require('../models/category.model');
-const Subcategory = require('../models/subcategory.model');
+const User = require('../models/user.model');
+const Address = require('../models/address.model');
+const Cart = require('../models/cart.model')
 const Product = require('../models/product.model');
 const { catchAsyncEjsErrors } = require('../middlewares/catchAsyncErrors');
 let views = 0;
@@ -300,6 +302,56 @@ indexController.contact = catchAsyncEjsErrors(async (req, res, next) => {
 
     res.render('contact', { categories });
 });
+
+indexController.address = catchAsyncEjsErrors(async (req, res, next) => {
+    const categoriesWithFeaturedProducts = await Category.find({})
+        .populate({
+            path: 'subcategories',
+            populate: {
+                path: 'products',
+                match: { published: true },
+            }
+        })
+        .lean(); 
+
+    const categories = categoriesWithFeaturedProducts.filter(category =>
+        category.subcategories.some(subcategory =>
+            subcategory.products && subcategory.products.length > 0
+        )
+    );
+
+    const user = await User.findById(req.user._id).populate('addresses');
+    const cart = await Cart.findOne({user: user._id});
+
+
+    res.render('address', {categories, user:user, cart: cart})
+})
+
+indexController.shippingOptions = catchAsyncEjsErrors(async (req, res, next) => {
+    const categoriesWithFeaturedProducts = await Category.find({})
+        .populate({
+            path: 'subcategories',
+            populate: {
+                path: 'products',
+                match: { published: true },
+            }
+        })
+        .lean(); 
+
+    const categories = categoriesWithFeaturedProducts.filter(category =>
+        category.subcategories.some(subcategory =>
+            subcategory.products && subcategory.products.length > 0
+        )
+    );
+
+    const user = await User.findOne({email: "aakash@gmail.com"}).populate('addresses');
+    const cart = await Cart.findOne({user: user._id});
+
+
+    res.render('shipping', {categories, user:user, cart: cart})
+})
+
+
 
 
 

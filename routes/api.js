@@ -75,6 +75,17 @@ router.post('/register', apiController.register);
 router.post('/cart', apiController.syncCart);
 
 
+//          Address
+
+router.post('/check-pincode', apiController.checkPincode);
+
+router.post('/address', apiController.createAddress)
+
+router.delete('/address/:id', apiController.deleteAddress);
+
+router.post('/address/selected', apiController.selectedAddress);
+
+
 
 
 function isLoggedInAdmin(req, res, next){

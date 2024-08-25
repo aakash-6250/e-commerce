@@ -45,8 +45,9 @@ function navbarAnimation() {
         localStorage.setItem('sideBarOpen', 'open');
 
         gsap.to(sideBar, {
-            width: '400px',
-            duration: 0.5
+            width: '250px',
+            duration: 0.5,
+            onComplete: () =>{console.log("hello")}
         });
     });
 
@@ -209,7 +210,7 @@ function showToast(message = "Something went wrong...", type = 'info') {
     }).showToast();
 }
 
-function fetchProducts(page = 1, limit = 12) {
+function fetchProducts(page = 1, limit = 5) {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
 
@@ -242,24 +243,25 @@ function displayProducts(products) {
             const productStock = product.stock > 0 ? 'Available' : 'Out of stock';
             const productElement = document.createElement('div');
 
-            productElement.className = 'product px-3 h-[70px] rounded-xl flex items-center min-w-[1200px] hover:bg-[#EDF1F5] hover:dark:bg-[#3E4757] odd:bg-[#F2F7FB] odd:dark:bg-[#202D3F] ';
+            productElement.className = 'product px-3 h-[70px] rounded-xl flex items-center min-w-[1200px] w-max hover:bg-[#EDF1F5] hover:dark:bg-[#3E4757] odd:bg-[#F2F7FB] odd:dark:bg-[#202D3F] *:flex-shrink-0 ';
 
             productElement.innerHTML = `
-                <div class="product-img-name w-[400px] h-full flex items-center justify-between ">
+                <div class="product-img-name w-[400px] h-full flex items-center justify-between">
 
                     <div class="product-img w-[60px] h-[60px] overflow-hidden rounded-[5px] flex items-center justify-center bg-gray-300 dark:bg-gray-600 ">
 
-                        ${product.images.length > 0 ?
-                    `<img src="/images/product/${product.images[0]}" alt="${product.name}" class="h-full w-full">` :
-                    `<i class="ri-image-line text-4xl text-gray-500 dark:text-gray-400 w-full"></i>`
-                }
+                        ${
+                            product.images.length > 0 ?
+                            `<img src="/images/product/${product.images[0]}" alt="${product.name}" class="h-full w-full">` :
+                            `<i class="ri-image-line text-4xl text-gray-500 dark:text-gray-400 w-full"></i>`
+                        }
 
                     </div>
 
                     <p class="product-name w-[80%] overflow-hidden truncate">${product.name}</p>
 
                 </div>
-                <div class="original-price w-[130px]">
+                <div class="original-price w-[130px] min-w-[130px]">
                     <p>₹ ${product.price}</p>
                 </div>
                 <div class="discount-price w-[130px]">
@@ -589,15 +591,6 @@ $(document).ready(function () {
                 showToast(data.message, data.type);
             });
 
-        // e.target.reset();
-        // $('#images-preview-container').empty();
-        // subcategoryInput.innerHTML = '';
-        // const option = document.createElement('option');
-        // option.value = '';
-        // option.textContent = 'Select a category first';
-        // option.selected = true;
-        // option.disabled = true;
-        // subcategoryInput.appendChild(option);
     });
 
     $('#add-product-form #images').on('change', function (e) {

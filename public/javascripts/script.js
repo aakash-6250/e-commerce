@@ -295,18 +295,20 @@ function cartAnimation() {
         });
     });
 
-    cartCloseBtn.addEventListener('click', (e) => {
-        if (e.target === cartCloseBtn) {
-            gsap.to(cart, {
-                x: '100%',
-                duration: 0.5,
-                ease: 'power2.in',
-                onComplete: () => {
-                    cart.classList.add("hidden");
-                }
-            });
-        }
-    });
+    if(cartCloseBtn){
+        cartCloseBtn.addEventListener('click', (e) => {
+            if (e.target === cartCloseBtn) {
+                gsap.to(cart, {
+                    x: '100%',
+                    duration: 0.5,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        cart.classList.add("hidden");
+                    }
+                });
+            }
+        });
+    }
 
 
 }
@@ -380,17 +382,19 @@ function loginRegisterAnimation() {
         });
     });
 
-    loginRegisterCloseBtn.addEventListener('click', (e) => {
-        if (e.target === loginRegisterCloseBtn) {
-            gsap.to(loginRegister, {
-                x: '100%',
-                duration: 0.3,
-                onComplete: () => {
-                    loginRegister.classList.add("hidden");
-                }
-            });
-        }
-    });
+    if(loginRegisterCloseBtn){
+        loginRegisterCloseBtn.addEventListener('click', (e) => {
+            if (e.target === loginRegisterCloseBtn) {
+                gsap.to(loginRegister, {
+                    x: '100%',
+                    duration: 0.3,
+                    onComplete: () => {
+                        loginRegister.classList.add("hidden");
+                    }
+                });
+            }
+        });
+    }
 
 }
 
@@ -566,7 +570,7 @@ async function syncCartWithDatabase() {
         const loggedIn = response.data.data.loggedIn;
 
         if (loggedIn) {
-            let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            let cart = getCart() || {};
             await axios.post('/api/cart', { cart });
         }
 
@@ -574,9 +578,6 @@ async function syncCartWithDatabase() {
         console.error('Failed to sync cart with database:', error);
     }
 }
-
-
-
 
 function setupAddToCartButtons() {
     $(document).on('click', '.add-to-cart-btn', function () {
@@ -587,11 +588,18 @@ function setupAddToCartButtons() {
 }
 
 function updateCartData() {
-    const cart = getCart() || { items: [], totalAmount: 0 };
+    const cart = getCart() || {
+        items: [],
+        subTotalAmount: 0,
+        shippingAmount: 0,
+        totalAmount: 0,
+        timestamp: new Date().getTime()
+    };
 
 
     const cartElement = document.querySelector('.cart');
-    const productsContainer = cartElement.querySelector('.products');
+    if(cartElement){
+        const productsContainer = cartElement.querySelector('.products');
     const subtotalElement = cartElement.querySelector('.subtotal .amount');
     const totalElement = cartElement.querySelector('.total p:last-child');
     const cartCountElements = document.querySelectorAll('.cart-btn p');
@@ -658,6 +666,7 @@ function updateCartData() {
         productsContainer.querySelectorAll('.delete').forEach(element => {
             element.addEventListener('click', deleteProduct);
         });
+    }
     }
 }
 
@@ -852,7 +861,7 @@ function deleteProduct(event) {
 
         saveCart(cart);
 
-        if(cart.items.length === 0) localStorage.removeItem('cart');
+        if (cart.items.length === 0) localStorage.removeItem('cart');
 
 
         updateCartData();
@@ -972,7 +981,7 @@ function deleteProductBeforeCheckout(event) {
 
         saveCart(cart);
 
-        if(cart.items.length === 0) localStorage.removeItem('cart');
+        if (cart.items.length === 0) localStorage.removeItem('cart');
 
 
         updateCartData();
@@ -1015,7 +1024,7 @@ function updateCartDataBeforeCheckout() {
 
             cart.items.forEach(item => {
                 const productElement = document.createElement('div');
-                productElement.classList.add('product', 'flex', 'gap-2', 'w-full', 'p-5');
+                productElement.classList.add('product', 'flex', 'gap-2', 'w-full', 'p-2');
 
                 productElement.innerHTML = `
                 <i class="delete ri-close-line cursor-pointer" data-id="${item._id}"></i>
@@ -1030,7 +1039,7 @@ function updateCartDataBeforeCheckout() {
                         </div>
                     </div>
                 </div>
-                <div class="price font-[merriweather] w-[100px]">₹ ${item.price}</div>
+                <div class="price font-[merriweather] w-[110px]">₹ ${item.price}</div>
             `;
 
                 productsContainer.appendChild(productElement);
@@ -1061,6 +1070,107 @@ function updateCartDataBeforeCheckout() {
     }
 }
 
+function addressPageLogic() {
+    const addressPage = $('#address-page');
+
+    if (addressPage) {
+        const addressList = addressPage.find('.address-list');
+        const addNewAddressBtn = addressPage.find('#add-new-address');
+        const addressForm = addressPage.find('#add-address-form');
+        $(document).on('click', '#add-new-address', function () {
+            addressList.addClass('hidden');
+            addNewAddressBtn.addClass('hidden')
+            addressForm.removeClass('hidden')
+        })
+    }
+}
+
+function showCustomConfirm(message, callback) {
+    // Get the container where the confirm box will be appended
+    const container = document.querySelector('body');
+
+    // Create the overlay
+    const overlay = document.createElement('div');
+    overlay.classList.add(
+        'fixed',
+        'inset-0',
+        'bg-black',
+        'bg-opacity-50',
+        'flex',
+        'justify-center',
+        'items-center',
+        'z-50',
+        'w-full',
+        'h-full'
+    );
+
+    // Create the confirm box
+    const confirmBox = document.createElement('div');
+    confirmBox.classList.add(
+        'bg-white',
+        'dark:bg-gray-800',
+        'p-6',
+        'rounded-lg',
+        'shadow-lg',
+        'max-w-sm',
+        'w-full',
+        'text-center'
+    );
+
+    // Create the message paragraph
+    const messagePara = document.createElement('p');
+    messagePara.textContent = message;
+    messagePara.classList.add('text-lg', 'mb-4');
+
+    // Create the buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('flex', 'justify-center', 'space-x-4', 'mt-4');
+
+    // Create the Yes button
+    const yesButton = document.createElement('button');
+    yesButton.textContent = 'Yes';
+    yesButton.classList.add(
+        'bg-green-500',
+        'text-white',
+        'px-4',
+        'py-2',
+        'rounded',
+        'hover:bg-green-600'
+    );
+    yesButton.addEventListener('click', () => {
+        container.removeChild(overlay);
+        callback(true);
+    });
+
+    // Create the No button
+    const noButton = document.createElement('button');
+    noButton.textContent = 'No';
+    noButton.classList.add(
+        'bg-red-500',
+        'text-white',
+        'px-4',
+        'py-2',
+        'rounded',
+        'hover:bg-red-600'
+    );
+    noButton.addEventListener('click', () => {
+        container.removeChild(overlay);
+        callback(false);
+    });
+
+    // Append everything to the confirm box
+    buttonsContainer.appendChild(yesButton);
+    buttonsContainer.appendChild(noButton);
+    confirmBox.appendChild(messagePara);
+    confirmBox.appendChild(buttonsContainer);
+
+    // Append the confirm box to the overlay
+    overlay.appendChild(confirmBox);
+
+    // Append the overlay to the container
+    container.appendChild(overlay);
+}
+
 
 
 
@@ -1079,6 +1189,7 @@ $(document).ready(function () {
     setupAddToCartButtons();
     singleProductImageSlider();
     updateCartDataBeforeCheckout();
+    addressPageLogic();
 
 
     $(document).on('click', '#togglePassword', function () {
@@ -1217,6 +1328,125 @@ $(document).ready(function () {
         } else {
             showToast('Something went wrong.', 'error');
         }
+    });
+
+    $('#add-address-form').on('submit', function (e) {
+        e.preventDefault();
+
+        // Get the form data
+        const formData = new FormData(this);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+
+        // Extract the zip code from the form data
+        const zipCode = formObject.zip;
+
+        // Perform the zip code validation
+        axios.post('/api/check-pincode', { pincode: zipCode })
+            .then(response => {
+                if (response.data.data.serviceable) {
+                    
+                    axios.post('/api/address', formObject)
+                        .then(async response => {
+                            const data = response.data;
+
+                            showToast(data.message, data.type);
+
+                            if (data.data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.data.redirect;
+                                }, 2000);
+                            }
+                        })
+                        .catch(error => {
+                            const data = error.response.data;
+
+                            showToast(data.message, data.type);
+                        });
+                } else {
+                    // If the zip code is not serviceable, show an error message
+                    showToast('The entered zip code is not serviceable. Please enter a different zip code.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking serviceability:', error);
+                showToast('An error occurred while checking the zip code serviceability. Please try again.', 'error');
+            });
+    });
+
+    $('#submit-address').on('submit', function (e) {
+        e.preventDefault();
+
+        const form = this;
+
+        const formData = new FormData(form);
+
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+
+        console.log(formObject)
+
+        axios.post('/api/address/selected', formObject)
+            .then(async response => {
+                const data = response.data;
+
+                showToast(data.message, data.type);
+
+                if (data.data.redirect) {
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect;
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                const data = error.response.data;
+
+                showToast(data.message, data.type);
+            });
+
+    })
+
+    $(document).on('click', '#delete-address-btn', function (e) {
+
+        e.preventDefault();
+
+        const btn = this;
+
+        const addressId = $(btn).data('id');
+
+        showCustomConfirm('Are you sure you want to delete this Address?', (confirmed) => {
+            if (confirmed) {
+                axios.delete(`/api/address/${addressId}`)
+                    .then(response => {
+                        const data = response.data;
+
+                        // Display success toast notification
+                        showToast(data.message, data.type);
+
+                        // Redirect if a redirect URL is provided
+                        if (data.data && data.data.redirect) {
+                            setTimeout(() => {
+                                window.location.href = data.data.redirect;
+                            }, 2000);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            const data = error.response.data;
+
+                            // Display error toast notification
+                            showToast(data.message, data.type);
+                        } else {
+                            // Fallback error message for unexpected issues
+                            showToast('An error occurred while trying to delete the address.', 'error');
+                        }
+                    });
+            }
+        });
     });
 
 

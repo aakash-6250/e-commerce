@@ -30,6 +30,10 @@ router.get('/cookie-policy', indexController.cookie)
 
 router.get('/cancelation-and-refund', indexController.cancelation);
 
+router.get('/address',isLoggedIn, indexController.address);
+
+router.get('/shipping', indexController.shippingOptions);
+
 
 
 

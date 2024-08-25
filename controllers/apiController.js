@@ -5,6 +5,7 @@ const Category = require('../models/category.model');
 const Subcategory = require('../models/subcategory.model');
 const Product = require('../models/product.model');
 const Cart = require('../models/cart.model');
+const Address = require('../models/address.model')
 const xlsx = require('xlsx');
 const fs = require('fs');
 const passport = require('passport');
@@ -12,6 +13,7 @@ const LocalStrategy = require('passport-local');
 const path = require('path');
 const { default: mongoose } = require('mongoose');
 const { products } = require('./adminController');
+const axios = require('axios')
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 
@@ -29,7 +31,7 @@ const apiController = {};
 // GET /api/product/:id
 apiController.getProductById = catchAsyncApiErrors(async (req, res, next) => {
 
-    if(!mongoose.isValidObjectId(req.params.id)) throw new ApiError(404, 'Invalid product ID', 'Error');
+    if (!mongoose.isValidObjectId(req.params.id)) throw new ApiError(404, 'Invalid product ID', 'Error');
 
     const product = await Product.findById(req.params.id).populate([
         {
@@ -72,7 +74,9 @@ apiController.login = catchAsyncApiErrors(async (req, res, next) => {
                 return next(new ApiError(500, 'Server error', 'error'));
             }
 
-            return sendSuccessResponse(res, 'Login successful.', { redirect: '/' });
+            const redirectUrl = user.role === 'admin' ? '/admin' : '/';
+
+            return sendSuccessResponse(res, 'Login successful.', { redirect: redirectUrl });
         });
     })(req, res, next);
 });
@@ -110,7 +114,7 @@ apiController.register = catchAsyncApiErrors(async (req, res, next) => {
     }
 
     const user = new User({ firstName, lastName, email, phone });
-    if(password !== confirmPassword) throw new ApiError(400, 'Password and confirm password do not match.', 'error');
+    if (password !== confirmPassword) throw new ApiError(400, 'Password and confirm password do not match.', 'error');
     else user.setPassword(password);
     await user.save();
 
@@ -197,7 +201,7 @@ apiController.getProductsByUser = catchAsyncApiErrors(async (req, res, next) => 
     // Build the query object
     const query = {};
 
-    query.published= true;
+    query.published = true;
 
     if (subcat) {
         query.subcategory = subcat;
@@ -286,7 +290,7 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
     const existingProduct = await Product.findOne({ name });
     if (existingProduct) throw new ApiError(400, 'A product with this name already exists.', 'error');
 
-    const product = new Product({ name, description : descriptionArray, price, discountedPrice, stock, brand });
+    const product = new Product({ name, description: descriptionArray, price, discountedPrice, stock, brand });
 
     const categoryExist = await Category.findById(category);
     if (!categoryExist) throw new ApiError(400, 'Category not found.', 'error');
@@ -330,7 +334,7 @@ apiController.createProduct = catchAsyncApiErrors(async (req, res, next) => {
 
     await product.save();
 
-    sendSuccessResponse(res, 'Product created successfully.', { product, redirect: '/admin/products'});
+    sendSuccessResponse(res, 'Product created successfully.', { product, redirect: '/admin/products' });
 });
 
 // GET /api/product
@@ -458,7 +462,7 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         const descriptionArray = description.split(';').map(point => point.trim()).filter(point => point);
 
         // Create new product instance
-        const product = new Product({ name, description : descriptionArray, price, stock, brand });
+        const product = new Product({ name, description: descriptionArray, price, stock, brand });
 
         // Check and create category
         let categoryExist = await Category.findOne({ name: category });
@@ -486,14 +490,14 @@ apiController.bulkUpload = catchAsyncApiErrors(async (req, res, next) => {
         product.category = categoryExist._id;
         product.subcategory = subcategoryExist._id;
 
-        if(discountedPrice) product.discountedPrice = discountedPrice;
+        if (discountedPrice) product.discountedPrice = discountedPrice;
 
         // Set additional properties
-        if(featured) product.featured = featured==='TRUE'?true:false;
+        if (featured) product.featured = featured === 'TRUE' ? true : false;
 
-        if(published) product.published = published==='TRUE'?true:false;
+        if (published) product.published = published === 'TRUE' ? true : false;
 
-        if(trending) product.trending = trending==='TRUE'?true:false;
+        if (trending) product.trending = trending === 'TRUE' ? true : false;
 
         await product.save();
     }
@@ -524,11 +528,11 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
     if (discountedPrice && discountedPrice !== product.discountedPrice) product.discountedPrice = discountedPrice;
     if (stock && stock !== product.stock) product.stock = stock;
     if (brand && brand !== product.brand) product.brand = brand;
-    if (trending && trending !== product.trending) product.trending = trending==='true'?true:false;
-    if (featured && featured !== product.featured) product.featured = featured==='true'?true:false;
-    if (published && published !== product.published) product.published = published==='true'?true:false;
+    if (trending && trending !== product.trending) product.trending = trending === 'true' ? true : false;
+    if (featured && featured !== product.featured) product.featured = featured === 'true' ? true : false;
+    if (published && published !== product.published) product.published = published === 'true' ? true : false;
 
-    if(category && subcategory && category !== product.category) {
+    if (category && subcategory && category !== product.category) {
 
         const categoryExist = await Category.findById(category);
         if (!categoryExist) throw new ApiError(400, 'Category not found.', 'error');
@@ -547,18 +551,18 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
 
     }
 
-    if(category && subcategory && category === product.category && subcategory !== product.subcategory) {
-            
-            const subcategoryExist = await Subcategory.findById(subcategory);
-            if (!subcategoryExist) throw new ApiError(400, 'Subcategory not found.', 'error');
-    
-            await Subcategory.findByIdAndUpdate(product.subcategory, { $pull: { products: product._id } });
-    
-            product.subcategory = subcategoryExist._id;
-    
-            subcategoryExist.products.push(product._id);
-    
-            await subcategoryExist.save();
+    if (category && subcategory && category === product.category && subcategory !== product.subcategory) {
+
+        const subcategoryExist = await Subcategory.findById(subcategory);
+        if (!subcategoryExist) throw new ApiError(400, 'Subcategory not found.', 'error');
+
+        await Subcategory.findByIdAndUpdate(product.subcategory, { $pull: { products: product._id } });
+
+        product.subcategory = subcategoryExist._id;
+
+        subcategoryExist.products.push(product._id);
+
+        await subcategoryExist.save();
     }
 
     if (imagesToDelete && imagesToDelete.length > 0) {
@@ -581,7 +585,7 @@ apiController.updateProduct = catchAsyncApiErrors(async (req, res, next) => {
         const currentImageCount = product.images.length;
         const newImages = req.files.map(file => file.filename).slice(0, 5 - currentImageCount);
 
-        if(newImages.length === 0) throw new ApiError(400, 'Product can have maximum 5 images.', 'error');
+        if (newImages.length === 0) throw new ApiError(400, 'Product can have maximum 5 images.', 'error');
 
 
         const imagesToKeep = product.images.concat(newImages).slice(0, 5);
@@ -628,14 +632,14 @@ apiController.deleteProduct = catchAsyncApiErrors(async (req, res, next) => {
 
     await Subcategory.findByIdAndUpdate(product.subcategory, { $pull: { products: product._id } });
 
-    sendSuccessResponse(res, 'Product deleted successfully.', { product, redirect: '/admin/products'});
+    sendSuccessResponse(res, 'Product deleted successfully.', { product, redirect: '/admin/products' });
 });
 
 // GET 
 apiController.deleteAllDocuments = catchAsyncApiErrors(async (req, res, next) => {
-    
+
     const products = await Product.find().select('images -_id');
-    
+
     await Product.deleteMany();
     await Category.deleteMany();
     await Subcategory.deleteMany();
@@ -763,7 +767,7 @@ apiController.deleteCategory = catchAsyncApiErrors(async (req, res, next) => {
     const categoryExist = await Category.findById(req.params.id);
     if (!categoryExist) throw new ApiError(404, 'Category not found.', 'error');
 
-    if(categoryExist.subcategories.length > 0) throw new ApiError(400, 'Category has subcategories.', 'error');
+    if (categoryExist.subcategories.length > 0) throw new ApiError(400, 'Category has subcategories.', 'error');
 
     const category = await Category.findByIdAndDelete(req.params.id);
 
@@ -780,111 +784,120 @@ apiController.deleteCategory = catchAsyncApiErrors(async (req, res, next) => {
 
 //                         Address Controller
 
-// GET
-apiController.getAddressByUser = catchAsyncApiErrors(async (req, res, next) => {
-    const addresses = await Address.find({ user: req.params.id });
-    if (addresses.length === 0) throw new ApiError(404, 'No addresses found.', 'error');
+// POST
+apiController.checkPincode = catchAsyncApiErrors(async (req, res, next) => {
+    const { pincode } = req.body;
 
-    sendSuccessResponse(res, 'Addresses fetched successfully.', { addresses });
-});
+    const data = await checkPincodeServiceability(pincode);
+    const serviceable = isPincodeServiceable(data, pincode);
+
+    sendSuccessResponse(res, 'success', {serviceable})
+
+})
 
 // POST
 apiController.createAddress = catchAsyncApiErrors(async (req, res, next) => {
-    const { user, name, phone, address, city, state, country, zipCode } = req.body;
-    if (!(user && name && phone && address && city && state && country && zipCode)) {
+
+    if (!req.user) throw new ApiError(403, 'User must be logged-in', 'error')
+
+    const user = await User.findById(req.user._id);
+    if (user.addresses.length === 3) throw new ApiError(403, 'Only three address is allowed to save', 'error')
+
+    const { firstName, lastName, address, city, state, country, zip, phone } = req.body;
+    if (!(firstName && lastName && phone && address && city && state && country && zip)) {
         throw new ApiError(400, 'All fields are required.', 'error');
     }
 
-    const addressObj = new Address({ user, name, phone, address, city, state, country, zipCode });
+    console.log(address);
+
+    const addressObj = new Address({ user: req.user._id, firstName, lastName, address, city, state, country, zip, phone });
     await addressObj.save();
 
-    await User.findByIdAndUpdate(user, { $push: { addresses: addressObj._id } });
+    user.addresses.push(addressObj);
 
+    user.save();
 
-    sendSuccessResponse(res, 'Address created successfully.', { address: addressObj });
+    sendSuccessResponse(res, 'Address created successfully.', { redirect: '/address' });
 });
 
-// PATCH
-apiController.updateAddress = catchAsyncApiErrors(async (req, res, next) => {
-    const address = await Address.findById(req.params.id);
-    if (!address) throw new ApiError(404, 'Address not found.', 'error');
-
-    const { name, phone, address: addr, city, state, country, zipCode } = req.body;
-    if (name) address.name = name;
-    if (phone) address.phone = phone;
-    if (addr) address.address = addr;
-    if (city) address.city = city;
-    if (state) address.state = state;
-    if (country) address.country = country;
-    if (zipCode) address.zipCode = zipCode;
-
-    await address.save();
-
-    sendSuccessResponse(res, 'Address updated successfully.', { address });
-});
 
 // DELETE
 apiController.deleteAddress = catchAsyncApiErrors(async (req, res, next) => {
+
+    if (!req.user) throw new ApiError(403, 'login to access this endpoint', 'error')
+
+    if (!mongoose.isValidObjectId(req.params.id)) throw new ApiError(403, 'Invalid url', 'error');
+
+    const user = await User.findById(req.user._id);
+
+    if (!user.addresses.includes(req.params.id)) throw new ApiError(403, 'You are not authorized to delete this address', 'error')
+
     const address = await Address.findByIdAndDelete(req.params.id);
+
     if (!address) throw new ApiError(404, 'Address not found.', 'error');
 
-    await User.findByIdAndUpdate(address.user, { $pull: { addresses: address._id } });
+    user.addresses.pull(address._id);
 
-    sendSuccessResponse(res, 'Address deleted successfully.', { address });
-});
+    user.save();
 
-
-// Address Controller
-
-// GET
-apiController.getAddressByUser = catchAsyncApiErrors(async (req, res, next) => {
-    const addresses = await Address.find({ user: req.params.id });
-    if (addresses.length === 0) throw new ApiError(404, 'No addresses found.', 'error');
-
-    sendSuccessResponse(res, 'Addresses fetched successfully.', { addresses });
+    sendSuccessResponse(res, 'Address deleted successfully.', { redirect: '/address' });
 });
 
 // POST
-apiController.createAddress = catchAsyncApiErrors(async (req, res, next) => {
-    const { user, name, phone, address, city, state, country, zipCode } = req.body;
-    if (!(user && name && phone && address && city && state && country && zipCode)) {
-        throw new ApiError(400, 'All fields are required.', 'error');
-    }
+apiController.selectedAddress = catchAsyncApiErrors(async (req, res, next) => {
 
-    const addressObj = new Address({ user, name, phone, address, city, state, country, zipCode });
-    await addressObj.save();
+    if (!mongoose.isValidObjectId(req.body.address)) throw new ApiError(403, 'Invalid address provided', 'error');
+    const user = await User.findOne({ email: "aakash@gmail.com" });
 
-    await User.findByIdAndUpdate(user, { $push: { addresses: addressObj._id } });
+    if (!user.addresses.includes(req.body.address)) throw new ApiError(403, 'Address does not exist', 'error')
 
-    sendSuccessResponse(res, 'Address created successfully.', { address: addressObj });
-});
+    if (!user.addresses.includes(req.body.address)) throw new ApiError(403, 'Address does not exist', 'error');
 
-// PATCH
-apiController.updateAddress = catchAsyncApiErrors(async (req, res, next) => {
-    const address = await Address.findById(req.params.id);
-    if (!address) throw new ApiError(404, 'Address not found.', 'error');
-
-    const { name, phone, address: addr, city, state, country, zipCode } = req.body;
-    if (name) address.name = name;
+    // Fetch the address details
+    const address = await Address.findById(req.body.address);
+    if (!address) throw new ApiError(404, 'Address not found', 'error');
 
 
-});
+    const originPin = "462043"; 
+    const destinationPin = address.zip;
+    const weight = 500; 
+    const status = 'Delivered';
+
+    const response = await axios.get('https://track.delhivery.com/api/kinko/v1/invoice/charges/.json', {
+        params: {
+            md: 'E',
+            cgm: weight,
+            o_pin: originPin,
+            d_pin: destinationPin,
+            ss: status
+        },
+        headers: {
+            'Authorization': 'Token 3fdc80153c93e4e4b589663d4841a8b5e3bc725e',
+            'Content-Type': 'application/json'
+        }
+    });
+
+    console.log(response.data);
+
+
+    sendSuccessResponse(res, 'Address selected', {})
+})
 
 
 //                         Cart Controller
 
-apiController.syncCart = catchAsyncApiErrors(async (req, res, next)=>{
-    
-    if(!req.user) throw new ApiError(401, "User not authenticated", "error")
+apiController.syncCart = catchAsyncApiErrors(async (req, res, next) => {
+
+    if (!req.user) throw new ApiError(401, "User not authenticated", "error")
 
     const clientCart = req.body.cart;
 
-    if(!clientCart || !Array.isArray(clientCart.items) || !clientCart.items.length === 0) throw new ApiError(409, "Invalid cart", "error") 
+    if (!clientCart || !Array.isArray(clientCart.items) || !clientCart.items.length === 0) throw new ApiError(409, "Invalid cart", "error")
 
-    
-    let cart = await Cart.findOne({user: req.user._id});
-    
-    if(!cart) cart = new Cart({user: req.user._id});
+
+    let cart = await Cart.findOne({ user: req.user._id });
+
+    if (!cart) cart = new Cart({ user: req.user._id });
 
     cart.items = clientCart.items.map(item => ({
         product: item._id,
@@ -892,19 +905,17 @@ apiController.syncCart = catchAsyncApiErrors(async (req, res, next)=>{
     }))
 
     cart.subTotalAmount = 0;
-    cart.totalAmount= 0;
+    cart.totalAmount = 0;
 
 
-    for(item of cart.items){
+    for (item of cart.items) {
         const product = await Product.findById(item.product);
         const price = product.discountedPrice > 0 ? product.discountedPrice : product.price;
         cart.subTotalAmount += price * item.quantity;
-        console.log(price, item.quantity)
     }
 
-    console.log(cart.subTotalAmount , clientCart.subTotalAmount)
 
-    if(cart.subTotalAmount !== clientCart.subTotalAmount ) throw new ApiError(409, 'Incorrect cart subtotal', 'error')
+    if (cart.subTotalAmount !== clientCart.subTotalAmount) throw new ApiError(409, 'Incorrect cart subtotal', 'error')
 
     cart.totalAmount = cart.subTotalAmount + cart.shippingAmount;
 
@@ -988,6 +999,31 @@ sendSuccessResponse = (res, message, data = {}) => {
 };
 
 
+const checkPincodeServiceability = async (pincode) => {
+    try {
+        const response = await axios.get(`https://track.delhivery.com/c/api/pin-codes/json/?filter_codes=${pincode}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token 3fdc80153c93e4e4b589663d4841a8b5e3bc725e'
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error checking pincode serviceability:", error);
+        return null;
+    }
+};
+
+const isPincodeServiceable = (data, pincode) => {
+    if (!data || !data.delivery_codes) {
+        console.log(data)
+        return false;
+    }
+
+    const serviceable = data.delivery_codes.some(code => code.postal_code.pin == pincode);
+    return serviceable;
+};
 
 
 
