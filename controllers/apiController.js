@@ -113,10 +113,11 @@ apiController.register = catchAsyncApiErrors(async (req, res, next) => {
         throw new ApiError(400, 'An account with this email already exists.', 'error');
     }
 
-    const user = new User({ firstName, lastName, email, phone });
     if (password !== confirmPassword) throw new ApiError(400, 'Password and confirm password do not match.', 'error');
-    else user.setPassword(password);
-    await user.save();
+
+    const user = User.register(new User({ firstName, lastName, email, phone }), password, (err) =>{
+        if(err) throw new ApiError(400, err.message)
+    });
 
     sendSuccessResponse(res, 'Registration successful.', { redirect: '/login' });
 });
