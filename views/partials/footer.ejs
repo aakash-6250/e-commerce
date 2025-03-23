@@ -1,2 +1,97 @@
+<div class="about-footer bg-[#191717] min-h-[488px] max-w-[1920px] m-auto pb-[70px] lg:pb-0">
+                
+    <div class="footer min-h-[436px] px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] pt-[100px]">
+
+        <div class="max-w-[1142px] m-auto w-full text-white flex flex-col lg:flex-row justify-between gap-[50px]">
+            <div class="left min-w-[300px] flex flex-col gap-[25px]">
+
+                <h1 class=" font-[merriweather] text-[32px]">
+                    Geldix Pharmaceuticals <br>Private Limited
+                </h1>
+
+                <a href="https://maps.app.goo.gl/7iSA9uBCFWpqXsrh8" target="_blank" class="hover:text-blue-600">
+                    Shop 2, Katara Hills, Rapadia Village, 462043, Bhopal, Madhya Pradesh, India
+                </a>
+                
+                <a href="mailto:info@geldix.in?subject=Enquiry from website&body=Hello Geldix Pharmaceuticals" target="_blank" class="font-bold" >Email : <span class="hover:text-blue-600 font-normal">info@geldix.in</span></a>
+    
+                <div class="flex gap-[15px] justify-start items-center">
+                                        
+                    <a href="https://www.facebook.com/geldixpharma" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/facebook.png" alt="facebook page" class="w-full h-full ">
+                    </a>
+                    <a href="https://www.instagram.com/geldixpharma/" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/instagram.png" alt="instagram page" class="w-full h-full rounded-full scale-[1.2]">
+                    </a>
+                    <a href="https://www.x.com/geldixpharma/" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/twitter.png" alt="twitter x page" class="w-full h-full scale-[1.1] ">
+                    </a>
+                    <a href="https://www.linkedin.com/in/geldix-private-limited-8098192a7/" target="_blank" class="cursor-pointer w-[45px] h-[45px] ">
+                        <img src="/images/icons/linkedin.png" alt="linkedin page" class="w-full h-full ">
+                    </a>
+                </div>
+
+                <a class="text-xs hover:text-blue-400 " href="https://www.linkedin.com/in/aakash6250">Developed By : Aakash Patel</a>
+    
+            </div>
+    
+            <div class="right flex lg:justify-start justify-start gap-[30px] flex-wrap min-w-[300px]">
+    
+                <div class="flex flex-col gap-[10px] pb-[30px] ">
+                    <h1 class="pb-[10px] font-bold">COMPANY</h1>
+                    <a href="/">Home</a>
+                    <a href="/products">Products</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/#about-us">About</a>
+                </div>
+    
+                <% if(categories.length> 0){ %>
+                    <div class="flex flex-col gap-[10px] pb-[30px]  ">
+                        <h1 class="pb-[10px] font-bold">CATEGORIES</h1>
+                            <% categories.forEach(category=> { %>
+                                <a class="" href="/products/?cat=<%= category._id %>"><%= category.name %></a>
+                            <% }) %>
+                    </div>
+                <% } %>
+    
+                <div class="flex flex-col gap-[10px] pb-[30px]  ">
+                    <h1 class="pb-[10px] font-bold">STORE</h1>
+                    <a href="/products">Products</a>
+                    <% if(user){ %>
+                        <% if(user.role === 'admin'){ %>
+                            <a href="/admin">Dashboard</a>
+                        <% }else{ %>
+                            <a href="/account">My Account</a>
+                        <%} %>
+                    <% }else{ %>
+                        <a href="/login">Login</a>
+                        <a href="/register">Register</a>
+                    <% } %>
+                </div>
+    
+                <div class="flex flex-col gap-[10px] pb-[30px]  ">
+                    <h1 class="pb-[10px] font-bold">POLICIES</h1>
+                    <a href="/privacy-policy">Privacy Policy</a>
+                    <a href="/cookie-policy">Cookie Policy</a>
+                    <a href="/terms-and-conditions">Terms and Conditions</a>
+                    <a href="/shipping-policy">Shipping and Delivery</a>
+                    <a href="/cancelation-and-refund">Cancelation and Refund</a>
+                </div>
+    
+            </div>
+        </div>
+
+    </div>
+
+    <div class="copyright min-h-[52px] border-t-[1px] border-zinc-300 flex justify-center items-center px-[20px] py-[10px]">
+        <p class="text-sm text-white text-center">© 2024, Geldix. All rights reserved. Drug License No. 20/6091,21/6092,20B/6093,21B/6094 In compliance with D&C Act, 1940 and D&C Rules, 1945, we don't process requests for Schedule X and other habit forming drugs.</p>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="/javascripts/script.js"></script>
 </body>
 </html>

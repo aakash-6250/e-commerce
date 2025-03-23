@@ -1,0 +1,42 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
+
+    <main class="w-full bg-[#FBF5F0] max-w-[1920px] px-[20px] md:px-[10px] lg:px-[190px] xl:px-[150px] m-auto">
+
+        <div class="w-full flex justify-center items-center py-[100px]">
+
+            <div class="max-w-[720px] w-full bg-white px-[10px] py-[10px] shadow-lg flex flex-col gap-[20px]">
+
+                <h1 class="font-[merriweather] text-[28px] text-[#000000]">Login</h1>
+
+                <form class="flex flex-col items-center gap-[20px]" id="loginForm" method="POST">
+
+                    <div class="w-full">
+                        <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717]   text-[#616161]" type="email" name="email" id="email" placeholder="Enter Your Email" required>
+                        <div class="text-red-500 hidden px-[20px] text-sm w-full" id="emailError">Invalid email ID</div>
+                    </div>
+
+
+                    <div class="w-full relative">
+                        <input class="w-full bg-[#F2F2F2] px-[20px] py-[11px] rounded-[129px] focus:outline-none focus:border-[2px] focus:border-[#191717] text-[#616161]" type="password" name="password" id="password" placeholder="Enter Your Password" required>
+
+                        <i id="togglePassword" class="ri-eye-line text-[#616161] absolute right-[20px] top-[50%] transform -translate-y-1/2 cursor-pointer">
+                        </i>
+                    </div>
+
+                    <button class="w-max px-[50px] py-[12px] rounded-[58px] focus:outline-none focus:border-[2px] focus:border-purple-950 text-white bg-[#967BB6]">Login</button>
+
+                </form>
+
+                <p class="text-[#616161]">Forgot Password? <a href="/forgot-password" class="text-[#967BB6]">Reset Password</a></p>
+
+                <p class="text-[#616161]">Don't have an account? <a href="/register" class="text-[#967BB6]">Register</a></p>
+
+                <p class="text-[#616161] text-xs text-center">By continuing, you agree to our <a href="/terms-and-conditions" class="text-[#967BB6]">Terms of Service</a> and <a href="/privacy-policy" class="text-[#967BB6]">Privacy Policy</a></p>
+
+            </div>
+        </div>
+
+    </main>
+
+<%- include('./partials/footer') %>

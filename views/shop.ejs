@@ -1,0 +1,38 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
+
+<main class="w-screen lg:bg-white max-w-[1920px] m-auto">
+
+    <div class="shop-products flex flex-col items-center  gap-[50px] py-[50px] px-[20px] md:px-[50px] lg:px-[100px] xl:px-[150px]">
+
+        
+        
+        <div class="products max-w-[1142px] w-full m-auto flex justify-center flex-wrap gap-[20px]">    
+                            
+            
+
+        </div>
+        
+        <div class="pagination-container w-full flex justify-center gap-[10px] md:justify-between  flex-wrap items-center min-h-[70px] py-2 border-t-[1px] border-zinc-600">
+            <p class="entries-count text-zinc-500">Showing</p>
+            <div class="controls flex items-center gap-[5px] h-full">
+                <button class="prev-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
+                    <i class="ri-arrow-left-s-line text-2xl"></i>
+                </button>
+                <div class="page-btns-container flex items-center gap-[5px] h-[60px] p-1">
+                    
+                </div>
+                <button class="next-btn px-2 py-1 rounded-full hover:bg-blue-600 hover:text-white border-[1px] border-zinc-200 ">
+                    <i class="ri-arrow-right-s-line text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+</main>
+
+<%- include('./partials/footer') %>
+<script>
+    fetchProducts();
+</script>

@@ -1,0 +1,83 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
+
+<main class="w-full bg-[#FBF5F0] max-w-[1920px] px-[10px] md:px-[20px] lg:px-[150px] xl:px-[150px] m-auto">
+
+  <div class="w-full flex justify-center items-center py-[70px]">
+
+    <div class="max-w-[1142px] w-full bg-white p-[10px] ">
+
+      <div id="address-page" class="address-page flex flex-col lg:flex-row items-stretch gap-[30px] w-full h-full ">
+
+        <div class="left border-[1px] border-zinc-300 rounded-lg flex flex-col lg:w-[65%] w-full h-full ">
+
+          <div class="shipping-options-list h-full flex flex-col gap-[30px]">
+
+            <div class="left-heading border-b-[1px] border-zinc-300 p-4 mb-2 flex items-center">
+              <h1 class="font-bold font-[merriweather] text-zinc-800">Shipping Options</h1>
+            </div>
+
+            <form id="submit-shipping" method="post" class=" mb-4 flex flex-col items-end p-3 gap-[30px]">
+                <% user.addresses.forEach( address => { %>
+
+                    <label for="<%= address._id %>" class="relative block cursor-pointer w-full p-4 border-zinc-400 border-[1px] rounded-lg m-auto">
+    
+                        <button id="delete-address-btn" class="delete-address-btn absolute top-3 right-4 hover:bg-red-500 hover:text-white w-[40px] h-[40px] rounded-full flex justify-center items-center" data-id="<%= address._id %>"><i class="ri-delete-bin-2-line text-xl" ></i></button>
+                        
+                        <input type="radio" name="address" id="<%= address._id %>" value="<%= address._id %>" >
+    
+                        <p><%= address.firstName %> <%= address.lastName %></p>
+                        <p><%= address.address %></p>
+                        <p><%= address.city %> <%= address.zip %></p>
+                        <p>Mobile - <%= address.phone %></p>                    
+                    </label>
+
+                    <script>
+                        console.log("hello")
+                    </script>
+    
+                <% }) %>
+
+                <button class="bg-[#967BB6] w-max text-white px-6 py-2 rounded-full">Next</button>
+            </form>
+
+          </div>
+
+        </div>
+
+        <div class="right w-full lg:w-[35%] flex flex-col gap-[30px] h-full">
+
+          <div class="calculations border-[1px] border-zinc-300 rounded-lg p-4">
+            <div class="all-charges flex flex-col gap-[10px] border-b-[1px] border-[#E2E2E2] pb-[30px]">
+
+              <div class="subtotal flex justify-between">
+                <p class="text-[#616161]">Subtotal</p>
+                <p class="amount text-[#191717] font-[merriweather]">₹<%= cart.subTotalAmount %></p>
+              </div>
+
+              <div class="shipping flex justify-between">
+                <p class="text-[#616161]">Shipping</p>
+                <p class="amount text-[#616161]">Calculated Later</p>
+              </div>
+
+            </div>
+
+            <div class="total pt-[30px]">
+              <div class="flex justify-between">
+                <p class="text-[#191717]">Total</p>
+                <p class="text-[#191717] font-[merriweather]">₹<%= cart.totalAmount %></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+
+</main>
+
+<%- include('./partials/footer') %>

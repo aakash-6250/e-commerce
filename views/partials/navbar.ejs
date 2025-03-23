@@ -1,0 +1,204 @@
+<header class="mobile-nav bg-white w-screen shadow-md shadow-zinc-400 lg:hidden md:px-[50px] px-[25px] z-50 sticky top-0">
+
+    <nav class="h-[80px] flex justify-between items-center ">
+        <i class="mobile-menu-icon ri-menu-2-line text-3xl cursor-pointer text-[#0D5E59]"></i>
+        <a href="/">
+            <div class="logo flex flex-col justify-center items-center">
+                <h1 class="text-5xl font-bold text-[#0D5E59]">Geldix</h1>
+            </div>
+        </a>
+        <i class="mobile-search-icon ri-search-line text-3xl cursor-pointer text-[#0D5E59]"></i>
+    </nav>
+</header>
+
+<section class="mobile-bottom-section w-screen shadow-zinc-400 lg:hidden md:px-[50px] px-[30px] fixed bottom-0 left-0 flex justify-between items-center h-[70px] z-50 bg-white"
+    style="box-shadow: 0px -4px  6px -1px #a1a1aa;">
+
+    <% if(user){ %>
+        <a href="<%= user.role === "customer" ? '/account' : '/admin' %>"><i class="ri-user-line flex justify-center items-center text-[#191717] cursor-pointer text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1"></i></a>
+    <% }else{ %>
+        <i class="login-register-btn account-btn ri-user-line flex justify-center items-center text-[#191717] cursor-pointer text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1"></i>
+    <% } %>
+
+    <i class="ri-heart-line  flex justify-center items-center text-[#191717] cursor-pointer relative text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1">
+
+        <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping">0</p>
+
+        <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
+
+    </i> 
+
+    <i class="ri-shopping-cart-line cart-btn  flex justify-center items-center text-[#191717] cursor-pointer relative text-xl border-[1px] border-zinc-200 rounded-full px-2 py-1">
+
+        <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping ">0</p>
+
+        <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
+
+    </i>
+
+</section>
+
+<div class="mobile-menu-container hidden lg:hidden w-screen h-screen fixed overflow-scroll z-50 top-0 left-0 bg-[#0000007c]">
+
+    <div class="mobile-menu-list  flex flex-col bg-white h-max min-h-full w-[85%] relative py-[50px]">
+
+        <i class="mobile-menu-list-close ri-close-large-line text-2xl absolute top-4 right-4 cursor-pointer text-[#0D5E59]"></i>
+
+        <a href="/" class="mobile-menu-item-static cursor-pointer  text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">Home</a>
+
+        <a href="/products" class="mobile-menu-item-static cursor-pointer text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">Products</a>
+
+        <% if(categories && categories.length> 0){ %>
+            <% categories.forEach(category=> { %>
+
+                <div class="mobile-menu-item cursor-pointer text-xl px-6 py-4 border-b-[1px] border-[#0D5E59]">
+
+                    <%= category.name %>
+
+                        <% if( category.subcategories && category.subcategories.length> 0){ %>
+                            <div class="mobile-menu-item-subcategory hidden flex-col gap-1 ml-4 mt-2">
+                                <% category.subcategories.forEach(subcategory=> { %>
+
+                                    <a class="mobile-menu-item-subcategory-item flex justify-between text-base gap-[5vw] p-3 bg-[#EBF6F5] rounded" href="/products?cat=<%= category._id %>&subcat=<%= subcategory._id %>">
+                                        <p>
+                                            <%= subcategory.name %>
+                                        </p>
+                                        <p>
+                                            <%= subcategory.products.length %>
+                                        </p>
+                                    </a>
+                                    <% }) %>
+                            </div>
+                            <% } %>
+                </div>
+                <% }) %>
+                    <% } %>
+    </div>
+    
+</div>
+
+<div class="mobile-search-bar-container hidden w-screen h-screen fixed top-0 left-0 bg-[#0000007c] z-50">
+    <form action="/products" method="get" class="mobile-search-bar w-screen h-[50px] bg-white flex">
+        <input type="text" name="search" id="" placeholder="Search for medicine, wellness and beauty products"
+            class=" w-full outline-none px-3 text-lg font-medium">
+        <button
+            class="ri-search-line text-3xl border-none outline-none text-white bg-[#0D5E59] px-3 flex justify-center items-center"></button>
+    </form>
+</div>
+
+<header class="desktop-nav w-screen hidden lg:flex flex-col md:px-[30px] lg:px-[50px] px-[20px] max-w-[1920px] m-auto">
+    <nav class="h-[100px] bg-white flex justify-between items-center">
+
+        <a class="logo" href="/">
+            <h1 class="text-5xl font-bold text-[#191717]">Geldix</h1>
+        </a>
+
+        <form action="/products" method="get"
+            class="desktop-search-bar  h-[40px] w-[550px] border-[1px] border-[#967BB6] flex rounded-full overflow-hidden ">
+            <input type="text" name="search" id="" placeholder="Search for medicine, wellness and beauty products" class=" w-full outline-none px-3 text-lg font-medium">
+            <button class="ri-search-line text-lg border-none outline-none text-white bg-[#967BB6] px-[12px] flex justify-center items-center" area-label="Search"></button>
+        </form>
+
+        <div class="nav-options flex gap-[2vw]">
+            <% if(user){ %>
+                <a href="<%= user.role === "customer" ? '/account' : '/admin' %>"><i class="ri-user-line text-lg flex justify-center items-center text-[#191717] cursor-pointer"></i></a>
+            <% }else{ %>
+                <i class="login-register-btn account-btn ri-user-line text-lg flex justify-center items-center text-[#191717] cursor-pointer"></i>
+            <% } %>
+
+            <i class="ri-heart-line text-lg  flex justify-center items-center text-[#191717] cursor-pointer relative">
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping">0</p>
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
+
+            </i>
+
+            <div class="ri-shopping-cart-line cart-btn text-lg flex justify-center items-center text-[#191717] cursor-pointer relative">
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px] animate-ping">0</p>
+
+                <p class="absolute right-[-0.5rem] top-[-0.8rem] bg-[#967BB6] text-white px-2 rounded-full text-[10px] leading-[20px]">0</p>
+                
+            </div>
+            
+                
+        </div>
+
+    </nav>
+</header>
+
+<div class="desktop-menu-container relative shadow-md shadow-zinc-300 hidden lg:block border-y-[2px] border-[#EEEEEE] w-full max-w-[1920px] m-auto">
+
+    <div class="desktop-menu text-[#191717] text-[16px] h-[35px] border-b-[2px] border-[#EEEEEE] flex items-center gap-[40px] md:px-[50px] lg:px-[100px] px-[25px]">
+        <a href="/" class="capitalize hover:text-[#967BB6]">Home</a>
+        <a href="/products" class="capitalize hover:text-[#967BB6]">Products</a>
+        <a href="/products?sale=true" class="capitalize hover:text-[#967BB6]">!Sale</a>
+    </div>
+
+    <div class="desktop-category-list-items flex items-center gap-[2.5vw] h-[40px] z-50 md:px-[50px] lg:px-[100px] px-[25px]">
+        <% if(categories.length> 0){ %>
+            <% categories.forEach(category=> { %>
+                <div class="desktop-menu-item cursor-pointer">
+                    <div class="flex items-center h-[35px] capitalize hover:text-[#967BB6]">
+                        <%= category.name %>
+                        <i class="ri-arrow-right-s-line text-lg "></i>
+                    </div>
+                    <% if( category.subcategories.length> 0){ %>
+                        <div
+                            class="desktop-menu-subcategory w-[90%] hidden absolute top-[70px] left-1/2 -translate-x-1/2 flex-wrap px-4 py-6 rounded-xl shadow-sm z-50 shadow-zinc-400 bg-white">
+                            <% category.subcategories.forEach(subcategory=> { %>
+                                <a class="desktop-menu-list-subcategory-item hover:text-blue-500 hover:bg-[#EBF6F5] px-3 py-1 flex justify-between w-1/2"
+                                    href="/products?cat=<%= category._id %>&subcat=<%= subcategory._id %> ">
+                                    <p class="capitalize">
+                                        <%= subcategory.name %>
+                                    </p>
+                                    <p>
+                                        <%= subcategory.products.length %>
+                                    </p>
+                                </a>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+
+</div>
+
+<div class="login-register hidden max-w-[450px] w-full lg:w-[450px] z-50 bg-white min-h-[100vh] fixed top-0 right-[-450px] px-[20px]" style="box-shadow: -14px 0px 79px 0px #00000081;">
+
+    <div class="header text-2xl py-[25px] bg-white flex justify-between items-center border-b-[1px] border-[#E2E2E2]">
+        <h1 class="font-[merriweather] text-[#191717]">My Account</h1>
+        <i class="ri-close-large-line cursor-pointer text-[#616161]"></i>
+    </div>
+
+    <div class="flex flex-col justify-center items-center gap-[20px] py-[50px]">
+        <h1 class="font-[merriweather] text-[28px] text-center text-[#191717] px-[40px]">Returning Customer / New Customer</h1>
+        <div class="buttons flex justify-between items-center gap-[20px] w-full px-[30px]">
+            <a href="/login" class="login    py-[12px] text-center w-full bg-[#967BB6] text-white rounded-[58px]">Login</a>
+            <a href="/register" class="register py-[12px] text-center w-full bg-[#967BB6] text-white rounded-[58px]">Register</a>
+        </div>
+        <p class="text-[#616161] text-[14px] text-center">
+            By creating an account on our website you will be able to shop faster, be up to date on an orders status, and keep track of the orders you have previously made. 
+        </p>
+        <p class="text-xs text-[#616161] text-center">
+            By clicking "Register" you agree to our <a href="/terms-and-conditions" class="text-[#967BB6]">Terms & Conditions</a> and <a href="/privacy-policy" class="text-[#967BB6]">Privacy Policy</a>.
+        </p>
+    </div>
+
+</div>
+
+<%- include('./cart') %>
+
+
+
+
+<% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showToast('<%= errorMessage %>', '<%= messageType %>');
+        });
+    </script>
+<% } %>

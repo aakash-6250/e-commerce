@@ -1,0 +1,156 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
+
+<main class="w-full bg-[#FBF5F0] max-w-[1920px] px-[10px] md:px-[20px] lg:px-[150px] xl:px-[150px] m-auto">
+
+  <div class="w-full flex justify-center items-center py-[70px]">
+
+    <div class="max-w-[1142px] w-full bg-white p-[10px] ">
+
+      <div id="address-page" class="address-page flex flex-col lg:flex-row items-stretch gap-[30px] w-full h-full ">
+
+        <div class="left border-[1px] border-zinc-300 rounded-lg flex flex-col lg:w-[65%] w-full h-full ">
+
+          <div class="address-list h-full flex flex-col gap-[30px]">
+
+            <div class="left-heading border-b-[1px] border-zinc-300 p-4 mb-2 flex justify-between items-center">
+              <h1 class="font-bold font-[merriweather] text-zinc-800">Select address</h1>
+              <% if(user.addresses.length <3 ){ %>
+                <button id="add-new-address" class="bg-[#967BB6] w-max text-white px-4 py-2 rounded-full ">Add New Address</button>
+              <% } %>
+            </div>
+
+            <% if(user.addresses.length === 0 ) { %>
+            <h1 class=" text-center py-4">No address found add new one</h1>
+            <% }else{ %>
+                <form id="submit-address" method="post" class=" mb-4 flex flex-col items-end p-3 gap-[30px]">
+                    <% user.addresses.forEach( address => { %>
+
+                        <label for="<%= address._id %>" class="relative block cursor-pointer w-full p-4 border-zinc-400 border-[1px] rounded-lg m-auto">
+        
+                            <button id="delete-address-btn" class="delete-address-btn absolute top-3 right-4 hover:bg-red-500 hover:text-white w-[40px] h-[40px] rounded-full flex justify-center items-center" data-id="<%= address._id %>"><i class="ri-delete-bin-2-line text-xl" ></i></button>
+                            
+                            <input type="radio" name="address" id="<%= address._id %>" value="<%= address._id %>" >
+        
+                            <p><%= address.firstName %> <%= address.lastName %></p>
+                            <p><%= address.address %></p>
+                            <p><%= address.city %> <%= address.zip %></p>
+                            <p>Mobile - <%= address.phone %></p>                    
+                        </label>
+        
+                    <% }) %>
+
+                    <button class="bg-[#967BB6] w-max text-white px-6 py-2 rounded-full">Next</button>
+                </form>
+            <% } %>
+
+          </div>
+
+          
+
+          <form id="add-address-form" method="post" class="flex flex-col gap-[30px] p-2 rounded-lg items-end hidden">
+
+            <h1 class="font-bold font-[merriweather] text-zinc-800 w-full text-xl p-4">Add address</h1>
+
+            <div class="name flex justify-between gap-[30px] w-full">
+              <input required type="text" name="firstName" placeholder="First name" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid">
+              <input required type="text" name="lastName" placeholder="Last name" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid">
+            </div>
+
+            <input required type="text" name="address" placeholder="Address line" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid">
+
+            <div class="name flex justify-between gap-[30px] w-full">
+              <input required type="text" name="city" placeholder="City" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid">
+              <input required type="text" name="state" placeholder="State" list="indian-states" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid" id="state">
+              <datalist id="indian-states">
+                <option value="Andhra Pradesh"></option>
+                <option value="Arunachal Pradesh"></option>
+                <option value="Assam"></option>
+                <option value="Bihar"></option>
+                <option value="Chhattisgarh"></option>
+                <option value="Goa"></option>
+                <option value="Gujarat"></option>
+                <option value="Haryana"></option>
+                <option value="Himachal Pradesh"></option>
+                <option value="Jharkhand"></option>
+                <option value="Karnataka"></option>
+                <option value="Kerala"></option>
+                <option value="Madhya Pradesh"></option>
+                <option value="Maharashtra"></option>
+                <option value="Manipur"></option>
+                <option value="Meghalaya"></option>
+                <option value="Mizoram"></option>
+                <option value="Nagaland"></option>
+                <option value="Odisha"></option>
+                <option value="Punjab"></option>
+                <option value="Rajasthan"></option>
+                <option value="Sikkim"></option>
+                <option value="Tamil Nadu"></option>
+                <option value="Telangana"></option>
+                <option value="Tripura"></option>
+                <option value="Uttar Pradesh"></option>
+                <option value="Uttarakhand"></option>
+                <option value="West Bengal"></option>
+                <option value="Andaman and Nicobar Islands"></option>
+                <option value="Chandigarh"></option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu"></option>
+                <option value="Lakshadweep"></option>
+                <option value="Delhi"></option>
+                <option value="Puducherry"></option>
+                <option value="Ladakh"></option>
+                <option value="Jammu and Kashmir"></option>
+              </datalist>
+            </div>
+
+            <div class="name flex justify-between gap-[30px] w-full">
+              <select name="country" name="country" id="country" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid">
+                <option value="india" selected>India</option>
+              </select>
+              <input required type="number" id="zip" name="zip" placeholder="Zip Code" min="99999" max="999999" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid no-spinner">
+            </div>
+            
+            <input required type="number" id="Phone" name="phone" placeholder="Phone number" min="999999999" max="9999999999" class="bg-[#F2F2F2] px-4 py-2 rounded-full w-full user-invalid user-valid no-spinner" >
+
+            <button class="w-max bg-[#967BB6] hover:bg-purple-600 px-8 py-2 rounded-full text-white">Next</button>
+
+
+          </form>
+
+        </div>
+
+        <div class="right w-full lg:w-[35%] flex flex-col gap-[30px] h-full">
+
+          <div class="calculations border-[1px] border-zinc-300 rounded-lg p-4">
+            <div class="all-charges flex flex-col gap-[10px] border-b-[1px] border-[#E2E2E2] pb-[30px]">
+
+              <div class="subtotal flex justify-between">
+                <p class="text-[#616161]">Subtotal</p>
+                <p class="amount text-[#191717] font-[merriweather]">₹<%= cart.subTotalAmount %></p>
+              </div>
+
+              <div class="shipping flex justify-between">
+                <p class="text-[#616161]">Shipping</p>
+                <p class="amount text-[#616161]">Calculated Later</p>
+              </div>
+
+            </div>
+
+            <div class="total pt-[30px]">
+              <div class="flex justify-between">
+                <p class="text-[#191717]">Total</p>
+                <p class="text-[#191717] font-[merriweather]">₹<%= cart.totalAmount %></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+
+</main>
+
+<%- include('./partials/footer') %>
